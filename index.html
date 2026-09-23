@@ -8,7 +8,7 @@
 </style></head><body>
 <div id="login" class="loginWrap hidden"><form class="loginCard" onsubmit="login(event)"><h1>📦 Stock FL</h1><p class="small">Connexion réservée aux utilisateurs autorisés.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" required></div><div class="field"><label>Mot de passe</label><input id="password" type="password" autocomplete="current-password" required></div><button class="primary">Se connecter</button><div id="loginError" class="error"></div></form></div>
 <div id="site" class="hidden"><header><div class="top"><div><div class="title">📦 Stock</div><div id="who" class="small">Chargement…</div></div><div><button id="manageBtn" class="manage" onclick="openManage()">Gérer</button> <button class="logout" onclick="logout()">↪</button></div></div></header><main id="app"><div class="loading">Chargement du stock…</div></main><button id="fab" class="fab" onclick="openAdd()">+</button></div>
-<dialog id="addDialog"><form class="modal" onsubmit="saveProduct(event)"><h2>Ajouter un produit</h2><div class="field"><label>Nom</label><input id="pName" required></div><div class="field"><label>Catégorie</label><select id="pCat"><option>Fruits</option><option>Légumes</option><option>Salades</option><option>Autres</option></select></div><div class="field"><label>Quantité</label><input id="pQty" type="number" min="0" step=".5" value="0"></div><div class="field"><label>URL de la photo (optionnel)</label><input id="pPhoto" type="url" placeholder="https://..."></div><div class="actions"><button type="button" class="secondary" onclick="addDialog.close()">Annuler</button><button class="primary">Ajouter</button></div></form></dialog>
+<dialog id="addDialog"><form class="modal" onsubmit="saveProduct(event)"><h2>Ajouter un produit</h2><div class="field"><label>Nom</label><input id="pName" required></div><div class="field"><label>Catégorie</label><select id="pCat"><option>Fruits</option><option>Légumes</option><option>Salades</option><option>Autres</option></select></div><div class="field"><label>Quantité</label><input id="pQty" type="number" min="0" step=".5" value="0"></div><div class="field"><label>Photo (optionnel)</label><input id="pPhoto" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif"></div><div class="actions"><button type="button" class="secondary" onclick="addDialog.close()">Annuler</button><button class="primary">Ajouter</button></div></form></dialog>
 <dialog id="manageDialog"><div class="modal"><h2>Gérer les produits</h2><div id="manageList"></div><div class="actions"><button class="primary" onclick="manageDialog.close()">Terminé</button></div></div></dialog>
 <script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co', SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
@@ -22,7 +22,26 @@ async function loadProducts(){const {data,error}=await db.from('products').selec
 function render(){const app=$('app');app.innerHTML='';Object.keys(meta).forEach(cat=>{const items=products.filter(p=>p.category===cat);if(!items.length)return;const s=document.createElement('section');s.className='category';s.innerHTML='<div class="catTitle"><span class="dot" style="background:'+meta[cat].color+'"></span>'+esc(cat)+'</div><div class="grid"></div>';const g=s.querySelector('.grid');items.forEach(p=>{const c=document.createElement('div');c.className='card'+(Number(p.quantity)===0?' zero':'');const visual=p.photo_url?'<img class="photo" src="'+esc(p.photo_url)+'" alt="">':'<div class="placeholder">'+(meta[p.category]?.emoji||'📦')+'</div>';const canEdit=profile.role!=='lecture';c.innerHTML=visual+'<div class="name">'+esc(p.name)+'</div><div class="counter"><button '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',-.5)">−</button><div class="qty">'+fmt(p.quantity)+'</div><button class="plus" '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',.5)">+</button></div>';g.appendChild(c)});app.appendChild(s)})}
 async function change(id,d){if(profile.role==='lecture')return;const p=products.find(x=>x.id===id),q=Math.max(0,Math.round((Number(p.quantity)+d)*2)/2),old=p.quantity;p.quantity=q;render();const {error}=await db.from('products').update({quantity:q}).eq('id',id);if(error){p.quantity=old;render();alert('Modification refusée.')} }
 function openAdd(){if(!['admin','responsable'].includes(profile.role))return;$('addDialog').showModal()}
-async function saveProduct(e){e.preventDefault();const max=products.reduce((m,p)=>Math.max(m,p.position||0),0);const {error}=await db.from('products').insert({name:$('pName').value.trim(),category:$('pCat').value,quantity:Math.max(0,Number($('pQty').value)||0),photo_url:$('pPhoto').value.trim()||null,position:max+1});if(error)return alert('Ajout impossible : '+error.message);e.target.reset();$('pQty').value=0;$('addDialog').close();await loadProducts()}
+async function saveProduct(e){
+e.preventDefault();
+const btn=e.submitter;if(btn){btn.disabled=true;btn.textContent='Ajout…'}
+try{
+ let photoUrl=null,file=$('pPhoto').files[0];
+ if(file){
+   const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+   const path=crypto.randomUUID()+'.'+ext;
+   const {error:upErr}=await db.storage.from('product-images').upload(path,file,{cacheControl:'3600',upsert:false});
+   if(upErr)throw upErr;
+   const {data:urlData}=db.storage.from('product-images').getPublicUrl(path);
+   photoUrl=urlData.publicUrl;
+ }
+ const max=products.reduce((m,p)=>Math.max(m,p.position||0),0);
+ const {error}=await db.from('products').insert({name:$('pName').value.trim(),category:$('pCat').value,quantity:Math.max(0,Number($('pQty').value)||0),photo_url:photoUrl,position:max+1});
+ if(error)throw error;
+ e.target.reset();$('pQty').value=0;$('addDialog').close();await loadProducts();
+}catch(err){alert('Ajout impossible : '+err.message)}
+finally{if(btn){btn.disabled=false;btn.textContent='Ajouter'}}
+}
 function openManage(){if(!['admin','responsable'].includes(profile.role))return;renderManage();$('manageDialog').showModal()}
 function renderManage(){const l=$('manageList');l.innerHTML='';products.forEach(p=>{const r=document.createElement('div');r.className='manageRow';r.innerHTML='<span>'+esc(p.name)+' <small>('+esc(p.category)+')</small></span><button class="delete" onclick="removeProduct(\''+p.id+'\')">Supprimer</button>';l.appendChild(r)})}
 async function removeProduct(id){if(!confirm('Supprimer ce produit ?'))return;const {error}=await db.from('products').delete().eq('id',id);if(error)return alert('Suppression impossible.');await loadProducts();renderManage()}
