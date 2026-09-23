@@ -15,21 +15,30 @@ const days=[
 ];
 let current=2,drag=false,paint=true;
 function slots(){return Array.from({length:29},(_,i)=>6+i*.5)}
-function baseState(day){const s={};names.forEach(n=>{s[n]={};(day.blocks[n]||[]).forEach(([a,b,c])=>slots().forEach(t=>{if(t>=+a&&t<+b)s[n][t]=c}))});return s}
+function baseState(day){const s={};names.forEach(n=>{s[n]={};(day.blocks[n]||[]).forEach(([a,b,c])=>slots().forEach(t=>{if(t>=+a&&t<+b)s[n][String(t)]=c}))});return s}
+function normalizeDayState(day,state){
+ const base=baseState(day);
+ if(!state||typeof state!=='object')return base;
+ names.forEach(n=>{
+   if(!state[n]||typeof state[n]!=='object')state[n]={};
+   Object.keys(base[n]).forEach(t=>{if(state[n][t]===undefined)state[n][t]=base[n][t]});
+ });
+ return state;
+}
 function getState(){try{return JSON.parse(localStorage.getItem('nettoPlanningV1'))||{}}catch{return {}}}
-const DATA_VERSION='photo-planning-v2';
+const DATA_VERSION='photo-planning-v3-visible';
 let all=getState();
 if(localStorage.getItem('nettoPlanningDataVersion')!==DATA_VERSION){
  all={};days.forEach(d=>all[d.k]=baseState(d));
  localStorage.setItem('nettoPlanningV1',JSON.stringify(all));
  localStorage.setItem('nettoPlanningDataVersion',DATA_VERSION);
 }else{
- days.forEach(d=>{if(!all[d.k])all[d.k]=baseState(d)});
+ days.forEach(d=>{all[d.k]=normalizeDayState(d,all[d.k])});
 }
 function save(){localStorage.setItem('nettoPlanningV1',JSON.stringify(all));const e=document.getElementById('saveState');e.textContent='✓ Enregistré';setTimeout(()=>e.textContent='Modifications enregistrées automatiquement',900)}
 function fmt(t){const h=Math.floor(t),m=t%1?'30':'00';return h+':'+m}
 function renderDays(){document.getElementById('days').innerHTML=days.map((d,i)=>'<button class="day '+(i===current?'active':'')+'" onclick="current='+i+';render()">'+d.label+'</button>').join('')}
-function render(){renderDays();const d=days[current];const dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;let h='<div class="name headName">Employé</div>'+slots().map(t=>'<div class="time">'+fmt(t)+'</div>').join('')+'<div class="time">Total</div>';names.forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const c=all[d.k][n]?.[t];if(c)count++;h+='<div class="cell '+(c?'on':'')+'" style="'+(c?'--c:'+colors[c]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.5).toFixed(1).replace('.',',')+' h</div>'});grid.innerHTML=h;grid.querySelectorAll('.cell').forEach(el=>{el.onpointerdown=e=>{e.preventDefault();drag=true;paint=!el.classList.contains('on');apply(el)};el.onpointerenter=()=>{if(drag)apply(el)}})}
+function render(){renderDays();const d=days[current];const dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;let h='<div class="name headName">Employé</div>'+slots().map(t=>'<div class="time">'+fmt(t)+'</div>').join('')+'<div class="time">Total</div>';names.forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const c=all[d.k]?.[n]?.[String(t)];if(c)count++;h+='<div class="cell '+(c?'on':'')+'" style="'+(c?'--c:'+colors[c]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.5).toFixed(1).replace('.',',')+' h</div>'});grid.innerHTML=h;grid.querySelectorAll('.cell').forEach(el=>{el.onpointerdown=e=>{e.preventDefault();drag=true;paint=!el.classList.contains('on');apply(el)};el.onpointerenter=()=>{if(drag)apply(el)}})}
 function apply(el){const d=days[current],n=el.dataset.n,t=el.dataset.t;all[d.k][n]??={};if(paint){const existing=all[d.k][n][t];all[d.k][n][t]=existing?existing:'g'}else delete all[d.k][n][t];save();render()}
 document.addEventListener('pointerup',()=>drag=false);
 function resetDay(){if(!confirm('Réinitialiser ce jour avec le planning saisi depuis les photos ?'))return;all[days[current].k]=baseState(days[current]);save();render()}
