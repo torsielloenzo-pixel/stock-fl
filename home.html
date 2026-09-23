@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171717">
+<title>Netto — Accueil</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--red:#e30613;--red-dark:#b90710;--black:#171717;--muted:#777;--line:#e4e4e6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100dvh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717;background:linear-gradient(135deg,#f1f2f3 0%,#fafafa 48%,#eef0f1 100%)}
+body:before,body:after{content:"";position:fixed;border-radius:50%;pointer-events:none;z-index:-1}
+body:before{width:440px;height:440px;left:-260px;top:90px;background:#e3061309}
+body:after{width:520px;height:520px;right:-300px;bottom:-100px;background:#17171708}
+header{height:72px;background:#ffffffed;border-bottom:1px solid #dedede;box-shadow:0 4px 18px #00000008;display:flex;align-items:center}
+header:after{content:"";position:absolute;left:0;right:0;top:69px;height:3px;background:linear-gradient(90deg,var(--red) 0 43%,var(--black) 43% 49%,#fff 49%)}
+.top{width:min(94vw,1050px);margin:auto;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}.mark{width:40px;height:40px;border-radius:10px;background:var(--black);color:#fff;display:grid;place-items:center;font-size:21px;font-weight:950;box-shadow:inset 0 -5px 0 var(--red),0 3px 10px #0002}.brand strong{display:block;font-size:19px;letter-spacing:-.3px}.brand small{display:block;color:#888;font-size:11px;margin-top:2px}
+.logout{border:1px solid #dedede;background:#fff;border-radius:11px;padding:9px 11px;font-weight:750;cursor:pointer}
+main{width:min(92vw,930px);margin:0 auto;padding:70px 0 60px}
+.hello{margin-bottom:28px}.eyebrow{font-size:12px;font-weight:850;color:var(--red-dark);text-transform:uppercase;letter-spacing:.8px}.hello h1{font-size:38px;line-height:1.05;letter-spacing:-1.3px;margin:7px 0 8px}.hello p{margin:0;color:#777;font-size:14px}
+.pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.pageCard{position:relative;overflow:hidden;border:1px solid #dedee2;background:#fff;border-radius:22px;padding:25px;min-height:240px;text-align:left;cursor:pointer;box-shadow:0 8px 28px #00000008;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pageCard:before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-75px;top:-80px;background:#00000004}
+.pageCard:hover{transform:translateY(-3px);box-shadow:0 14px 36px #00000010;border-color:#cfcfd2}.pageCard:active{transform:scale(.985)}
+.icon{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:25px;margin-bottom:28px}
+.stock .icon{background:#171717;color:#fff;box-shadow:inset 0 -5px 0 var(--red)}
+.planning .icon{background:#f1f1f2;color:#171717;border:1px solid #e4e4e6}
+.pageCard h2{font-size:25px;margin:0 0 8px;letter-spacing:-.5px}.pageCard p{font-size:13px;color:#777;line-height:1.45;margin:0;max-width:330px}.arrow{position:absolute;right:22px;bottom:20px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#f2f2f3;font-size:18px;font-weight:850}.stock .arrow{background:var(--red);color:#fff}
+.status{margin-top:18px;font-size:11px;color:#999}
+.hidden{display:none!important}
+@media(max-width:650px){header{height:66px}header:after{top:63px}.top{width:calc(100% - 26px)}main{padding:42px 0;width:calc(100% - 26px)}.hello h1{font-size:31px}.pages{grid-template-columns:1fr}.pageCard{min-height:190px;padding:21px}.icon{margin-bottom:20px}.pageCard h2{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand"><div class="mark">N</div><div><strong>Netto</strong><small>Espace Fruits &amp; Légumes</small></div></div><button class="logout" onclick="logout()" title="Déconnexion">↪</button></div></header>
+<main>
+ <div class="hello"><div class="eyebrow">Espace de travail</div><h1 id="helloTitle">Bonjour 👋</h1><p>Choisis l’espace que tu veux ouvrir.</p></div>
+ <div class="pages">
+  <button class="pageCard stock" onclick="location.href='index.html'"><div class="icon">N</div><h2>Stock F&amp;L</h2><p>Gérer les quantités, les fiches articles, les suggestions de commande et le panier.</p><span class="arrow">→</span></button>
+  <button class="pageCard planning" onclick="location.href='planning.html'"><div class="icon">▦</div><h2>Planning</h2><p>Consulter les horaires de l’équipe et passer en mode modification lorsque nécessaire.</p><span class="arrow">→</span></button>
+ </div>
+ <div id="status" class="status">Vérification de la session…</div>
+</main>
+<script>
+const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let audioCtx=null;
+function logoutSound(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=audioCtx||(audioCtx=new A()),play=()=>{const n=a.currentTime,m=a.createGain();m.gain.setValueAtTime(.0001,n);m.gain.exponentialRampToValueAtTime(.045,n+.04);m.gain.exponentialRampToValueAtTime(.0001,n+.5);m.connect(a.destination);[[587,0],[494,.08],[392,.16]].forEach(([f,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(f,n+d);g.gain.setValueAtTime(.0001,n+d);g.gain.exponentialRampToValueAtTime(.22,n+d+.035);g.gain.exponentialRampToValueAtTime(.0001,n+d+.3);o.connect(g);g.connect(m);o.start(n+d);o.stop(n+d+.33)})};a.state==='suspended'?a.resume().then(play):play()}catch(e){}}
+async function boot(){const {data:{session}}=await db.auth.getSession();if(!session){location.replace('index.html');return}const {data:p}=await db.from('profiles').select('display_name,email').eq('id',session.user.id).maybeSingle();const name=p?.display_name||p?.email?.split('@')[0]||'';document.getElementById('helloTitle').textContent=name?'Bonjour '+name+' 👋':'Bonjour 👋';document.getElementById('status').textContent='Session active'}
+async function logout(){logoutSound();await new Promise(r=>setTimeout(r,380));await db.auth.signOut();location.replace('index.html')}
+boot();
+</script>
+</body></html>
