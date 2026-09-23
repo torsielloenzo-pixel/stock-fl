@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#171717">
+<meta name="theme-color" content="#171717"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script>
 <title>Netto — Équipe</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -20,10 +20,51 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;bac
 @media(max-width:760px){header{height:64px}.wrap{width:100%;height:calc(100dvh - 64px);display:block;padding:0}.side{display:none}.chat{height:100%;border:0;border-radius:0}.top{width:calc(100% - 22px)}.messages{padding:13px 11px 22px}.msg{grid-template-columns:32px minmax(0,1fr) auto}.avatar{width:32px;height:32px;border-radius:9px}.chatHead{padding:12px 13px}.composer{padding:9px 10px}.nMenu{position:fixed;left:10px;right:10px;top:62px;width:auto}}
 
 .imageLightbox{position:fixed;inset:0;z-index:300;background:#111111d9;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:34px;animation:lbIn .18s ease}.imageLightbox.hidden{display:none!important}.imageLightbox img{max-width:min(94vw,1400px);max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 70px #0009;background:#111}.lightboxClose{position:fixed;right:22px;top:18px;width:42px;height:42px;border:1px solid #ffffff2e;border-radius:50%;background:#161616cc;color:#fff;font-size:24px;display:grid;place-items:center;cursor:pointer;z-index:2}.lightboxClose:hover{background:#fff;color:#111}@keyframes lbIn{from{opacity:0}to{opacity:1}}
+
+/* Mode clair / sombre global */
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="dark"] body{background:#111214!important;color:#f3f3f4!important}
+:root[data-theme="dark"] body:before{background:#e3061310!important}
+:root[data-theme="dark"] body:after{background:#ffffff05!important}
+:root[data-theme="dark"] header{background:#17181bea!important;border-color:#2d2e32!important;box-shadow:0 4px 18px #0005!important}
+:root[data-theme="dark"] header:after{background:linear-gradient(90deg,#e30613 0 43%,#f5f5f5 43% 49%,#17181b 49%)!important}
+:root[data-theme="dark"] .title,:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] strong{color:#f4f4f5}
+:root[data-theme="dark"] .sub,:root[data-theme="dark"] .subtitle,:root[data-theme="dark"] .small,:root[data-theme="dark"] .meta,:root[data-theme="dark"] .hint,:root[data-theme="dark"] .status,:root[data-theme="dark"] .saveState,:root[data-theme="dark"] .panelIntro,:root[data-theme="dark"] .hello p,:root[data-theme="dark"] .pageCard p{color:#a6a6ab!important}
+:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] dialog .modal,:root[data-theme="dark"] .tabPanel,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4}
+:root[data-theme="dark"] .pageCard:hover,:root[data-theme="dark"] .panel:hover{border-color:#44464d!important}
+:root[data-theme="dark"] .cardFoot,:root[data-theme="dark"] .chatHead,:root[data-theme="dark"] .composer,:root[data-theme="dark"] .row,:root[data-theme="dark"] .familySection{border-color:#303136!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .search,:root[data-theme="dark"] .searchBox input{background:#202126!important;color:#f4f4f5!important;border-color:#393a40!important}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#777b82}
+:root[data-theme="dark"] .light,:root[data-theme="dark"] .logout,:root[data-theme="dark"] .back,:root[data-theme="dark"] .btn:not(.dark),:root[data-theme="dark"] .suggestTop,:root[data-theme="dark"] .categoryFilter:not(.active){background:#242529!important;color:#eee!important;border-color:#393a40!important}
+:root[data-theme="dark"] .nMenu,:root[data-theme="dark"] .brandMenu,:root[data-theme="dark"] .userMenu{background:#1c1d20f5!important;border-color:#38393e!important;box-shadow:0 18px 50px #0008!important;color:#f4f4f5}
+:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:#292a2f!important}
+:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#2b2c31!important;color:#f2f2f3}
+:root[data-theme="dark"] .nMenu small,:root[data-theme="dark"] .brandMenu small,:root[data-theme="dark"] .userMenu small{color:#9c9da3!important}
+:root[data-theme="dark"] .themeToggle{border-top:1px solid #33343a!important;margin-top:4px;border-radius:0!important}
+:root[data-theme="dark"] .userPill{background:#1b1c20!important;border-color:#36373c!important;color:#f4f4f5}
+:root[data-theme="dark"] .bubble,:root[data-theme="dark"] .member,:root[data-theme="dark"] .me,:root[data-theme="dark"] .item,:root[data-theme="dark"] .editTools,:root[data-theme="dark"] .orderConfigField,:root[data-theme="dark"] .attachPreview{background:#232429!important;border-color:#36373c!important;color:#f1f1f2}
+:root[data-theme="dark"] .mine .bubble{background:#2b1d20!important;border-color:#5a2b30!important}
+:root[data-theme="dark"] .attachment,:root[data-theme="dark"] .fileRow{background:#1d1e22!important;border-color:#35363b!important}
+:root[data-theme="dark"] .cell,:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{border-color:#36373c!important}
+:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{background:#1c1d20!important;color:#f2f2f3!important}
+:root[data-theme="dark"] .cell:not(.on){background:#202126!important}
+:root[data-theme="dark"] .variants,:root[data-theme="dark"] .catBody{background:#17181b!important}
+:root[data-theme="dark"] .counter{background:#242529!important;border-color:#393a40!important}
+:root[data-theme="dark"] .counter button{background:#303137!important;color:#f4f4f5!important}
+:root[data-theme="dark"] .suggestTabList,:root[data-theme="dark"] .suggestTabs{background:#1a1b1e!important;border-color:#33343a!important}
+:root[data-theme="dark"] .suggestRow{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4!important}
+:root[data-theme="dark"] .suggestRow:hover{background:#232429!important}
+:root[data-theme="dark"] .loginWrap{background:#111214!important}
+:root[data-theme="dark"] .loginCard{background:#1b1c1f!important;color:#f4f4f5!important}
+:root[data-theme="dark"] .loginCard input{background:#232429!important;color:#fff!important;border-color:#393a40!important}
+:root[data-theme="dark"] .notice{background:#202126!important;border-color:#36373c!important;color:#aaa!important}
+:root[data-theme="dark"] .actions{background:#1a1b1eee!important;border-color:#36373c!important}
+:root[data-theme="dark"] .editTabs{background:#242529!important}
+:root[data-theme="dark"] .editTab.active{background:#34353a!important;color:#fff!important}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span>◉</span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Équipe</div><div class="sub">Messagerie interne</div></div></div><button class="back" onclick="location.href='home.html'">← Retour</button></div></header>
+<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span>◉</span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Équipe</div><div class="sub">Messagerie interne</div></div></div><button class="back" onclick="location.href='home.html'">← Retour</button></div></header>
 <div class="wrap">
  <aside class="side"><h2>Chat équipe</h2><p>Un espace commun pour échanger pendant la journée.</p><div class="membersTitle">Membres</div><div id="members" class="members"><div class="empty">Chargement…</div></div><div id="adminBox" class="adminBox hidden"><button class="adminReset" onclick="resetChat()">Réinitialiser la conversation</button></div><div class="tips">Photos, vidéos et documents peuvent être joints aux messages. Les pièces jointes restent accessibles au téléchargement.</div></aside>
  <section class="chat">
@@ -93,5 +134,9 @@ function applySharedSiteConfig(cfg){
  const settings=document.querySelectorAll('.settingsLink');settings.forEach(x=>x.classList.toggle('hidden',!(window.currentRole==='admin'||window.planningCanEdit||profile?.role==='admin')));
 }
 
-</script>
-</body></html>
+
+function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
+function applyTheme(theme){theme=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=theme;try{localStorage.setItem('nettoTheme',theme)}catch(e){}document.querySelectorAll('.themeIcon').forEach(x=>x.textContent=theme==='dark'?'☀':'☾');document.querySelectorAll('.themeLabel').forEach(x=>x.textContent=theme==='dark'?'Mode clair':'Mode sombre');document.querySelectorAll('.themeSub').forEach(x=>x.textContent=theme==='dark'?'Revenir au thème clair':'Passer au thème sombre');const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=theme==='dark'?'#111214':'#f4f4f6'}
+function toggleTheme(e){e?.stopPropagation();applyTheme(currentTheme()==='dark'?'light':'dark')}
+document.addEventListener('DOMContentLoaded',()=>applyTheme(currentTheme()));
+</script></body></html>
