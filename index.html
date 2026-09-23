@@ -188,7 +188,7 @@ function suggestOrder(p){
  if(shelf==='abundant')why.push('objectif principal atteint : rayon abondant');
  if(shelf==='watch'){why.push('rayon à surveiller');priority+=2}
  if(shelf==='rupture'){why.push('rayon en rupture');priority+=6}
- if(cfg.lossLeader){why.push('produit d’appel : priorité renforcée');priority+=4}
+ if(cfg.lossLeader){why.push('produit d’appel : recommandation forte');priority+=10}
  if(cfg.season){why.push('article marqué de saison : priorité renforcée');priority+=3}
  if(cfg.sensitive){why.push('produit sensible : commande plus prudente');priority-=3}
  if(q>1)why.push('réserve déjà élevée ('+fmt(q)+') : éviter le surstock');
@@ -198,6 +198,9 @@ function suggestOrder(p){
    if(shelf==='rupture'&&!large){qty=q>=1?0:1;status=qty?'Prioritaire':'À surveiller';if(q>=1)why.push('réserve disponible malgré la rupture rayon : remplir avant de recommander')}
    else if(shelf==='watch'&&q<1&&!large&&!cfg.sensitive){qty=1;status='À envisager';why.push('peu de réserve pour maintenir le rayon')}
    else if(shelf==='watch'&&q<1&&cfg.sensitive)why.push('suggestion retenue : article sensible sans rupture rayon');
+ }
+ if(cfg.lossLeader&&!weekend&&shelf!=='abundant'&&q<1&&familyStock<3&&!large){
+   qty=Math.max(qty,1);status='Recommandation forte';why.push('produit d’appel à maintenir disponible');
  }
  if(shelf==='abundant'||q>1||familyStock>=3)qty=0;
  if(weekend){qty=0;why.push('week-end : pas de commande, priorité à l’écoulement du stock')}
