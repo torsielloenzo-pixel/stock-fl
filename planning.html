@@ -58,6 +58,112 @@ main{width:min(97vw,1700px);max-width:none;padding:24px 26px 60px}.top{width:min
 :root[data-theme="dark"] .actions{background:#1a1b1eee!important;border-color:#36373c!important}
 :root[data-theme="dark"] .editTabs{background:#242529!important}
 :root[data-theme="dark"] .editTab.active{background:#34353a!important;color:#fff!important}
+
+/* DA Netto rouge-orangé inspirée du visuel fourni */
+:root{
+  --netto-red:#ff2f1f;
+  --netto-red-2:#ff151f;
+  --netto-orange:#ff8500;
+  --netto-orange-soft:#ff9f1a;
+  --netto-gradient:linear-gradient(135deg,#ff2f1f 0%,#ff151f 44%,#ff8500 100%);
+  --netto-gradient-soft:linear-gradient(135deg,#fff2ef 0%,#fff7ed 100%);
+  --netto-ink:#182235;
+  --netto-surface:#ffffff;
+  --netto-border:#e7e9ed;
+}
+body{background:
+  radial-gradient(circle at 0% 16%,#ff2f1f0a 0,transparent 26%),
+  radial-gradient(circle at 100% 88%,#ff85000b 0,transparent 28%),
+  linear-gradient(135deg,#f7f8fa 0%,#ffffff 48%,#f3f5f7 100%)!important}
+header{background:#ffffffef!important;border-bottom:1px solid #e8e9ec!important;box-shadow:0 5px 20px #1b23300b!important}
+header:after{background:var(--netto-gradient)!important;height:3px!important}
+.mark,.brandMark,.loginMark,.welcomeMark{
+  background:var(--netto-gradient)!important;
+  color:#fff!important;
+  box-shadow:0 6px 16px #ff3b1f2d!important;
+  border:0!important;
+}
+.manage,.primary,.dark,.send,.loginSubmit{
+  background:var(--netto-gradient)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px #ff3b1f28!important;
+  border:0!important;
+}
+.manage:hover,.primary:hover,.dark:hover,.send:hover,.loginSubmit:hover{filter:brightness(.98);transform:translateY(-1px)}
+.fab,.cartCount{background:var(--netto-gradient)!important}
+.suggestTopIcon{background:#fff1ed!important;color:#ff3b1f!important;box-shadow:none!important}
+.suggestTop:hover .suggestTopIcon{background:var(--netto-gradient)!important;color:#fff!important}
+.nMenuTitle,.brandMenuTitle{color:#f33a22!important}
+.nMenu button:hover,.brandMenu button:hover,.userMenu button:hover{background:linear-gradient(90deg,#fff1ef,#fff8ef)!important}
+.nMenu button>span,.brandMenu button>span,.userMenu button>span{
+  background:linear-gradient(135deg,#fff0ed,#fff7ec)!important;
+  color:#f43a20!important;
+}
+.themeToggle .themeIcon,.userThemeToggle .themeIcon{color:#ff6f00!important}
+.logoutItem,.brandLogout,.userLogout{color:#b81717!important}
+.logoutItem>span,.brandLogout>span,.userLogout>span{background:#fff0ef!important;color:#e3261a!important}
+input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
+  border-color:#ff6a3d88!important;
+  box-shadow:0 0 0 3px #ff5a2a16!important;
+}
+.modal h2:after,.subtitle:before{background:var(--netto-gradient)!important}
+.editTab.active{box-shadow:inset 0 -3px 0 #ff4b22,0 2px 6px #0000000b!important}
+.categoryFilter.active,.suggestTab.active{box-shadow:0 7px 18px #ff4c2024!important}
+.userAvatar,.avatar,.memberAvatar{
+  background:var(--netto-gradient)!important;
+  box-shadow:0 4px 12px #ff3b1f2a!important;
+}
+.pageCard,.panel,.side,.chat,.sheet,.modal,.category,.cat,.group,.tabPanel{
+  border-color:#e5e7eb!important;
+  box-shadow:0 10px 28px #1a22300b!important;
+}
+.pageCard:hover,.panel:hover{box-shadow:0 16px 38px #ff522012!important;border-color:#ffd3c7!important}
+.cardKicker,.eyebrow{color:#ed2d1d!important}
+.stock .arrow,.chatCard .arrow{background:var(--netto-gradient)!important;color:#fff!important}
+.stock .icon,.planning .icon,.chatCard .icon{
+  background:linear-gradient(135deg,#fff0ec,#fff7ed)!important;
+  color:#f43b20!important;
+  border:1px solid #ffd8ca!important;
+  box-shadow:none!important;
+}
+.stock .icon{background:var(--netto-gradient)!important;color:#fff!important;border:0!important}
+.cardFoot{background:linear-gradient(180deg,#fff,#fffaf7)!important}
+.pageCard.stock:after,.pageCard.planning:after,.pageCard.chatCard:after{background:var(--netto-gradient)!important}
+.day.active,.paintChoice.active{background:var(--netto-gradient)!important;color:#fff!important;border-color:transparent!important}
+.btn.activeEdit{background:var(--netto-gradient)!important;color:#fff!important}
+.adminReset,.danger{background:#fff3ef!important;border-color:#ffd8cc!important;color:#c62518!important}
+.live i,.onlineDot.on{background:#23ad55!important}
+.notice{border-left:4px solid #ff5f1f!important}
+.loginVisual{background:
+  linear-gradient(145deg,#14161a 0 56%,#201a18 100%)!important}
+.loginVisual:before{border-color:#ff352331!important}
+.loginVisual:after{border-color:#ff910022!important}
+.loginArt span{background:linear-gradient(145deg,#ffffff0d,#ff6f0014)!important}
+.loginHello{color:#f43a20!important}
+.loginSubmit{box-shadow:0 8px 20px #ff3a1f30!important}
+@media(hover:hover){
+  .pageCard:hover .icon{transform:translateY(-2px)}
+}
+:root[data-theme="dark"]{
+  --netto-surface:#1b1d22;
+  --netto-border:#30333a;
+  --netto-ink:#f4f5f7;
+}
+:root[data-theme="dark"] body{background:
+  radial-gradient(circle at 0% 16%,#ff3b1f12 0,transparent 28%),
+  radial-gradient(circle at 100% 88%,#ff850010 0,transparent 30%),
+  #111317!important}
+:root[data-theme="dark"] header{background:#17191df0!important;border-color:#2d3036!important}
+:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] .category,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group,:root[data-theme="dark"] .tabPanel{background:#1b1d22!important;border-color:#30333a!important;box-shadow:0 10px 28px #0005!important}
+:root[data-theme="dark"] .cardFoot{background:#1d2025!important}
+:root[data-theme="dark"] .stock .icon,:root[data-theme="dark"] .planning .icon,:root[data-theme="dark"] .chatCard .icon{background:linear-gradient(135deg,#4c241c,#39251a)!important;color:#ff9a55!important;border-color:#5a3023!important}
+:root[data-theme="dark"] .stock .icon{background:var(--netto-gradient)!important;color:#fff!important}
+:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:linear-gradient(90deg,#38211d,#2d241d)!important}
+:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#32231f!important;color:#ff8a55!important}
+
+/* planningNettoAccent */
+.day{border:1px solid #e4e6e9!important;background:#fff!important}.day.active{background:var(--netto-gradient)!important;color:#fff!important}
+.editTools{border-top:3px solid #ff5b22!important}.paintChoice i{box-shadow:0 0 0 2px #fff,0 0 0 3px #ddd}
 </style></head><body><header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span>◉</span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Planning</div><div class="sub">Netto • Semaine du 21 au 27 septembre 2026</div></div></div><div class="navActions"><button class="btn light backBtn" onclick="location.href='home.html'">← Retour</button></div></div></header><main><div class="toolbar"><div class="days" id="days"></div><div class="planningActions"><div class="saveState" id="saveState">Lecture seule</div><button id="editPlanningBtn" class="btn dark hidden" onclick="toggleEditMode()">✎ Modifier le planning</button></div></div><div class="dateTitle" id="dateTitle"></div><div id="editTools" class="editTools hidden"><div class="editToolsTitle"><strong>Mode modification</strong><span>Choisis le type de plage puis clique sur les cases du planning.</span></div><div class="paintChoices"><button class="paintChoice active" data-color="g" onclick="setPaintColor('g')"><i style="background:#49a900"></i>Matin</button><button class="paintChoice" data-color="b" onclick="setPaintColor('b')"><i style="background:#1594df"></i>Après-midi</button><button class="paintChoice" data-color="r" onclick="setPaintColor('r')"><i style="background:#f0180b"></i>Rouge</button><button class="paintChoice" data-color="y" onclick="setPaintColor('y')"><i style="background:#f2ef00"></i>Jaune</button><button class="paintChoice" data-color="o" onclick="setPaintColor('o')"><i style="background:#eda900"></i>Orange</button><button class="paintChoice erase" data-color="erase" onclick="setPaintColor('erase')">⌫ Effacer</button></div><button class="btn light resetEdit" onclick="resetDay()">Réinitialiser le jour</button></div><div id="planningHint" class="hint" style="margin-bottom:10px">Planning en lecture seule • amplitude 6:00 → 20:30.</div><div class="sheet"><div class="grid" id="grid"></div></div><div class="legend"><span><i class="sw" style="background:#49a900"></i>Matin</span><span><i class="sw" style="background:#1594df"></i>Après-midi</span><span><i class="sw" style="background:#f0180b"></i>Rouge</span><span><i class="sw" style="background:#f2ef00"></i>Jaune</span><span><i class="sw" style="background:#eda900"></i>Orange</span><span class="totalRule">Total : uniquement Matin + Après-midi</span></div></main><script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';let db=null;
 const names=['Clément','Delphine','Laetitia','Enzo L','Manuel','Enzo C','Gwen','Kenza','Candy','Nathanael','Chantal','Giani'];
