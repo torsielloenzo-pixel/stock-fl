@@ -35,7 +35,7 @@ main{width:min(92vw,930px);margin:0 auto;padding:70px 0 60px}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span>◉</span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><strong>Netto</strong><small>Espace outils</small></div></div><button class="logout backBtn" onclick="history.length>1?history.back():location.href='index.html'" title="Retour">←</button></div></header>
+<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span>◉</span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="settingsLink hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><strong>Netto</strong><small>Espace outils</small></div></div><button class="logout backBtn" onclick="history.length>1?history.back():location.href='index.html'" title="Retour">←</button></div></header>
 <main>
  <div class="hello"><div class="eyebrow">Espace de travail</div><h1 id="helloTitle">Bonjour 👋</h1><p>Choisis l’espace que tu veux ouvrir.</p></div>
  <div class="pages">
@@ -49,8 +49,39 @@ const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_p
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let audioCtx=null;
 function logoutSound(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=audioCtx||(audioCtx=new A()),play=()=>{const n=a.currentTime,m=a.createGain();m.gain.setValueAtTime(.0001,n);m.gain.exponentialRampToValueAtTime(.045,n+.04);m.gain.exponentialRampToValueAtTime(.0001,n+.5);m.connect(a.destination);[[587,0],[494,.08],[392,.16]].forEach(([f,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(f,n+d);g.gain.setValueAtTime(.0001,n+d);g.gain.exponentialRampToValueAtTime(.22,n+d+.035);g.gain.exponentialRampToValueAtTime(.0001,n+d+.3);o.connect(g);g.connect(m);o.start(n+d);o.stop(n+d+.33)})};a.state==='suspended'?a.resume().then(play):play()}catch(e){}}
-async function boot(){const {data:{session}}=await db.auth.getSession();if(!session){location.replace('index.html');return}const {data:p}=await db.from('profiles').select('display_name,email').eq('id',session.user.id).maybeSingle();const name=p?.display_name||p?.email?.split('@')[0]||'';document.getElementById('helloTitle').textContent=name?'Bonjour '+name+' 👋':'Bonjour 👋';document.getElementById('status').textContent='Session active'}
+async function boot(){const {data:{session}}=await db.auth.getSession();if(!session){location.replace('index.html');return}const {data:p}=await db.from('profiles').select('display_name,email,role').eq('id',session.user.id).maybeSingle();window.currentRole=p?.role;const name=p?.display_name||p?.email?.split('@')[0]||'';document.getElementById('helloTitle').textContent=name?'Bonjour '+name+' 👋':'Bonjour 👋';await loadSharedSiteConfig();document.getElementById('status').textContent='Session active'}
 async function logout(){logoutSound();await new Promise(r=>setTimeout(r,380));await db.auth.signOut();location.replace('index.html')}
 boot();
+
+async function loadSharedSiteConfig(){
+ try{
+  if(!db)return null;
+  const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();
+  const cfg=data?.value;if(!cfg)return null;
+  applySharedSiteConfig(cfg);return cfg;
+ }catch(e){console.warn('Réglages du site:',e);return null}
+}
+function setMenuEntry(urlKey,cfg){
+ const n=cfg?.nav?.[urlKey];if(!n)return;
+ const defaults={home:'home.html',stock:'index.html',planning:'planning.html',chat:'chat.html',test:'stock-test.html'};
+ const old=defaults[urlKey];
+ document.querySelectorAll('#nMenu button,#brandMenu button').forEach(b=>{
+  const oc=b.getAttribute('onclick')||'';
+  if(!oc.includes("'"+old+"'")&&!oc.includes('"'+old+'"'))return;
+  const icon=b.querySelector(':scope > span'),strong=b.querySelector('strong'),small=b.querySelector('small');
+  if(icon)icon.textContent=n.icon||icon.textContent;if(strong)strong.textContent=n.label||strong.textContent;if(small)small.textContent=n.subtitle||'';
+  const target=String(n.url||old).replace(/['"<>]/g,'');b.onclick=()=>location.href=target;
+ });
+}
+
+function applySharedSiteConfig(cfg){
+ ['home','stock','planning','chat','test'].forEach(k=>setMenuEntry(k,cfg));
+ const brand=cfg?.brand;if(brand){const b=document.querySelector('.brand>div:last-child strong'),s=document.querySelector('.brand>div:last-child small');if(b&&brand.name)b.textContent=brand.name;if(s&&brand.subtitle)s.textContent=brand.subtitle}
+ const eyebrow=document.querySelector('.eyebrow'),intro=document.querySelector('.hello p');if(eyebrow&&cfg?.home?.eyebrow)eyebrow.textContent=cfg.home.eyebrow;if(intro&&cfg?.home?.intro)intro.textContent=cfg.home.intro;
+ const map={stock:document.querySelector('.pageCard.stock'),planning:document.querySelector('.pageCard.planning'),chat:document.querySelector('.pageCard.chatCard')};
+ Object.entries(map).forEach(([k,el])=>{const p=cfg?.pages?.[k];if(!el||!p)return;el.classList.toggle('hidden',p.visible===false);el.style.order=Number(p.order||1);const ic=el.querySelector('.icon'),h2=el.querySelector('h2'),d=el.querySelector('p');if(ic)ic.textContent=p.icon||'';if(h2)h2.textContent=p.label||'';if(d)d.textContent=p.description||'';const target=String(p.url||'').replace(/['"<>]/g,'');el.onclick=()=>location.href=target});
+ document.querySelectorAll('.settingsLink').forEach(x=>x.classList.toggle('hidden',window.currentRole!=='admin'));
+}
+
 </script>
 </body></html>
