@@ -151,6 +151,70 @@ header{border-bottom:2px solid #d7192024;box-shadow:0 5px 18px #00000005}
 .suggestTabList{border:1px solid #e8e8eb;border-radius:12px;overflow:hidden;background:#fff}
 .suggestTabList .suggestRow{border-bottom:1px solid #eeeeef}.suggestTabList .suggestRow:last-child{border-bottom:0}
 #suggestDialog .suggestIntro{margin-bottom:7px}
+
+/* Ajustement DA Netto : rouge / noir / blanc plus affirmé, sans changer la structure */
+:root{
+  --netto-red:#e30613;
+  --netto-red-dark:#b90710;
+  --netto-black:#171717;
+  --netto-soft:#f7f7f7;
+}
+header{background:#ffffffed;border-bottom:1px solid #dedede;box-shadow:0 4px 18px #00000009}
+header:after{background:linear-gradient(90deg,var(--netto-red) 0 42%,var(--netto-black) 42% 48%,#fff 48% 100%);height:3px}
+.brandMark,.loginMark{
+  background:var(--netto-black)!important;
+  border-radius:10px!important;
+  box-shadow:inset 0 -5px 0 var(--netto-red),0 3px 10px #00000018!important;
+}
+.brandMark:after{border-color:#ffffff12!important}
+.title{color:var(--netto-black);font-weight:900}
+.subtitle:before{background:var(--netto-red);height:4px;width:16px}
+.manage,.primary{
+  background:var(--netto-black)!important;
+  color:#fff;
+  border:1px solid var(--netto-black);
+  box-shadow:inset 0 -3px 0 var(--netto-red);
+}
+@media(hover:hover){.manage:hover,.primary:hover{background:#252525!important;border-color:#252525}}
+.logout{background:#fff;border:1px solid #dedede;color:var(--netto-black)}
+@media(hover:hover){.logout:hover{background:#f2f2f2}}
+.suggestTop{
+  background:#fff;
+  border:1px solid #d8d8d8;
+  color:var(--netto-black);
+  box-shadow:0 1px 3px #00000008;
+}
+.suggestTopIcon{
+  background:#f1f1f1;
+  color:var(--netto-black);
+  box-shadow:inset 0 -2px 0 #e3061340;
+}
+@media(hover:hover){
+  .suggestTop:hover{border-color:#c9c9c9;background:#fafafa}
+  .suggestTop:hover .suggestTopIcon{background:var(--netto-black);color:#fff;box-shadow:inset 0 -3px 0 var(--netto-red)}
+}
+.cartCount{background:var(--netto-red)!important}
+.fab{
+  background:var(--netto-red)!important;
+  box-shadow:0 8px 22px #e3061340!important;
+}
+@media(hover:hover){.fab:hover{background:var(--netto-red-dark)!important}}
+.counter .plus{background:var(--netto-black)!important}
+.counter .plus:active{background:var(--netto-red)!important}
+.modal h2:after{background:var(--netto-red);width:34px;height:4px}
+.editTab.active{box-shadow:inset 0 -3px 0 var(--netto-red),0 1px 5px #00000010}
+.blockedField{border-color:#e3061333;background:#fff6f6}.blockedField strong{color:var(--netto-red-dark)}
+.suggestTab.active{box-shadow:inset 0 -3px 0 #ffffff45,0 5px 14px #00000014}
+.brandMenu{
+  border:1px solid #dedede;
+  box-shadow:0 14px 38px #00000018;
+}
+.brandMenuTitle{color:var(--netto-red-dark);font-weight:900}
+.brandMenu button{border-radius:10px}
+@media(hover:hover){.brandMenu button:hover{background:#f5f5f5;box-shadow:inset 3px 0 0 var(--netto-red)}}
+.searchBox input{border-color:#dedede;background:#fff}
+.searchBox input:focus,input:focus,select:focus{border-color:#e3061366;box-shadow:0 0 0 3px #e3061312}
+.actions .primary,.createAccountBtn.primary{box-shadow:inset 0 -3px 0 var(--netto-red)!important}
 </style></head><body>
 <div id="login" class="loginWrap hidden"><div class="loginShell"><div class="loginVisual"><div class="loginBrand"><div class="loginMark">N</div><div><div class="loginNetto">Netto</div><div class="loginSub">Stock Fruits &amp; Légumes</div></div></div><div class="loginArt"><span>🍎</span><span>🥕</span><span>🥬</span><span>🥔</span><span>🌿</span><span>🧅</span></div><div class="loginIntro"><strong>Gestion du rayon, simplement.</strong><span>Stock partagé et suivi des produits en temps réel.</span></div></div><form class="loginCard" onsubmit="login(event)"><div class="loginHello">Connexion</div><h1>Bienvenue</h1><p class="loginHint">Identifiez-vous pour accéder à votre espace.</p><div class="field"><label>Identifiant</label><input id="email" type="text" autocomplete="username" placeholder="Votre identifiant" required></div><div class="field"><label>Mot de passe</label><div class="passwordWrap"><input id="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required><button type="button" class="eyeBtn" onclick="togglePassword()" aria-label="Afficher le mot de passe">◉</button></div></div><button class="primary loginSubmit">Se connecter <span>→</span></button><div id="loginError" class="error"></div><div class="loginFoot">Accès réservé aux utilisateurs autorisés</div></form></div></div>
 <div id="welcomeToast" class="welcomeToast"><div class="welcomeMark">N</div><div id="welcomeText" class="welcomeText"></div><div class="welcomeSub">Stock Fruits &amp; Légumes</div></div><div id="site" class="hidden"><header><div class="top"><div><div class="brand"><div class="brandMenuWrap"><button id="brandMenuBtn" class="brandMark brandMenuBtn" onclick="toggleBrandMenu(event)" aria-label="Ouvrir le menu administrateur" aria-expanded="false">N</button><div id="brandMenu" class="brandMenu hidden"><div class="brandMenuTitle">Navigation</div><button onclick="goBrand('planning.html')"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button class="desktopOnlyMenu" onclick="goBrand('stock-test.html')"><span>☷</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button onclick="openUsersFromBrand()"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button></div></div><div><div class="title">Netto</div><div class="subtitle">Stock Fruits &amp; Légumes</div></div></div><div id="who" class="small">Chargement…</div></div><div><button id="suggestBtn" class="suggestTop" onclick="openSuggestions()"><span class="suggestTopIcon">✦</span><span>Suggérer</span></button><button id="cartBtn" class="suggestTop cartTop" onclick="openOrderCart()"><span class="suggestTopIcon">🛒</span><span>Panier</span><b id="cartCount" class="cartCount hidden">0</b></button><button id="manageBtn" class="manage" onclick="openManage()">⚙︎ Gérer</button><button class="logout" onclick="logout()" title="Déconnexion">↪</button></div></div></header><main><div class="searchBox"><span class="searchIcon">⌕</span><input id="searchInput" type="search" placeholder="Rechercher un produit…" autocomplete="off" oninput="setSearch(this.value)"><button id="clearSearch" class="clearSearch hidden" onclick="clearSearch()" aria-label="Effacer">×</button></div><div id="app"><div class="loading">Chargement du stock…</div></div></main><button id="fab" class="fab" onclick="openAdd()">+</button></div>
