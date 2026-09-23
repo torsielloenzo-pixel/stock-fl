@@ -21,7 +21,7 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;bac
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l’équipe</small></div></button><button class="logoutItem" onclick="logout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Équipe</div><div class="sub">Messagerie interne</div></div></div><button class="back" onclick="location.href='home.html'">← Retour</button></div></header>
+<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l’équipe</small></div></button><button class="settingsLink hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="logoutItem" onclick="logout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Équipe</div><div class="sub">Messagerie interne</div></div></div><button class="back" onclick="location.href='home.html'">← Retour</button></div></header>
 <div class="wrap">
  <aside class="side"><h2>Chat équipe</h2><p>Un espace commun pour échanger pendant la journée.</p><div class="me"><strong id="meName">Connexion…</strong><small id="meRole"></small></div><div id="adminBox" class="adminBox hidden"><button class="adminReset" onclick="resetChat()">Réinitialiser la conversation</button></div><div class="tips">Photos, vidéos et documents peuvent être joints aux messages. Les pièces jointes restent accessibles au téléchargement.</div></aside>
  <section class="chat">
@@ -54,7 +54,35 @@ async function sendMessage(){const body=$('message').value.trim();if(!body&&!sel
 async function deleteMessage(id){if(profile?.role!=='admin')return;const m=messages.find(x=>x.id===id);if(!confirm('Supprimer ce message ?'))return;if(m?.attachment_path)await db.storage.from('chat-files').remove([m.attachment_path]);const {error}=await db.from('chat_messages').delete().eq('id',id);if(error)return alert('Suppression impossible : '+error.message);await loadMessages()}
 async function resetChat(){if(profile?.role!=='admin')return;if(!confirm('Réinitialiser toute la conversation ? Cette action supprime aussi les pièces jointes.'))return;const paths=messages.map(m=>m.attachment_path).filter(Boolean);if(paths.length)await db.storage.from('chat-files').remove(paths);const {error}=await db.from('chat_messages').delete().gt('id',0);if(error)return alert('Réinitialisation impossible : '+error.message);await loadMessages()}
 async function logout(){closeMenu();await db.auth.signOut();location.href='index.html'}
-async function boot(){const {data:{session:s}}=await db.auth.getSession();session=s;if(!session){location.replace('index.html');return}const {data:p,error}=await db.from('profiles').select('display_name,email,role').eq('id',session.user.id).maybeSingle();if(error||!p){location.replace('index.html');return}profile=p;$('meName').textContent=p.display_name||p.email;$('meRole').textContent=p.role;$('adminBox').classList.toggle('hidden',p.role!=='admin');await loadMessages();channel=db.channel('chat-general').on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadMessages()).subscribe();setInterval(loadMessages,15000)}
+async function boot(){const {data:{session:s}}=await db.auth.getSession();session=s;if(!session){location.replace('index.html');return}const {data:p,error}=await db.from('profiles').select('display_name,email,role').eq('id',session.user.id).maybeSingle();if(error||!p){location.replace('index.html');return}profile=p;window.currentRole=p.role;await loadSharedSiteConfig();$('meName').textContent=p.display_name||p.email;$('meRole').textContent=p.role;$('adminBox').classList.toggle('hidden',p.role!=='admin');await loadMessages();channel=db.channel('chat-general').on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadMessages()).subscribe();setInterval(loadMessages,15000)}
 boot();
+
+async function loadSharedSiteConfig(){
+ try{
+  if(!db)return null;
+  const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();
+  const cfg=data?.value;if(!cfg)return null;
+  applySharedSiteConfig(cfg);return cfg;
+ }catch(e){console.warn('Réglages du site:',e);return null}
+}
+function setMenuEntry(urlKey,cfg){
+ const n=cfg?.nav?.[urlKey];if(!n)return;
+ const defaults={home:'home.html',stock:'index.html',planning:'planning.html',chat:'chat.html',test:'stock-test.html'};
+ const old=defaults[urlKey];
+ document.querySelectorAll('#nMenu button,#brandMenu button').forEach(b=>{
+  const oc=b.getAttribute('onclick')||'';
+  if(!oc.includes("'"+old+"'")&&!oc.includes('"'+old+'"'))return;
+  const icon=b.querySelector(':scope > span'),strong=b.querySelector('strong'),small=b.querySelector('small');
+  if(icon)icon.textContent=n.icon||icon.textContent;if(strong)strong.textContent=n.label||strong.textContent;if(small)small.textContent=n.subtitle||'';
+  const target=String(n.url||old).replace(/['"<>]/g,'');b.onclick=()=>location.href=target;
+ });
+}
+function applySharedSiteConfig(cfg){
+ ['home','stock','planning','chat','test'].forEach(k=>setMenuEntry(k,cfg));
+ const pt=cfg?.pageTitles?.['chat'];
+ if(pt){const t=document.querySelector('header .title');const s=document.querySelector('header .subtitle,header .sub');if(t&&pt.title)t.textContent=pt.title;if(s&&pt.subtitle)s.textContent=pt.subtitle}
+ const settings=document.querySelectorAll('.settingsLink');settings.forEach(x=>x.classList.toggle('hidden',!(window.currentRole==='admin'||window.planningCanEdit||profile?.role==='admin')));
+}
+
 </script>
 </body></html>
