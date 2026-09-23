@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171717"><title>Netto — Personnalisation</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--red:#e30613;--red2:#b90710;--black:#171717;--line:#e2e2e5;--muted:#777;--bg:#f2f3f4}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef0f1,#fafafa 48%,#f0f1f2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input,textarea{font:inherit}
+header{position:sticky;top:0;z-index:20;background:#ffffffef;border-bottom:1px solid #ddd;padding:12px 16px;box-shadow:0 4px 18px #00000008}.top{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:40px;height:40px;border-radius:10px;background:#171717;color:#fff;display:grid;place-items:center;font-size:21px;font-weight:950;box-shadow:inset 0 -5px 0 var(--red),0 3px 10px #0002}.title{font-size:19px;font-weight:900}.sub{font-size:11px;color:#888}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:800;cursor:pointer}.light{background:#ececef;color:#333}.dark{background:#171717;color:#fff;box-shadow:inset 0 -3px 0 var(--red)}
+main{max-width:1180px;margin:auto;padding:26px 18px 70px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}.hero h1{margin:0;font-size:34px;letter-spacing:-1px}.hero p{margin:7px 0 0;color:#777;font-size:13px;max-width:650px}.saveState{font-size:11px;color:#888}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid #dedee2;border-radius:18px;padding:18px;box-shadow:0 7px 24px #00000008}.panel.wide{grid-column:1/-1}.panel h2{margin:0 0 4px;font-size:18px}.panel h2:after{content:"";display:block;width:30px;height:4px;border-radius:3px;background:var(--red);margin-top:7px}.panelIntro{font-size:11px;color:#888;margin:0 0 16px;line-height:1.4}.fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field.wide{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:#555}.field input,.field textarea{width:100%;border:1px solid #ddd;border-radius:10px;background:#fafafa;padding:10px 11px;outline:none}.field textarea{min-height:72px;resize:vertical}.field input:focus,.field textarea:focus{background:#fff;border-color:#e3061366;box-shadow:0 0 0 3px #e3061310}
+.item{border:1px solid #e8e8eb;border-radius:14px;padding:13px;margin:9px 0;background:#fafafa}.itemHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.itemHead strong{font-size:13px}.switch{display:flex;align-items:center;gap:6px;font-size:10px;color:#777}.switch input{width:18px;height:18px;accent-color:var(--red)}
+.itemFields{display:grid;grid-template-columns:100px 1fr 1fr 90px;gap:8px}.itemFields .desc{grid-column:2/4}.actions{position:sticky;bottom:14px;margin-top:18px;display:flex;justify-content:flex-end;gap:8px;padding:11px;background:#ffffffea;border:1px solid #ddd;border-radius:14px;backdrop-filter:blur(12px);box-shadow:0 10px 30px #0002}.danger{background:#fff0f1;color:#a30d15;border:1px solid #ffd5d8}
+.notice{padding:11px 13px;border-radius:12px;background:#f7f7f8;border:1px solid #e6e6e8;font-size:11px;color:#666;margin-bottom:15px}
+.hidden{display:none!important}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.itemFields{grid-template-columns:1fr 1fr}.itemFields .desc{grid-column:1/-1}.hero{align-items:flex-start;flex-direction:column}.actions{bottom:8px}}
+</style></head>
+<body>
+<header><div class="top"><div class="brand"><div class="mark">N</div><div><div class="title">Personnalisation</div><div class="sub">Administration du portail</div></div></div><button class="btn light" onclick="location.href='home.html'">← Retour</button></div></header>
+<main>
+ <div class="hero"><div><h1>Panel administrateur</h1><p>Modifie les noms, textes, visibilité, ordre et destinations des principaux outils. Les changements sont partagés avec tous les utilisateurs.</p></div><div id="saveState" class="saveState">Chargement…</div></div>
+ <div class="notice">Les destinations sont des chemins du site, par exemple <strong>planning.html</strong>. Évite les URL externes pour garder une navigation cohérente et sûre.</div>
+ <div class="grid">
+  <section class="panel"><h2>Identité</h2><p class="panelIntro">Nom général du portail et sous-titre affiché sur l’accueil.</p><div class="fields"><div class="field"><label>Nom</label><input id="brandName"></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle"></div></div></section>
+  <section class="panel"><h2>Accueil</h2><p class="panelIntro">Textes situés au-dessus des cartes d’outils.</p><div class="fields"><div class="field"><label>Petit titre</label><input id="homeEyebrow"></div><div class="field"><label>Introduction</label><input id="homeIntro"></div></div></section>
+  <section class="panel wide"><h2>Outils du menu principal</h2><p class="panelIntro">Nom, description, icône, ordre, visibilité et page ouverte par chaque carte.</p><div id="pagesEditor"></div></section>
+  <section class="panel wide"><h2>Menu N</h2><p class="panelIntro">Personnalise les intitulés et les destinations de la navigation globale.</p><div id="navEditor"></div></section>
+  <section class="panel wide"><h2>Titres des pages</h2><p class="panelIntro">Change les titres affichés dans l’en-tête de chaque outil sans toucher à son fonctionnement.</p><div id="titlesEditor"></div></section>
+ </div>
+ <div class="actions"><button class="btn danger" onclick="resetConfig()">Réinitialiser</button><button id="saveBtn" class="btn dark" onclick="saveConfig()">Enregistrer les réglages</button></div>
+</main>
+<script>
+const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const DEFAULT_CONFIG={
+ brand:{name:'Netto',subtitle:'Espace outils'},
+ home:{eyebrow:'Espace de travail',intro:'Choisis l’espace que tu veux ouvrir.'},
+ pages:{
+  stock:{label:'Stock F&L',description:'Gérer les quantités, les fiches articles, les suggestions de commande et le panier.',url:'index.html',icon:'N',visible:true,order:1},
+  planning:{label:'Planning',description:'Consulter les horaires de l’équipe.',url:'planning.html',icon:'▦',visible:true,order:2},
+  chat:{label:'Équipe',description:'Échanger avec l’équipe et partager des fichiers.',url:'chat.html',icon:'◉',visible:true,order:3},
+  test:{label:'Vue test',description:'Stock groupé par familles.',url:'stock-test.html',icon:'☷',visible:true,order:4}
+ },
+ nav:{
+  home:{label:'Accueil',subtitle:'Choisir un outil',url:'home.html',icon:'⌂'},
+  stock:{label:'Stock F&L',subtitle:'Gestion du stock',url:'index.html',icon:'☷'},
+  planning:{label:'Planning',subtitle:'Horaires de l’équipe',url:'planning.html',icon:'▦'},
+  chat:{label:'Équipe',subtitle:'Messagerie interne',url:'chat.html',icon:'◉'},
+  test:{label:'Vue test',subtitle:'Stock groupé par familles',url:'stock-test.html',icon:'☷'}
+ },
+ pageTitles:{
+  stock:{title:'Netto',subtitle:'Stock Fruits & Légumes'},
+  planning:{title:'Planning',subtitle:'Netto • Horaires de l’équipe'},
+  chat:{title:'Équipe',subtitle:'Messagerie interne'},
+  test:{title:'Stock groupé',subtitle:'Vue ordinateur • Fruits & Légumes'}
+ }
+};
+let config=structuredClone(DEFAULT_CONFIG);
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function merge(a,b){if(!b||typeof b!=='object')return a;for(const k of Object.keys(b)){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))a[k]=merge(a[k]&&typeof a[k]==='object'?a[k]:{},b[k]);else a[k]=b[k]}return a}
+function validPath(v){v=String(v||'').trim();return /^[a-zA-Z0-9_./-]+(?:\.html)?(?:[?#][^\s]*)?$/.test(v)&&!v.startsWith('//')&&!v.includes('..')}
+function render(){brandName.value=config.brand.name||'';brandSubtitle.value=config.brand.subtitle||'';homeEyebrow.value=config.home.eyebrow||'';homeIntro.value=config.home.intro||'';
+ const labels={stock:'Stock F&L',planning:'Planning',chat:'Équipe',test:'Vue test'};
+ pagesEditor.innerHTML=Object.keys(config.pages).map(k=>{const p=config.pages[k];return '<div class="item"><div class="itemHead"><strong>'+esc(labels[k]||k)+'</strong><label class="switch"><input type="checkbox" data-page="'+k+'" data-f="visible" '+(p.visible!==false?'checked':'')+'> Visible</label></div><div class="itemFields"><div class="field"><label>Icône</label><input data-page="'+k+'" data-f="icon" value="'+esc(p.icon)+'"></div><div class="field"><label>Nom</label><input data-page="'+k+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Destination</label><input data-page="'+k+'" data-f="url" value="'+esc(p.url)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-page="'+k+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-page="'+k+'" data-f="description" value="'+esc(p.description)+'"></div></div></div>'}).join('');
+ navEditor.innerHTML=Object.keys(config.nav).map(k=>{const n=config.nav[k];return '<div class="item"><div class="itemHead"><strong>'+esc(k)+'</strong></div><div class="itemFields"><div class="field"><label>Icône</label><input data-nav="'+k+'" data-f="icon" value="'+esc(n.icon)+'"></div><div class="field"><label>Nom</label><input data-nav="'+k+'" data-f="label" value="'+esc(n.label)+'"></div><div class="field"><label>Destination</label><input data-nav="'+k+'" data-f="url" value="'+esc(n.url)+'"></div><div></div><div class="field desc"><label>Sous-titre</label><input data-nav="'+k+'" data-f="subtitle" value="'+esc(n.subtitle)+'"></div></div></div>'}).join('');
+ titlesEditor.innerHTML=Object.keys(config.pageTitles).map(k=>{const n=config.pageTitles[k];return '<div class="item"><div class="itemHead"><strong>'+esc(k)+'</strong></div><div class="fields"><div class="field"><label>Titre</label><input data-title="'+k+'" data-f="title" value="'+esc(n.title)+'"></div><div class="field"><label>Sous-titre</label><input data-title="'+k+'" data-f="subtitle" value="'+esc(n.subtitle)+'"></div></div></div>'}).join('');
+}
+function collect(){config.brand.name=brandName.value.trim()||'Netto';config.brand.subtitle=brandSubtitle.value.trim();config.home.eyebrow=homeEyebrow.value.trim();config.home.intro=homeIntro.value.trim();
+ document.querySelectorAll('[data-page]').forEach(el=>{const k=el.dataset.page,f=el.dataset.f;config.pages[k][f]=el.type==='checkbox'?el.checked:(el.type==='number'?Number(el.value)||1:el.value.trim())});
+ document.querySelectorAll('[data-nav]').forEach(el=>{config.nav[el.dataset.nav][el.dataset.f]=el.value.trim()});
+ document.querySelectorAll('[data-title]').forEach(el=>{config.pageTitles[el.dataset.title][el.dataset.f]=el.value.trim()});
+ for(const p of Object.values(config.pages))if(!validPath(p.url))throw new Error('Destination invalide : '+p.url);
+ for(const n of Object.values(config.nav))if(!validPath(n.url))throw new Error('Destination invalide : '+n.url);
+}
+async function saveConfig(){try{collect();saveBtn.disabled=true;saveState.textContent='Enregistrement…';const {error}=await db.from('app_settings').upsert({key:'site_config',value:config,updated_by:(await db.auth.getUser()).data.user.id,updated_at:new Date().toISOString()});if(error)throw error;saveState.textContent='✓ Réglages enregistrés';setTimeout(()=>saveState.textContent='À jour',1500)}catch(e){alert(e.message);saveState.textContent='Erreur'}finally{saveBtn.disabled=false}}
+function resetConfig(){if(!confirm('Réinitialiser tous les réglages visuels et de navigation ?'))return;config=structuredClone(DEFAULT_CONFIG);render();saveState.textContent='Réglages par défaut chargés — enregistre pour appliquer'}
+async function boot(){const {data:{session}}=await db.auth.getSession();if(!session)return location.replace('index.html');const {data:p}=await db.from('profiles').select('role').eq('id',session.user.id).maybeSingle();if(p?.role!=='admin')return location.replace('home.html');const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();config=merge(structuredClone(DEFAULT_CONFIG),data?.value||{});render();saveState.textContent='À jour'}
+boot();
+</script></body></html>
