@@ -34,7 +34,7 @@ main{width:min(92vw,930px);margin:0 auto;padding:70px 0 60px}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand"><div class="mark">N</div><div><strong>Netto</strong><small>Espace Fruits &amp; Légumes</small></div></div><button class="logout" onclick="logout()" title="Déconnexion">↪</button></div></header>
+<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='index.html'"><span>☷</span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span>▦</span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><strong>Netto</strong><small>Espace outils</small></div></div><button class="logout backBtn" onclick="history.length>1?history.back():location.href='index.html'" title="Retour">←</button></div></header>
 <main>
  <div class="hello"><div class="eyebrow">Espace de travail</div><h1 id="helloTitle">Bonjour 👋</h1><p>Choisis l’espace que tu veux ouvrir.</p></div>
  <div class="pages">
