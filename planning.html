@@ -300,23 +300,26 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .grid{display:grid!important;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px!important;grid-auto-flow:row!important;min-width:1540px!important}
 .grid>.name,.grid>.time,.grid>.cell,.grid>.total{min-width:0!important;box-sizing:border-box!important}
 @media(max-width:700px){.grid{grid-template-columns:110px repeat(60,22px) 58px!important;min-width:1466px!important}}
-/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}/* Excel-faithful planning v4 — aucune superposition */
-.grid{display:grid!important;grid-template-columns:180px repeat(60,34px) 78px!important;grid-auto-flow:row!important;min-width:2298px!important;align-items:stretch!important}
-.grid>.name,.grid>.time,.grid>.cell,.grid>.total{box-sizing:border-box!important;min-width:0!important;margin:0!important}
+/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}/* Excel-faithful planning v5 — structure reconstruite sur les fichiers réels */
+.grid{display:grid!important;grid-template-columns:165px repeat(58,30px) 76px!important;grid-auto-flow:row!important;grid-auto-rows:34px!important;min-width:1981px!important;align-items:stretch!important}
+.grid>.name,.grid>.time,.grid>.cell,.grid>.total{box-sizing:border-box!important;min-width:0!important;max-width:none!important;margin:0!important;position:relative!important;float:none!important}
 .grid .name,.grid .cell,.grid .total{height:34px!important;min-height:34px!important}
-.grid .time{width:34px!important;height:42px!important;min-height:42px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:8px!important;line-height:1!important;letter-spacing:-.25px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;border-right:1px solid #d7dbe0!important}
-.grid .time.hour{font-weight:900!important;color:#111!important;background:#eceff2!important;border-left:2px solid #747b84!important}
-.grid .time.half{font-weight:800!important;color:#20242a!important;background:#f4f5f6!important}
-.grid .time.quarter{font-weight:650!important;color:#555b63!important;background:#fafafa!important}
-.grid .cell{width:34px!important;border-right:1px solid #d7dbe0!important;border-bottom:1px solid #cfd4da!important;padding:0!important}
-.grid .cell[data-t="6"],.grid .cell[data-t="7"],.grid .cell[data-t="8"],.grid .cell[data-t="9"],.grid .cell[data-t="10"],.grid .cell[data-t="11"],.grid .cell[data-t="12"],.grid .cell[data-t="13"],.grid .cell[data-t="14"],.grid .cell[data-t="15"],.grid .cell[data-t="16"],.grid .cell[data-t="17"],.grid .cell[data-t="18"],.grid .cell[data-t="19"],.grid .cell[data-t="20"]{border-left:2px solid #747b84!important}
-.grid .name{font-size:12px!important;padding:0 12px!important;display:flex!important;align-items:center!important;border-bottom:1px solid #cfd4da!important;white-space:nowrap!important;overflow:hidden!important}
-.grid .total{font-size:11px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-left:2px solid #747b84!important}
-.grid .headName{height:42px!important;min-height:42px!important;font-weight:900!important;background:#f4f5f6!important}
-.grid .totalHead{width:78px!important;height:42px!important;min-height:42px!important}
-.sheet{overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important}
+.grid .time{width:30px!important;height:40px!important;min-height:40px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:8px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;border-right:1px solid #d8dce1!important}
+.grid .time.hour{font-weight:900!important;color:#111!important;background:#eef0f2!important;border-left:2px solid #747b84!important}
+.grid .time.half{font-weight:800!important;color:#20242a!important;background:#f6f7f8!important;border-left:1px solid #aeb3ba!important}
+.grid .time.quarter{background:#fbfbfc!important;color:transparent!important}
+.grid .cell{width:30px!important;padding:0!important;border-right:1px solid #dde0e4!important;border-bottom:1px solid #cbd0d6!important;background-clip:padding-box!important}
+.grid .cell.hourStart{border-left:2px solid #747b84!important}
+.grid .cell.halfStart:not(.hourStart){border-left:1px solid #aeb3ba!important}
+.grid .cell.on{background:var(--c)!important}
+.grid .cell.on:after{display:none!important;content:none!important}
+.grid .name{font-size:12px!important;padding:0 11px!important;display:flex!important;align-items:center!important;border-bottom:1px solid #cbd0d6!important;background:#fff!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;z-index:4!important}
+.grid .total{font-size:11px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-left:2px solid #747b84!important;background:#f7f7f8!important;font-weight:850!important}
+.grid .headName{height:40px!important;min-height:40px!important;background:#f3f4f5!important;font-weight:900!important;z-index:6!important}
+.grid .totalHead{width:76px!important;height:40px!important;min-height:40px!important;background:#f3f4f5!important}
+.sheet{overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important;scrollbar-gutter:stable}
 .dangerReset{color:#b42318!important;border:1px solid #f0b7b2!important;background:#fff5f4!important}
-@media(max-width:700px){body.planningEditing .grid,.grid{grid-template-columns:130px repeat(60,34px) 70px!important;min-width:2240px!important}}
+@media(max-width:700px){body.planningEditing .grid,.grid{grid-template-columns:125px repeat(58,28px) 68px!important;min-width:1817px!important}.grid .time,.grid .cell{width:28px!important}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -339,7 +342,7 @@ const seedDays=[
  {k:'dim',label:'Dimanche',date:'27 septembre 2026',blocks:{'Clément':[['12.5','20','r']],'Delphine':[['12.5','20','r']],'Laetitia':[['7.5','12.5','g'],['12.5','20','r']],'Enzo L':[['12.5','20','r']],'Manuel':[['6','12.5','r'],['12.5','20','r']],'Enzo C':[['7.5','12.5','g'],['12.5','20','r']],'Gwen':[['6','12.5','y'],['12.5','20','r']],'Kenza':[['7.5','12.5','g'],['12.5','20','r']],'Candy':[['12.5','20','r']],'Nathanael':[['12.5','20','r']],'Chantal':[['12.5','20','r']],'Giani':[['7.5','12.5','g'],['12.5','20','r']]}}
 ];
 let current=0,paintColor='g',editMode=false,planningView='week',currentWeekStart=null,currentYear=(new Date()).getFullYear(),days=[];
-function slots(){return Array.from({length:60},(_,i)=>6+i*.25)}
+function slots(){return Array.from({length:58},(_,i)=>6+i*.25)}
 function isoDate(d){const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function parseISO(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
 function startOfWeek(d){const x=new Date(d),day=(x.getDay()+6)%7;x.setHours(0,0,0,0);x.setDate(x.getDate()-day);return x}
@@ -349,7 +352,7 @@ function frDate(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'lon
 function seedByIso(){const map={};seedDays.forEach((d,i)=>{map['2026-09-'+String(21+i).padStart(2,'0')]=d});return map}
 const SEED=seedByIso();
 function makeDay(date){const key=isoDate(date),seed=SEED[key];return{k:key,label:frDay(date),date:frDate(date),blocks:seed?.blocks||{},dateObj:new Date(date)}}
-function buildWeek(start){days=Array.from({length:7},(_,i)=>makeDay(addDays(start,i)));days.forEach(d=>{all[d.k]=normalizeDayState(d,all[d.k])})}
+function buildWeek(start){days=Array.from({length:7},(_,i)=>makeDay(addDays(start,i)));const meta=importedPlanningMeta();days.forEach(d=>{if(meta[d.k]?.imported){if(!all[d.k]||typeof all[d.k]!=='object')all[d.k]={}}else all[d.k]=normalizeDayState(d,all[d.k])})}
 function baseState(day){const s={};names.forEach(n=>{s[n]={};(day.blocks[n]||[]).forEach(([a,b,c])=>slots().forEach(t=>{if(t>=+a&&t<+b)s[n][String(t)]=c}))});return s}
 function normalizeDayState(day,state){const base=baseState(day);if(!state||typeof state!=='object')return base;names.forEach(n=>{if(!state[n]||typeof state[n]!=='object')state[n]={};Object.keys(base[n]).forEach(t=>{if(state[n][t]===undefined)state[n][t]=base[n][t]})});return state}
 function getState(){try{return JSON.parse(localStorage.getItem('nettoPlanningV2'))||{}}catch{return {}}}
@@ -376,6 +379,24 @@ function importedDayCaption(key){return importedPlanningMeta()[key]?.caption||''
 function displayNamesForWeek(){return importedWeekNames()[weekKeyForDate(days[0].dateObj)]||names}
 function saveWeekNames(key,list){const x=importedWeekNames();x[key]=list;localStorage.setItem('nettoPlanningWeekNames',JSON.stringify(x))}
 function showPlanningToast(msg){let t=document.getElementById('planningToast');if(!t){t=document.createElement('div');t.id='planningToast';t.className='planningToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window._planningToast);window._planningToast=setTimeout(()=>t.classList.remove('show'),2600)}
+
+async function saveSharedPlanningWeek(start,opts={}){
+ if(!db||!window.planningCanEdit)return;
+ const ws=startOfWeek(start),weekKey=isoDate(ws),data={};for(let i=0;i<7;i++){const k=isoDate(addDays(ws,i));data[k]=all[k]||{}}
+ const localMeta=importedPlanningMeta(),firstKey=isoDate(ws),m=localMeta[firstKey]||{},order=importedWeekNames()[weekKey]||displayNamesForWeek();
+ const payload={week_start:weekKey,data,employee_order:order,week_label:opts.weekLabel??m.weekLabel??null,source_file:opts.sourceFile??m.source??null,imported:opts.imported??!!m.imported,updated_at:new Date().toISOString(),updated_by:window.planningUser?.id||null};
+ if(payload.imported&&!m.imported_at)payload.imported_at=new Date().toISOString();
+ const {error}=await db.from('planning_weeks').upsert(payload,{onConflict:'week_start'});if(error)console.warn('Sauvegarde planning partagé:',error)
+}
+async function loadSharedPlanningWeek(start,rerender=true){
+ if(!db)return false;const ws=startOfWeek(start),weekKey=isoDate(ws),{data,error}=await db.from('planning_weeks').select('week_start,data,employee_order,week_label,source_file,imported,imported_at,updated_at').eq('week_start',weekKey).maybeSingle();
+ if(error){console.warn('Lecture planning partagé:',error);return false}if(!data)return false;
+ const meta=importedPlanningMeta(),amps=getPlanningAmplitude(),weekData=data.data||{};
+ for(let i=0;i<7;i++){const k=isoDate(addDays(ws,i));all[k]=weekData[k]||{};amps[k]=amps[k]||{min:6,max:20.5};meta[k]={...(meta[k]||{}),imported:!!data.imported,source:data.source_file||'',weekLabel:data.week_label||'',caption:data.imported?((data.week_label?data.week_label+' • ':'')+'Planning partagé'+(data.source_file?' • '+data.source_file:'')+' • 6:00 → 20:30'):(meta[k]?.caption||'')}}
+ if(Array.isArray(data.employee_order)&&data.employee_order.length)saveWeekNames(weekKey,data.employee_order);savePlanningMeta(meta);localStorage.setItem('nettoPlanningAmplitude',JSON.stringify(amps));localStorage.setItem('nettoPlanningV2',JSON.stringify(all));buildWeek(ws);if(rerender)render();return true
+}
+function syncCurrentWeekShared(){saveSharedPlanningWeek(currentWeekStart).catch(e=>console.warn('Synchronisation planning:',e))}
+
 function employeeRanges(dayKey,name){
  const row=all[dayKey]?.[name]||{};if(Array.isArray(row.__exact)&&row.__exact.length)return row.__exact;
  const out=[];let start=null,last=null,color=null;
@@ -392,13 +413,13 @@ function renderMobileCards(d){
   return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
  }).join('');
 }
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(Number.isInteger(t)?'hour':(t%1===.5?'half':'quarter'))+'">'+fmt(t)+'</div>').join('')+'<div class="time totalHead">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
+function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>{const major=i%2===0,label=major?(Number.isInteger(t)?String(Math.floor(t)):fmt(t)):'';return '<div class="time '+(i%4===0?'hour':(major?'half':'quarter'))+'" title="'+fmt(t)+'">'+label+'</div>'}).join('')+'<div class="time totalHead">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+escapeLog(n)+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on ':'')+(Number.isInteger(t)?'hourStart ':'')+(t%1===.5?'halfStart ':'')+(editMode?'editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+escapeLog(n)+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
 function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
-function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();playUISound('soft')}
-function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();playUISound('soft')}
+async function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();await loadSharedPlanningWeek(currentWeekStart,true);playUISound('soft')}
+async function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();await loadSharedPlanningWeek(currentWeekStart,true);playUISound('soft')}
 function changeYear(delta){currentYear+=delta;renderYear();playUISound('soft')}
 function dayHasData(key){const d=all[key];if(!d)return false;return Object.values(d).some(v=>v&&Object.keys(v).length)}
-function openDateFromYear(key){const d=parseISO(key);currentWeekStart=startOfWeek(d);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(d.getDay()+6)%7));setPlanningView('week')}
+async function openDateFromYear(key){const d=parseISO(key);currentWeekStart=startOfWeek(d);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(d.getDay()+6)%7));setPlanningView('week');await loadSharedPlanningWeek(currentWeekStart,true)}
 function renderYear(){document.getElementById('yearTitle').textContent=currentYear;const months=document.getElementById('yearGrid'),todayKey=isoDate(new Date());let html='';for(let m=0;m<12;m++){const first=new Date(currentYear,m,1),last=new Date(currentYear,m+1,0),offset=(first.getDay()+6)%7;html+='<section class="monthCard"><h3>'+first.toLocaleDateString('fr-FR',{month:'long'}).replace(/^./,x=>x.toUpperCase())+'</h3><div class="monthWeekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="monthDays">'+Array.from({length:offset},()=>'<span></span>').join('');for(let d=1;d<=last.getDate();d++){const dt=new Date(currentYear,m,d),key=isoDate(dt),has=dayHasData(key),isToday=key===todayKey;html+='<button class="yearDay '+(has?'hasData ':'')+(isToday?'today':'')+'" onclick="openDateFromYear(\''+key+'\')">'+d+(has?'<i></i>':'')+'</button>'}html+='</div></section>'}months.innerHTML=html}
 
 let planningPaint={active:false,pointerId:null,rowName:null,cells:new Set(),changed:[]};
@@ -415,7 +436,7 @@ function planningPaintEnd(){
  if(planningPaint.changed.length){
    save();const d=days[current],first=planningPaint.changed[0],last=planningPaint.changed[planningPaint.changed.length-1];
    const detail=d.date+' · '+first.n+(first.n===last.n?' · '+fmt(+first.t)+(first.t!==last.t?'–'+fmt(+last.t+.25):''):' · '+planningPaint.changed.length+' cases');
-   addPlanningLog('modify',detail);render()
+   addPlanningLog('modify',detail);syncCurrentWeekShared();render()
  }
  planningPaint.cells.clear();planningPaint.changed=[];planningPaint.rowName=null
 }
@@ -449,131 +470,180 @@ async function clearPlanningLogs(){
 }
 function excelDrag(e,on){e.preventDefault();if(!window.planningCanEdit)return;document.querySelector('.excelDrop')?.classList.toggle('drag',!!on)}
 function excelDropFile(e){e.preventDefault();excelDrag(e,false);if(!window.planningCanEdit)return;const f=e.dataTransfer?.files?.[0];if(f)importPlanningFile(f)}
+
 function cleanExcelText(v){return String(v??'').replace(/\s+/g,' ').trim()}
 function normExcel(v){return cleanExcelText(v).toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-function excelName(v){
- const n=normExcel(v);if(!n)return null;
- return names.find(x=>{const q=normExcel(x),parts=q.split(/\s+/).filter(z=>z.length>2);return n===q||n.includes(q)||q.includes(n)||(parts.length&&parts.every(z=>n.includes(z)))})||null
-}
 function excelDateValue(v,baseYear){
  if(v instanceof Date&&!isNaN(v))return new Date(v.getFullYear(),v.getMonth(),v.getDate());
- if(typeof v==='number'&&v>30000&&window.XLSX){const x=XLSX.SSF.parse_date_code(v);if(x)return new Date(x.y,x.m-1,x.d)}
+ if(typeof v==='number'&&v>30000){const ms=Date.UTC(1899,11,30)+Math.round(v*86400000),x=new Date(ms);return new Date(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate())}
  const s=cleanExcelText(v),m=s.match(/\b(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2,4}))?\b/);
  if(m){let y=m[3]?+m[3]:baseYear;if(y<100)y+=2000;return new Date(y,+m[2]-1,+m[1])}return null
 }
-function sheetDayInfo(sn,rows){
- const dayMap={lundi:0,mardi:1,mercredi:2,jeudi:3,vendredi:4,samedi:5,dimanche:6},n=normExcel(sn);
- let off=null;for(const [d,o] of Object.entries(dayMap))if(n.includes(d)){off=o;break}
- let dt=null;for(let r=0;r<Math.min(8,rows.length)&&!dt;r++)for(let col=0;col<Math.min(8,rows[r]?.length||0)&&!dt;col++)dt=excelDateValue(rows[r][col],currentWeekStart.getFullYear());
- if(!dt&&off!==null)dt=addDays(currentWeekStart,off);return{off,dt}
+function biffU16(d,o){return d[o]|(d[o+1]<<8)}
+function biffU32(d,o){return (d[o]|(d[o+1]<<8)|(d[o+2]<<16)|(d[o+3]<<24))>>>0}
+function biffF64(d,o){return new DataView(d.buffer,d.byteOffset+o,8).getFloat64(0,true)}
+function biffDecodeBytes(d,unicode){
+ if(unicode){let s='';for(let i=0;i+1<d.length;i+=2)s+=String.fromCharCode(biffU16(d,i));return s}
+ try{return new TextDecoder('windows-1252').decode(d)}catch(e){let s='';for(const x of d)s+=String.fromCharCode(x);return s}
 }
-function detectTimeline(rows){
- // Your Netto export: one column per 15 minutes. The header contains 6, 6:30, 7, 7:30... and the intermediate blank columns are :15/:45.
- let best=null;
- for(let r=0;r<Math.min(12,rows.length);r++){
-  const row=rows[r]||[];for(let c=0;c<row.length;c++){
-   const v=row[c];let t=null;
-   if(v instanceof Date)t=v.getHours()+v.getMinutes()/60;
-   else if(typeof v==='number'&&v>=4&&v<=23)t=v;
-   else if(typeof v==='number'&&v>=0&&v<1){const q=XLSX.SSF.parse_date_code(v);if(q)t=q.H+q.M/60}
-   if(t!==null&&t>=4&&t<=10){best={headerRow:r,startCol:c,startTime:t};break}
-  }if(best)break
- }
- if(!best)return null;
- let endCol=best.startCol;
- const row=rows[best.headerRow]||[];
- for(let c=best.startCol;c<row.length;c++){if(normExcel(row[c]).includes('total')){endCol=c-1;break}endCol=c}
- return{...best,endCol,step:.25}
+function biffOleWorkbookStream(ab){
+ const d=new Uint8Array(ab),magic=[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1];
+ if(d.length<512||magic.some((v,i)=>d[i]!==v))throw new Error('Ce fichier .xls n’est pas au format Excel attendu.');
+ const secSize=1<<biffU16(d,0x1e),numFat=biffU32(d,0x2c),firstDir=biffU32(d,0x30),FREE=0xffffffff,END=0xfffffffe;
+ let fatSecs=[];for(let i=0;i<109;i++){const s=biffU32(d,0x4c+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}
+ let dif=biffU32(d,0x44),nDif=biffU32(d,0x48);
+ for(let z=0;z<nDif&&dif!==FREE&&dif!==END;z++){const off=(dif+1)*secSize,n=secSize/4-1;for(let i=0;i<n;i++){const s=biffU32(d,off+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}dif=biffU32(d,off+n*4)}
+ fatSecs=fatSecs.slice(0,numFat);const fat=[];
+ for(const s of fatSecs){const off=(s+1)*secSize;for(let i=0;i<secSize/4;i++)fat.push(biffU32(d,off+i*4))}
+ function chain(start){const a=[],seen=new Set();let s=start;while(s!==FREE&&s!==END&&s<fat.length&&!seen.has(s)){seen.add(s);a.push(s);s=fat[s]}return a}
+ function readChain(start,size){const ch=chain(start),out=new Uint8Array(ch.length*secSize);let p=0;for(const s of ch){out.set(d.subarray((s+1)*secSize,(s+2)*secSize),p);p+=secSize}return size==null?out:out.subarray(0,size)}
+ const dir=readChain(firstDir),ents=[];
+ for(let p=0;p+128<=dir.length;p+=128){const nl=biffU16(dir,p+64),type=dir[p+66];if(nl<2)continue;const name=biffDecodeBytes(dir.subarray(p,p+nl-2),true);ents.push({name,type,start:biffU32(dir,p+116),size:biffU32(dir,p+120)})}
+ const e=ents.find(x=>x.type===2&&(x.name==='Workbook'||x.name==='Book'));if(!e)throw new Error('Le classeur Excel est illisible (flux Workbook absent).');
+ return readChain(e.start,e.size)
 }
-function occupiedPlanningCell(v){return !(v===null||v===undefined||v===''||v===0||v===false)}
-function rangesFromOccupancy(row,timeline){
- const out=[];let start=null,last=null;
- for(let c=timeline.startCol;c<=timeline.endCol;c++){
-  const on=occupiedPlanningCell(row[c]);
-  if(on&&start===null)start=c;
-  if(!on&&start!==null){out.push({a:timeline.startTime+(start-timeline.startCol)*timeline.step,b:timeline.startTime+(c-timeline.startCol)*timeline.step});start=null}
-  last=c;
- }
- if(start!==null)out.push({a:timeline.startTime+(start-timeline.startCol)*timeline.step,b:timeline.startTime+(timeline.endCol-timeline.startCol+1)*timeline.step});
+function biffRecords(d,start=0,end=d.length){
+ const out=[];for(let p=start;p+4<=end;){const id=biffU16(d,p),len=biffU16(d,p+2),q=p+4;if(q+len>end)break;out.push({p,id,len,rec:d.subarray(q,q+len)});p=q+len;if(id===0x000a&&start>0)break}return out
+}
+function biffParseSst(rec){
+ let p=8;const unique=biffU32(rec,4),out=[];
+ for(let i=0;i<unique;i++){const n=biffU16(rec,p);p+=2;const opt=rec[p++],uni=opt&1,ext=opt&4,rich=opt&8;let runs=0,extLen=0;if(rich){runs=biffU16(rec,p);p+=2}if(ext){extLen=biffU32(rec,p);p+=4}const nb=n*(uni?2:1);out.push(biffDecodeBytes(rec.subarray(p,p+nb),!!uni));p+=nb+runs*4+extLen}
  return out
+}
+function biffParseUnicode(rec){
+ let p=0,n=biffU16(rec,p);p+=2;const opt=rec[p++],uni=opt&1,ext=opt&4,rich=opt&8;let runs=0,extLen=0;if(rich){runs=biffU16(rec,p);p+=2}if(ext){extLen=biffU32(rec,p);p+=4}const nb=n*(uni?2:1);return biffDecodeBytes(rec.subarray(p,p+nb),!!uni)
+}
+function biffDecodeRk(v){
+ let n;if(v&2)n=(v|0)>>2;else{const b=new ArrayBuffer(8),dv=new DataView(b);dv.setUint32(0,0,true);dv.setUint32(4,v&0xfffffffc,true);n=dv.getFloat64(0,true)}
+ return v&1?n/100:n
+}
+function biffExcelDate(serial){const ms=Date.UTC(1899,11,30)+Math.round(serial*86400000),d=new Date(ms);return new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())}
+function biffStyleColor(xf,xfs,palette){
+ const rec=xfs[xf];if(!rec||rec.length<20)return null;const idx=biffU16(rec,18)&0x7f,rgb=(idx>=8&&idx<8+palette.length)?palette[idx-8]:null;if(!rgb)return null;
+ const [r,g,b]=rgb;
+ if(r>230&&g>225&&b<70)return'y';
+ if(r>185&&g<90&&b<90)return'r';
+ if(g>115&&r<130&&b<120)return'g';
+ if(b>145&&g>85&&r<120)return'b';
+ if(r>195&&g>=75&&g<225&&b<110)return'o';
+ return null
+}
+function parseNettoLegacyXls(ab){
+ const wb=biffOleWorkbookStream(ab),globals=biffRecords(wb),sheets=[],xfs=[],palette=[];let sst=[];
+ for(const x of globals){
+  if(x.id===0x85){const off=biffU32(x.rec,0),n=x.rec[6],uni=x.rec[7]&1,name=biffDecodeBytes(x.rec.subarray(8,8+n*(uni?2:1)),!!uni).trim();sheets.push({name,off})}
+  else if(x.id===0xe0)xfs.push(x.rec);
+  else if(x.id===0x92){const n=biffU16(x.rec,0);for(let i=0;i<n;i++)palette.push([x.rec[2+i*4],x.rec[3+i*4],x.rec[4+i*4]])}
+  else if(x.id===0xfc)sst=biffParseSst(x.rec)
+ }
+ const cellsBySheet={};
+ for(let si=0;si<sheets.length;si++){
+  const sh=sheets[si],end=si+1<sheets.length?sheets[si+1].off:wb.length,cells=new Map();let pending=null;
+  for(const x of biffRecords(wb,sh.off,end)){
+   const q=x.rec;
+   if(x.id===0xfd){const rr=biffU16(q,0),cc=biffU16(q,2),xf=biffU16(q,4),idx=biffU32(q,6);cells.set(rr+','+cc,{v:sst[idx]??'',xf})}
+   else if(x.id===0x203)cells.set(biffU16(q,0)+','+biffU16(q,2),{v:biffF64(q,6),xf:biffU16(q,4)});
+   else if(x.id===0x27e)cells.set(biffU16(q,0)+','+biffU16(q,2),{v:biffDecodeRk(biffU32(q,6)),xf:biffU16(q,4)});
+   else if(x.id===0xbd){const rr=biffU16(q,0),fc=biffU16(q,2),lc=biffU16(q,q.length-2);let p=4;for(let cc=fc;cc<=lc;cc++,p+=6)cells.set(rr+','+cc,{v:biffDecodeRk(biffU32(q,p+2)),xf:biffU16(q,p)})}
+   else if(x.id===0x6){const rr=biffU16(q,0),cc=biffU16(q,2),xf=biffU16(q,4);let v=null;if(q[12]===0xff&&q[13]===0xff){if(q[6]===0)pending=rr+','+cc}else v=biffF64(q,6);cells.set(rr+','+cc,{v,xf})}
+   else if(x.id===0x207&&pending){const z=cells.get(pending);if(z)z.v=biffParseUnicode(q);pending=null}
+  }
+  cellsBySheet[sh.name]=cells
+ }
+ const daily=['LUNDI','MARDI','MERCREDI','JEUDI','VENDREDI','SAMEDI','DIMANCHE'],mondayCells=cellsBySheet.LUNDI;
+ if(!mondayCells)throw new Error('La feuille LUNDI est absente.');
+ const dateVal=mondayCells.get('1,1')?.v;if(typeof dateVal!=='number')throw new Error('La date du lundi est introuvable dans le fichier.');
+ const monday=biffExcelDate(dateVal),weekLabel=cleanExcelText(mondayCells.get('0,2')?.v||''),employees=[];
+ // This is the exact template used by the provided files: rows 4→15 in Excel, names in column B.
+ for(let rr=3;rr<=14;rr++){const name=cleanExcelText(mondayCells.get(rr+',1')?.v||'');if(name&&name.toUpperCase()!=='TOTAL')employees.push({row:rr,name})}
+ if(!employees.length)throw new Error('Aucun employé reconnu dans la colonne des noms.');
+ // The real template has TOTAL in column BI (index 60): 58 quarter-hour cells C:BH = 06:00→20:30.
+ let totalCol=60;for(let cc=2;cc<80;cc++){if(normExcel(mondayCells.get('1,'+cc)?.v)==='total'){totalCol=cc;break}}
+ const startCol=2,slotCount=totalCol-startCol,startTime=6,endTime=startTime+slotCount*.25;
+ if(slotCount<40||slotCount>80)throw new Error('La grille horaire du fichier ne correspond pas au modèle de planning Netto.');
+ const days={},bounds={},keys=[];let shifts=0;
+ for(let di=0;di<daily.length;di++){
+  const cells=cellsBySheet[daily[di]];if(!cells)throw new Error('La feuille '+daily[di]+' est absente.');
+  const key=isoDate(addDays(monday,di));keys.push(key);days[key]={};bounds[key]={min:startTime,max:endTime};
+  for(const e of employees){
+   const row={};let previous=null;
+   for(let cc=startCol;cc<totalCol;cc++){
+    const z=cells.get(e.row+','+cc),occupied=!!(z&&z.v!==null&&z.v!==''&&z.v!==0&&z.v!==false);
+    const color=occupied?biffStyleColor(z.xf,xfs,palette):null,t=startTime+(cc-startCol)*.25;
+    if(color){row[String(Math.round(t*4)/4)]=color;if(color!==previous)shifts++}
+    previous=color
+   }
+   days[key][e.name]=row
+  }
+ }
+ return{monday,weekLabel,employees:employees.map(x=>x.name),days,bounds,startTime,endTime,slotCount,shifts,source:'xls-biff8'}
+}
+function sheetJsPlanningColor(cell){
+ if(!cell)return null;const s=cell.s||{},fill=s.fill||s,fg=fill.fgColor||s.fgColor||{},rgb=String(fg.rgb||fg.argb||'').replace(/^FF/,'').toUpperCase(),idx=fg.indexed??fg.index;
+ if([10].includes(idx))return'r';if([11].includes(idx))return'g';if([15].includes(idx))return'b';if([34].includes(idx))return'y';if([51,52,53].includes(idx))return'o';
+ if(/DD0806|F0180B|FF0000|C00000/.test(rgb))return'r';
+ if(/1FB714|00B050|49A900|70AD47|92D050/.test(rgb))return'g';
+ if(/00ABEA|1594DF|5B9BD5|00B0F0|2196F3/.test(rgb))return'b';
+ if(/FFFF00|FFF200|F2EF00|FCF305/.test(rgb))return'y';
+ if(/EDA900|FFC000|F4B183|FF9900|F5A800|FFCC00|FF6600/.test(rgb))return'o';
+ return null
+}
+function parseNettoModernWorkbook(ab){
+ if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas encore chargé.');
+ const wb=XLSX.read(ab,{type:'array',cellDates:true,cellStyles:true}),daily=['LUNDI','MARDI','MERCREDI','JEUDI','VENDREDI','SAMEDI','DIMANCHE'];
+ const lookup={};for(const sn of wb.SheetNames)lookup[normExcel(sn).toUpperCase()]=sn;
+ const mondayName=wb.SheetNames.find(x=>normExcel(x)==='lundi');if(!mondayName)throw new Error('La feuille LUNDI est absente.');
+ const mondayWs=wb.Sheets[mondayName],mondayRows=XLSX.utils.sheet_to_json(mondayWs,{header:1,raw:true,defval:''}),monday=excelDateValue(mondayRows?.[1]?.[1],new Date().getFullYear());
+ if(!monday)throw new Error('La date du lundi est introuvable.');
+ const employees=[];for(let rr=3;rr<=14;rr++){const name=cleanExcelText(mondayRows?.[rr]?.[1]);if(name&&name.toUpperCase()!=='TOTAL')employees.push({row:rr,name})}
+ let totalCol=60;for(let cc=2;cc<80;cc++)if(normExcel(mondayRows?.[1]?.[cc])==='total'){totalCol=cc;break}
+ const startCol=2,slotCount=totalCol-startCol,startTime=6,endTime=startTime+slotCount*.25,days={},bounds={};let shifts=0;
+ for(let di=0;di<daily.length;di++){
+  const sn=wb.SheetNames.find(x=>normExcel(x)===daily[di].toLocaleLowerCase('fr'));if(!sn)throw new Error('La feuille '+daily[di]+' est absente.');
+  const ws=wb.Sheets[sn],key=isoDate(addDays(monday,di));days[key]={};bounds[key]={min:startTime,max:endTime};
+  for(const e of employees){
+   const row={};let previous=null;
+   for(let cc=startCol;cc<totalCol;cc++){const cell=ws[XLSX.utils.encode_cell({r:e.row,c:cc})],occupied=!!(cell&&cell.v!==null&&cell.v!==''&&cell.v!==0&&cell.v!==false),color=occupied?sheetJsPlanningColor(cell):null,t=startTime+(cc-startCol)*.25;if(color){row[String(Math.round(t*4)/4)]=color;if(color!==previous)shifts++}previous=color}
+   days[key][e.name]=row
+  }
+ }
+ return{monday,weekLabel:cleanExcelText(mondayRows?.[0]?.[2]),employees:employees.map(x=>x.name),days,bounds,startTime,endTime,slotCount,shifts,source:'xlsx'}
+}
+async function applyPlanningImportModel(model,file,state){
+ const weekStart=startOfWeek(model.monday),weekKey=isoDate(weekStart),weekKeys=Array.from({length:7},(_,i)=>isoDate(addDays(weekStart,i)));
+ const occupied=weekKeys.some(k=>{const day=all[k];return day&&Object.values(day).some(row=>row&&Object.keys(row).some(t=>!t.startsWith('__')&&row[t]))});
+ if(occupied&&!confirm('Êtes-vous sûr de remplacer le planning actuel de la semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' ?\n\nLe fichier Excel aura la priorité absolue et remplacera entièrement les 7 jours.')){state.textContent='Import annulé.';state.className='excelImportState';return false}
+ weekKeys.forEach(k=>{all[k]={}});
+ for(const k of weekKeys)all[k]=model.days[k]||{};
+ saveWeekNames(weekKey,model.employees);
+ const meta=importedPlanningMeta(),amps=getPlanningAmplitude();
+ weekKeys.forEach((k,i)=>{
+  const dt=addDays(weekStart,i);amps[k]=model.bounds[k]||{min:model.startTime,max:model.endTime};
+  meta[k]={imported:true,source:file.name,weekLabel:model.weekLabel||'',caption:(model.weekLabel?model.weekLabel+' • ':'')+'Planning importé depuis '+file.name+' • '+fmt(model.startTime)+' → '+fmt(model.endTime)}
+ });
+ savePlanningMeta(meta);localStorage.setItem('nettoPlanningAmplitude',JSON.stringify(amps));save();
+ await saveSharedPlanningWeek(weekStart,{sourceFile:file.name,weekLabel:model.weekLabel||'',imported:true});
+ await addPlanningLog('import',file.name+' · '+(model.weekLabel||'semaine')+' · '+model.employees.length+' employés · '+model.shifts+' plages');
+ currentWeekStart=weekStart;currentYear=weekStart.getFullYear();buildWeek(currentWeekStart);current=0;planningView='week';setPlanningView('week');render();
+ state.textContent='✓ Planning importé fidèlement · '+model.employees.length+' employés · '+fmt(model.startTime)+' → '+fmt(model.endTime)+'.';state.className='excelImportState success';showPlanningToast('✓ Planning importé');playUISound('tick');return true
 }
 async function importPlanningFile(file){
  if(!window.planningCanEdit||!file)return;
- const state=document.getElementById('excelImportState');state.textContent='Analyse du planning Excel…';state.className='excelImportState loading';
+ const state=document.getElementById('excelImportState');state.textContent='Lecture exacte du fichier Excel…';state.className='excelImportState loading';
  try{
-  if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas encore chargé.');
-  const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true,cellStyles:true}),imported={},bounds={};
-  const dayMap={lundi:0,mardi:1,mercredi:2,jeudi:3,vendredi:4,samedi:5,dimanche:6};
-  let monday=null,employeeOrder=[],matches=0,daySheets=0;
-  // The Monday sheet contains the real date. All other daily sheets inherit Monday + offset,
-  // which also works when their date/name cells are Excel formulas.
-  for(const sn of wb.SheetNames){
-   const n=normExcel(sn);if(!n.includes('lundi'))continue;
-   const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
-   for(let r=0;r<Math.min(8,rows.length)&&!monday;r++)for(let col=0;col<Math.min(8,rows[r]?.length||0)&&!monday;col++)monday=excelDateValue(rows[r][col],currentWeekStart.getFullYear());
-   if(monday)break;
-  }
-  if(!monday)throw new Error('La date du lundi n’a pas pu être déterminée.');
-  for(const sn of wb.SheetNames){
-   const ns=normExcel(sn);let off=null;for(const [d,o] of Object.entries(dayMap))if(ns.includes(d)){off=o;break}if(off===null)continue;
-   const ws=wb.Sheets[sn],rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}),timeline=detectTimeline(rows);if(!timeline)continue;
-   daySheets++;const dt=addDays(monday,off),key=isoDate(dt);imported[key]={};
-   // Employee names are literal on Monday and formulas on later sheets. Keep the row/name mapping from Monday.
-   const sheetPeople=[];
-   rows.forEach((row,ri)=>{
-    if(ri<=timeline.headerRow)return;
-    // Netto workbook layout: B = date, C = employee. Prefer C and only fall back to nearby text cells.
-    const candidates=[row[2],row[1],row[3]].map(cleanExcelText).filter(Boolean);
-    let raw=candidates.find(v=>{const nr=normExcel(v);return !v.startsWith('=')&&v.toUpperCase()!=='TOTAL'&&!nr.startsWith('semaine ')&&!/gmt|heure d.?ete|europe centrale|^\d{1,2}[-\/]\d{1,2}/.test(nr)})||'';
-    if(!raw)return;
-    sheetPeople.push({ri,name:raw});
-   });
-   if(off===0&&sheetPeople.length){employeeOrder=sheetPeople.map(x=>x.name);employeeOrder.__rows=sheetPeople.map(x=>x.ri)}
-   // All daily tabs keep the same employee rows. Never compact rows based on who works that day.
-   const people=employeeOrder.map((name,i)=>({ri:employeeOrder.__rows[i],name}));
-   people.forEach(({ri,name})=>{
-    const row=rows[ri]||[];imported[key][name]={};let first=null,last=null,rowHas=false;
-    for(let cc=timeline.startCol;cc<=timeline.endCol;cc++){
-      if(!occupiedPlanningCell(row[cc]))continue;
-      const t=timeline.startTime+(cc-timeline.startCol)*timeline.step,cell=ws[XLSX.utils.encode_cell({r:ri,c:cc})];
-      const style=cell?.s||{},fg=style.fgColor||style.fill?.fgColor||{},rgb=String(fg.rgb||'').replace(/^FF/,'').toUpperCase();
-      let color=null;
-      if(/1FB714|00B050|49A900|70AD47|92D050/.test(rgb))color='g';
-      else if(/00ABEA|1594DF|5B9BD5|00B0F0|2196F3/.test(rgb))color='b';
-      else if(/DD0806|F0180B|FF0000|C00000/.test(rgb))color='r';
-      else if(/FFFF00|FFF200|F2EF00/.test(rgb))color='y';
-      else if(/EDA900|FFC000|F4B183|FF9900|F5A800/.test(rgb))color='o';
-      // If XLSX cannot expose a legacy .xls fill, use the existing time convention only as a fallback.
-      if(!color)color=t<12.5?'g':'b';
-      imported[key][name][String(Math.round(t*4)/4)]=color;first=first===null?t:Math.min(first,t);last=last===null?t+.25:Math.max(last,t+.25);rowHas=true;
-    }
-    if(rowHas){const q=bounds[key]||{min:first,max:last};q.min=Math.min(q.min,first);q.max=Math.max(q.max,last);bounds[key]=q;matches++}
-   });
-  }
-  if(daySheets<1||!matches)throw new Error('Le fichier a été lu mais aucun planning journalier exploitable n’a été trouvé.');
-  const weekStart=startOfWeek(monday),weekKeys=Array.from({length:7},(_,i)=>isoDate(addDays(weekStart,i)));
-  const occupied=weekKeys.some(k=>{const day=all[k];return day&&Object.values(day).some(row=>row&&Object.keys(row).some(t=>!t.startsWith('__')&&row[t]))});
-  if(occupied&&!confirm('Êtes-vous sûr de remplacer le planning actuel de la semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' ?\n\nLe planning Excel remplacera entièrement cette semaine.')){state.textContent='Import annulé.';state.className='excelImportState';return}
-  // Absolute priority: clear the whole target week first, then write exactly what Excel contains.
-  weekKeys.forEach(k=>{all[k]={}});
-  Object.entries(imported).forEach(([key,day])=>{all[key]=day});
-  saveWeekNames(isoDate(weekStart),employeeOrder);
-  const meta=importedPlanningMeta();weekKeys.forEach((k,i)=>{const dt=addDays(weekStart,i);meta[k]={caption:'Planning importé • '+frDay(dt)+' '+frDate(dt)+' • amplitude '+(bounds[k]?fmt(bounds[k].min)+' → '+fmt(bounds[k].max):'non renseignée')};});savePlanningMeta(meta);
-  localStorage.setItem('nettoPlanningAmplitude',JSON.stringify({...getPlanningAmplitude(),...bounds}));save();
-  addPlanningLog('import',file.name+' · semaine du '+weekStart.toLocaleDateString('fr-FR')+' · '+matches+' plages');
-  currentWeekStart=weekStart;currentYear=weekStart.getFullYear();buildWeek(currentWeekStart);current=0;setPlanningView('week');render();
-  state.textContent='✓ Planning importé · semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+'.';state.className='excelImportState success';
-  showPlanningToast('✓ Planning importé');playUISound('tick');
- }catch(err){state.textContent='⚠ '+(err?.message||'Import impossible.');state.className='excelImportState error'}
+  const ab=await file.arrayBuffer(),legacy=/\.xls$/i.test(file.name)&&!/\.xlsx$/i.test(file.name),model=legacy?parseNettoLegacyXls(ab):parseNettoModernWorkbook(ab);
+  await applyPlanningImportModel(model,file,state)
+ }catch(err){console.error(err);state.textContent='⚠ '+(err?.message||'Import impossible.');state.className='excelImportState error'}
  finally{const input=document.getElementById('excelFile');if(input)input.value=''}
 }
+
 function getPlanningAmplitude(){try{return JSON.parse(localStorage.getItem('nettoPlanningAmplitude')||'{}')||{}}catch(e){return{}}}
 function toggleEditMode(){if(!window.planningCanEdit)return;editMode=!editMode;const tools=document.getElementById('editTools'),btn=document.getElementById('editPlanningBtn'),hint=document.getElementById('planningHint'),state=document.getElementById('saveState');tools.classList.toggle('hidden',!editMode);btn.textContent=editMode?'✓ Terminer':'✎ Modifier le planning';btn.classList.toggle('editing',editMode);hint.textContent=editMode?'Mode modification actif • clique sur une case pour la modifier. Amplitude 6:00 → 20:30.':'Planning en lecture seule • amplitude 6:00 → 20:30.';state.textContent=editMode?'Mode modification':'Lecture seule';render();playUISound(editMode?'soft':'tick')}
-function resetDay(){if(!window.planningCanEdit||!editMode)return;if(!confirm('Effacer entièrement le planning du '+days[current].date+' ?'))return;all[days[current].k]={};save();addPlanningLog('modify','RAZ du jour · '+days[current].date);render();showPlanningToast('Planning du jour effacé')}
-function resetWeek(){if(!window.planningCanEdit||!editMode)return;const a=days[0].dateObj,b=days[6].dateObj;if(!confirm('Effacer entièrement le planning de la semaine du '+frDate(a)+' au '+frDate(b)+' ?'))return;days.forEach(d=>all[d.k]={});save();addPlanningLog('modify','RAZ de la semaine · '+frDate(a)+' au '+frDate(b));render();showPlanningToast('Planning de la semaine effacé')}
+function resetDay(){if(!window.planningCanEdit||!editMode)return;if(!confirm('Effacer entièrement le planning du '+days[current].date+' ?'))return;all[days[current].k]={};save();addPlanningLog('modify','RAZ du jour · '+days[current].date);syncCurrentWeekShared();render();showPlanningToast('Planning du jour effacé')}
+function resetWeek(){if(!window.planningCanEdit||!editMode)return;const a=days[0].dateObj,b=days[6].dateObj;if(!confirm('Effacer entièrement le planning de la semaine du '+frDate(a)+' au '+frDate(b)+' ?'))return;days.forEach(d=>all[d.k]={});save();addPlanningLog('modify','RAZ de la semaine · '+frDate(a)+' au '+frDate(b));syncCurrentWeekShared();render();showPlanningToast('Planning de la semaine effacé')}
 setPlanningView('week');
 async function waitForSupabase(ms=8000){const start=Date.now();while(Date.now()-start<ms){if(window.supabase?.createClient)return window.supabase;await new Promise(r=>setTimeout(r,120))}throw new Error('Supabase indisponible')}
-async function auth(){window.planningCanEdit=false;try{const sb=await waitForSupabase();db=db||sb.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session)return;const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();window.planningCanEdit=p?.role==='admin'||p?.role==='responsable';window.currentRole=p?.role;window.planningUser={id:session.user.id,name:p?.display_name||session.user.email||'Utilisateur'};document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.toggle('hidden',window.currentRole!=='admin'));await loadSharedSiteConfig();const btn=document.getElementById('editPlanningBtn');if(btn)btn.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('excelImport')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('planningLogs')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('clearPlanningLogs')?.classList.toggle('hidden',window.currentRole!=='admin');if(window.planningCanEdit)loadPlanningLogs()}catch(e){console.warn('Vérification session:',e)}}auth();
+async function auth(){window.planningCanEdit=false;try{const sb=await waitForSupabase();db=db||sb.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session)return;const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();window.planningCanEdit=p?.role==='admin'||p?.role==='responsable';window.currentRole=p?.role;window.planningUser={id:session.user.id,name:p?.display_name||session.user.email||'Utilisateur'};document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.toggle('hidden',window.currentRole!=='admin'));await loadSharedSiteConfig();const btn=document.getElementById('editPlanningBtn');if(btn)btn.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('excelImport')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('planningLogs')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('clearPlanningLogs')?.classList.toggle('hidden',window.currentRole!=='admin');await loadSharedPlanningWeek(currentWeekStart,true);if(window.planningCanEdit)loadPlanningLogs()}catch(e){console.warn('Vérification session:',e)}}auth();
 
 function toggleNMenu(e){e?.stopPropagation();const m=document.getElementById('nMenu');if(!m)return;const opening=m.classList.contains('hidden');m.classList.toggle('hidden');document.body.classList.toggle('mobileNavOpen',opening&&innerWidth<=700)}
 function closeNMenu(){document.getElementById('nMenu')?.classList.add('hidden');document.body.classList.remove('mobileNavOpen')}
