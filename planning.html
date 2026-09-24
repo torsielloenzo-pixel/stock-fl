@@ -522,14 +522,15 @@ async function importPlanningFile(file){
    const sheetPeople=[];
    rows.forEach((row,ri)=>{
     if(ri<=timeline.headerRow)return;
-    const raw=cleanExcelText(row[1]||row[0]),nr=normExcel(raw);
-    if(!raw||raw.startsWith('=')||raw.toUpperCase()==='TOTAL'||nr.startsWith('semaine ')||/gmt|heure d.?ete|europe centrale/.test(nr))return;
-    // An employee row must belong to the actual planning body: either it has timeline cells or it is aligned with the employee block.
-    const hasTimeline=row.slice(timeline.startCol,timeline.endCol+1).some(occupiedPlanningCell);
-    if(hasTimeline||employeeOrder.includes(raw))sheetPeople.push({ri,name:raw});
+    // Netto workbook layout: B = date, C = employee. Prefer C and only fall back to nearby text cells.
+    const candidates=[row[2],row[1],row[3]].map(cleanExcelText).filter(Boolean);
+    let raw=candidates.find(v=>{const nr=normExcel(v);return !v.startsWith('=')&&v.toUpperCase()!=='TOTAL'&&!nr.startsWith('semaine ')&&!/gmt|heure d.?ete|europe centrale|^\d{1,2}[-\/]\d{1,2}/.test(nr)})||'';
+    if(!raw)return;
+    sheetPeople.push({ri,name:raw});
    });
    if(off===0&&sheetPeople.length){employeeOrder=sheetPeople.map(x=>x.name);employeeOrder.__rows=sheetPeople.map(x=>x.ri)}
-   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(employeeOrder.__rows?.[i]??sheetPeople[i]?.ri??(timeline.headerRow+1+i)),name}));
+   // All daily tabs keep the same employee rows. Never compact rows based on who works that day.
+   const people=employeeOrder.map((name,i)=>({ri:employeeOrder.__rows[i],name}));
    people.forEach(({ri,name})=>{
     const row=rows[ri]||[];imported[key][name]={};let first=null,last=null,rowHas=false;
     for(let cc=timeline.startCol;cc<=timeline.endCol;cc++){
