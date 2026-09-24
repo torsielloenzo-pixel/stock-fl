@@ -453,6 +453,45 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
   }
   body.mobileNavOpen #nMenu:before{display:none!important}
 }
+
+/* Suggestions de commande — lisibilité + ergonomie mobile */
+.suggestStatus{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap}
+.suggestStatus>b{font-size:9.5px;color:#3f4248;background:#f1f2f4;border-radius:7px;padding:3px 6px}
+.suggestStatus>em{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-style:normal;font-weight:800;padding:3px 6px;border-radius:7px}
+.suggestStatus>em i{width:6px;height:6px;border-radius:50%}
+.suggestStatus>em.abundant{background:#eaf8ee;color:#19753a}.suggestStatus>em.abundant i{background:#25a244}
+.suggestStatus>em.watch{background:#fff6df;color:#9a650d}.suggestStatus>em.watch i{background:#e69a17}
+.suggestStatus>em.rupture{background:#fff0f1;color:#b51e29}.suggestStatus>em.rupture i{background:#d92d38}
+.suggestMeta{white-space:normal!important;line-height:1.25!important}
+@media(max-width:600px){
+ #suggestDialog{width:100vw!important;max-width:none!important;height:100dvh!important;max-height:none!important;margin:0!important;border:0!important;border-radius:0!important;padding:0!important}
+ #suggestDialog::backdrop{background:#0006}
+ #suggestDialog .suggestModal{width:100%!important;height:100dvh!important;max-height:none!important;border-radius:0!important;padding:calc(env(safe-area-inset-top) + 16px) 12px calc(env(safe-area-inset-bottom) + 8px)!important}
+ #suggestDialog h2{font-size:22px!important;padding-right:42px;margin-bottom:4px!important}
+ #suggestDialog .modalClose{top:calc(env(safe-area-inset-top) + 10px)!important;right:12px!important;width:38px!important;height:38px!important;border-radius:12px!important;font-size:23px!important}
+ #suggestDialog .suggestIntro{font-size:11px!important;line-height:1.35!important;margin-bottom:9px!important;padding-right:34px}
+ #suggestList{padding:0 0 10px!important;overflow-y:auto!important}
+ .suggestTabs{margin:0 -12px 7px!important;padding:4px 12px 9px!important;gap:7px!important;scrollbar-width:none!important;box-shadow:0 5px 12px #00000008}
+ .suggestTabs::-webkit-scrollbar{display:none}
+ .suggestTab{min-width:104px!important;padding:8px 9px!important;border-radius:11px!important}
+ .suggestTab>span{font-size:16px!important}.suggestTab strong{font-size:11px!important}.suggestTab small{font-size:8.5px!important}
+ .suggestTabList{border:0!important;border-radius:0!important;background:transparent!important;display:grid;gap:7px}
+ #suggestDialog .suggestRow{border:1px solid #e5e7ea!important;border-radius:13px!important;grid-template-columns:48px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important;min-height:72px!important;background:#fff!important;box-shadow:0 3px 10px #00000006}
+ #suggestDialog .suggestRow.isSuggested{border-color:#ff5b3138!important;background:linear-gradient(90deg,#fff8f5,#fff 34%)!important}
+ #suggestDialog .suggestRow img,#suggestDialog .suggestPic{width:46px!important;height:46px!important;border-radius:11px!important;font-size:20px!important}
+ #suggestDialog .suggestProduct strong{font-size:13px!important;line-height:1.18!important}
+ #suggestDialog .suggestProduct small{font-size:9.5px!important;margin-top:3px!important}
+ #suggestDialog .suggestActions{display:grid!important;gap:5px!important;justify-items:end}
+ #suggestDialog .suggestQty{min-width:38px;text-align:center;padding:6px 8px!important;font-size:11px!important;border-radius:8px!important}
+ #suggestDialog .cartQuick{width:38px!important;height:34px!important;border-radius:9px!important;display:grid!important;place-items:center!important;font-size:13px!important}
+ #suggestDialog .actions{margin:0 -12px!important;padding:10px 12px calc(env(safe-area-inset-bottom) + 6px)!important;background:#fff!important;border-top:1px solid #ececef!important}
+ #suggestDialog .actions button{width:100%!important;min-height:44px!important}
+}
+:root[data-theme="dark"] .suggestStatus>b{background:#292c31;color:#ddd}
+:root[data-theme="dark"] .suggestStatus>em.abundant{background:#173622;color:#7edb99}
+:root[data-theme="dark"] .suggestStatus>em.watch{background:#3b2f16;color:#f2c96e}
+:root[data-theme="dark"] .suggestStatus>em.rupture{background:#3c1c20;color:#ff8c95}
+@media(max-width:600px){:root[data-theme="dark"] #suggestDialog .suggestRow{background:#1b1d22!important;border-color:#30333a!important}:root[data-theme="dark"] #suggestDialog .suggestRow.isSuggested{background:linear-gradient(90deg,#33211d,#1b1d22 38%)!important}:root[data-theme="dark"] #suggestDialog .actions{background:#15171b!important;border-color:#30333a!important}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -609,7 +648,7 @@ function suggestOrder(p){
 
 function setSuggestTab(cat){suggestActiveTab=cat;renderSuggestions();playUISound('tick')}
 function renderSuggestions(){
- const list=$('suggestList'),all=products.map(p=>({p,s:suggestOrder(p)})).filter(x=>!x.s.cfg?.blocked).sort((a,b)=>(b.s.priority-a.s.priority)||(a.p.name||'').localeCompare(b.p.name||'','fr'));
+ const list=$('suggestList'),all=products.filter(p=>p.on_sale!==false).map(p=>({p,s:suggestOrder(p)})).filter(x=>!x.s.cfg?.blocked).sort((a,b)=>(b.s.priority-a.s.priority)||(a.p.name||'').localeCompare(b.p.name||'','fr'));
  if(!all.length){list.innerHTML='<div class="suggestEmpty">Aucun article disponible.</div>';return}
  const cats=[...new Set(all.map(x=>x.p.category||'Autres'))];
  if(suggestActiveTab!=='Tous'&&!cats.includes(suggestActiveTab))suggestActiveTab='Tous';
@@ -618,7 +657,7 @@ function renderSuggestions(){
    return '<button class="suggestTab '+(suggestActiveTab===cat?'active':'')+'" style="--tabColor:'+esc(m.color||'#555')+'" onclick="setSuggestTab(\''+cat.replace(/'/g,"\\'")+'\')"><span>'+m.emoji+'</span><strong>'+esc(cat)+'</strong><small>'+arr.length+(recommended?' • '+recommended+' sugg.':'')+'</small></button>'
  }).join('');
  const shown=suggestActiveTab==='Tous'?all:all.filter(x=>(x.p.category||'Autres')===suggestActiveTab);
- const rows=shown.map(({p,s})=>{const m=meta[p.category]||{emoji:'📦',color:'#555'},sm=shelfMeta(shelfStatus(p.id));return '<button class="suggestRow '+(s.qty>0?'isSuggested':'notSuggested')+'" onclick="suggestDialog.close();openInfo(\''+p.id+'\');setTimeout(showOrderSuggestion,80)">'+(p.photo_url?'<img src="'+esc(p.photo_url)+'">':'<span class="suggestPic">'+(m.emoji||'📦')+'</span>')+'<span class="suggestProduct"><strong>'+esc(p.name)+'</strong><small>'+esc(p.category||'Autres')+' • '+esc(p.packaging||'Non renseigné')+' • Stock '+fmt(p.quantity)+' • <i class="suggestShelf '+sm.cls+'"></i>'+esc(sm.label)+'</small></span><span class="suggestActions"><span class="suggestQty '+(s.qty>0?'':'none')+'">'+(s.qty>0?'+'+s.qty:'—')+'</span><span class="cartQuick" onclick="event.stopPropagation();addToOrderCart(\''+p.id+'\',1)" title="Ajouter au panier">＋🛒</span></span></button>'}).join('');
+ const rows=shown.map(({p,s})=>{const m=meta[p.category]||{emoji:'📦',color:'#555'},sm=shelfMeta(shelfStatus(p.id));return '<button class="suggestRow '+(s.qty>0?'isSuggested':'notSuggested')+'" onclick="suggestDialog.close();openInfo(\''+p.id+'\');setTimeout(showOrderSuggestion,80)">'+(p.photo_url?'<img src="'+esc(p.photo_url)+'">':'<span class="suggestPic">'+(m.emoji||'📦')+'</span>')+'<span class="suggestProduct"><strong>'+esc(p.name)+'</strong><small class="suggestMeta">'+esc(p.category||'Autres')+' · '+esc(p.packaging||'Non renseigné')+'</small><span class="suggestStatus"><b>Stock '+fmt(p.quantity)+'</b><em class="'+sm.cls+'"><i></i>'+esc(sm.label)+'</em></span></span><span class="suggestActions"><span class="suggestQty '+(s.qty>0?'':'none')+'">'+(s.qty>0?'+'+s.qty:'—')+'</span><span class="cartQuick" onclick="event.stopPropagation();addToOrderCart(\''+p.id+'\',1)" title="Ajouter au panier">＋🛒</span></span></button>'}).join('');
  list.innerHTML='<div class="suggestTabs">'+tabs+'</div><div class="suggestTabList">'+rows+'</div>'
 }
 function getOrderCart(){try{return JSON.parse(localStorage.getItem('nettoOrderCart')||'{}')||{}}catch(e){return {}}}
