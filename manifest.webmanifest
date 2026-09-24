@@ -1,0 +1,19 @@
+{
+  "name": "Netto — Outils du quotidien",
+  "short_name": "Netto Outils",
+  "description": "Planning, stock et outils pratiques pour l'équipe.",
+  "start_url": "./home.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#ff2f1f",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
