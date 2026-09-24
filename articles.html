@@ -20,10 +20,25 @@ main{width:min(94vw,1120px);margin:auto;padding:34px 0 60px}.hero{display:flex;j
 :root[data-theme="dark"]{color-scheme:dark}:root[data-theme="dark"] body{background:#111317;color:#f4f4f5}:root[data-theme="dark"] header{background:#17191df0;border-color:#2d3036}:root[data-theme="dark"] .card,:root[data-theme="dark"] .countBox,:root[data-theme="dark"] .filters,:root[data-theme="dark"] .search{background:#1b1d22;border-color:#30333a;color:#f4f4f5}:root[data-theme="dark"] .fact{background:#202329;border-color:#31343a}:root[data-theme="dark"] .foot{border-color:#30333a}:root[data-theme="dark"] .openBtn{background:#26282e;color:#eee}:root[data-theme="dark"] .nMenu{background:#1c1d20f8;border-color:#38393e}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){header{height:62px}.top{width:calc(100% - 18px)}.sub{display:none}main{width:calc(100% - 20px);padding:22px 0 38px}.hero{align-items:start}.hero h1{font-size:27px}.countBox{padding:8px 10px}.controls{grid-template-columns:1fr}.filters{width:100%}.filter{flex:1}.grid{grid-template-columns:1fr}.photo{height:125px}.nMenu{position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:10px!important;width:auto!important;max-height:74dvh;overflow:auto;border-radius:20px!important;padding:10px!important}.nMenu:before{content:"";display:block;width:42px;height:4px;background:#c9c9ce;border-radius:99px;margin:1px auto 8px}.nMenu button{min-height:50px;grid-template-columns:38px 1fr}.nMenu button>span{width:36px;height:36px}}
+
+/* Menu N mobile — overlay plein écran fiable sur iOS/PWA */
+.mobileNavBackdrop{display:none}
+@media(max-width:700px){
+  body.mobileNavOpen{overflow:hidden!important}
+  body.mobileNavOpen .mobileNavBackdrop{display:block!important;position:fixed!important;inset:0!important;background:rgba(17,24,39,.38)!important;backdrop-filter:blur(2px)!important;z-index:998!important}
+  body.mobileNavOpen #nMenu{
+    display:block!important;position:fixed!important;left:10px!important;right:10px!important;top:max(64px,calc(env(safe-area-inset-top) + 50px))!important;bottom:auto!important;
+    width:auto!important;max-width:none!important;max-height:calc(100dvh - max(82px,calc(env(safe-area-inset-top) + 68px)))!important;
+    overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;
+    padding:9px!important;border-radius:20px!important;z-index:999!important;
+    box-shadow:0 22px 70px rgba(0,0,0,.32)!important
+  }
+  body.mobileNavOpen #nMenu:before{display:none!important}
+}
 </style>
 <link rel="stylesheet" href="design-v2.css?v=3">
 </head>
-<body>
+<body><div class="mobileNavBackdrop" onclick="closeNMenu()"></div>
 <header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button onclick="location.href='articles.html'"><span>▤</span><div><strong>Fiches articles</strong><small>Référentiel EAN</small></div></button><button id="settingsLink" class="hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small>Changer l'apparence</small></div></button><button onclick="logout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Fiches articles</div><div class="sub">Référentiel des produits associés à un code EAN</div></div></div></div></header>
 <main><div class="hero"><div><h1>Référentiel EAN</h1><p>Une fiche par référence EAN, indépendamment de son affichage dans le stock.</p></div><div class="countBox"><strong id="count">0</strong> fiches</div></div><div class="controls"><input id="search" class="search" type="search" placeholder="Rechercher nom, EAN ou code article…" oninput="render()"><div class="filters"><button class="filter active" data-filter="all" onclick="setFilter('all')">Toutes</button><button class="filter" data-filter="on" onclick="setFilter('on')">En vente</button><button class="filter" data-filter="off" onclick="setFilter('off')">Hors vente</button></div></div><div id="grid" class="grid"><div class="empty">Chargement…</div></div></main>
 <script>
