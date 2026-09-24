@@ -230,6 +230,37 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .navToolLogo.equipe{background-image:url('assets/logo-equipe.svg')!important}
 .pageCard .icon{overflow:hidden;padding:0!important}
 .pageCard .icon img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Correctif mobile accueil */
+@media(max-width:650px){
+  body{overflow-x:hidden}
+  header{height:62px!important}
+  header:after{top:auto!important;bottom:0!important}
+  .top{width:calc(100% - 20px)!important}
+  .brand .mark{width:36px;height:36px;border-radius:9px;font-size:18px}
+  .brand strong{font-size:16px}.brand small{font-size:9px}
+  .userPill{border-radius:12px;padding:4px!important}
+  .userAvatar{width:34px;height:34px}
+  .userMenu{position:fixed;top:61px;left:10px;right:10px;width:auto;max-height:calc(100dvh - 75px);overflow:auto}
+  main{width:calc(100% - 22px)!important;padding:22px 0 38px!important}
+  .hello{padding:17px 18px!important;margin-bottom:14px!important;border-radius:18px!important}
+  .hello:after{width:38%!important;border-radius:0 18px 18px 0!important}
+  .eyebrow{font-size:10px!important}
+  .hello h1{font-size:29px!important;line-height:1.05;margin:5px 0 7px!important}
+  .hello p{font-size:12px!important}
+  .pages{grid-template-columns:1fr!important;gap:13px!important}
+  .pageCard{min-height:0!important;height:auto!important;border-radius:18px!important;overflow:hidden!important}
+  .cardTop{padding:18px 18px 0!important}
+  .pageCard .icon{width:54px!important;height:54px!important;border-radius:15px!important;flex:none}
+  .pageCard .icon img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;opacity:1!important;visibility:visible!important}
+  .cardKicker{font-size:8px!important;padding:5px 8px!important}
+  .cardContent{padding:18px 18px 16px!important;min-height:0!important}
+  .pageCard h2{font-size:23px!important;line-height:1.08!important;margin:0 0 7px!important}
+  .pageCard p{font-size:11.5px!important;line-height:1.42!important;max-width:none!important}
+  .cardFoot{padding:11px 13px 11px 18px!important;font-size:9.5px!important}
+  .arrow{width:31px!important;height:31px!important;font-size:15px!important;position:static!important}
+  .status{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -281,7 +312,8 @@ function applySharedSiteConfig(cfg){
  const brand=cfg?.brand;if(brand){const b=document.querySelector('.brand>div:last-child strong'),s=document.querySelector('.brand>div:last-child small');if(b&&brand.name)b.textContent=brand.name;if(s&&brand.subtitle)s.textContent=brand.subtitle}
  const eyebrow=document.querySelector('.eyebrow'),intro=document.querySelector('.hello p');if(eyebrow&&cfg?.home?.eyebrow)eyebrow.textContent=cfg.home.eyebrow;if(intro&&cfg?.home?.intro)intro.textContent=cfg.home.intro;
  const map={stock:document.querySelector('.pageCard.stock'),planning:document.querySelector('.pageCard.planning'),chat:document.querySelector('.pageCard.chatCard')};
- Object.entries(map).forEach(([k,el])=>{const p=cfg?.pages?.[k];if(!el||!p)return;el.classList.toggle('hidden',p.visible===false);el.style.order=Number(p.order||1);const ic=el.querySelector('.icon'),h2=el.querySelector('h2'),d=el.querySelector('p');if(ic)ic.textContent=p.icon||'';if(h2)h2.textContent=p.label||'';if(d)d.textContent=p.description||'';const target=String(p.url||'').replace(/['"<>]/g,'');el.onclick=()=>location.href=target});
+ const logoByTool={stock:'assets/logo-stock.svg',planning:'assets/logo-planning.svg',chat:'assets/logo-equipe.svg'};
+ Object.entries(map).forEach(([k,el])=>{const p=cfg?.pages?.[k];if(!el||!p)return;el.classList.toggle('hidden',p.visible===false);el.style.order=Number(p.order||1);const ic=el.querySelector('.icon'),h2=el.querySelector('h2'),d=el.querySelector('p');if(ic){let img=ic.querySelector('img');if(!img){ic.textContent='';img=document.createElement('img');img.alt='';ic.appendChild(img)}img.src=logoByTool[k]}if(h2)h2.textContent=p.label||'';if(d)d.textContent=p.description||'';const target=String(p.url||'').replace(/['"<>]/g,'');el.onclick=()=>location.href=target});
  document.querySelectorAll('.settingsLink').forEach(x=>x.classList.toggle('hidden',window.currentRole!=='admin'));
 }
 
