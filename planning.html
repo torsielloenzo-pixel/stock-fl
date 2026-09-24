@@ -300,20 +300,23 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .grid{display:grid!important;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px!important;grid-auto-flow:row!important;min-width:1540px!important}
 .grid>.name,.grid>.time,.grid>.cell,.grid>.total{min-width:0!important;box-sizing:border-box!important}
 @media(max-width:700px){.grid{grid-template-columns:110px repeat(60,22px) 58px!important;min-width:1466px!important}}
-/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}/* Excel-faithful planning v3 */
-.grid{min-width:1760px!important;grid-template-columns:170px repeat(60,25px) 74px!important;align-items:stretch}
-.grid .name,.grid .cell,.grid .total{min-height:34px!important;height:34px!important}
-.grid .time{height:38px!important;min-height:38px!important;min-width:25px!important;font-size:8px!important;white-space:nowrap;overflow:visible;border-right:1px solid #d9dde3!important}
-.grid .time.hour{font-weight:900!important;color:#111!important;background:#eef0f3!important;border-left:2px solid #858b94!important}
-.grid .time.half{font-weight:750!important;color:#25282d!important;background:#f5f6f7!important}
-.grid .time.quarter{font-weight:600!important;color:#5f636b!important;background:#fafafa!important}
-.grid .cell{min-width:25px!important;border-right:1px solid #d9dde3!important;border-bottom:1px solid #cfd4da!important}
-.grid .cell[data-t$=".0"],.grid .cell[data-t="6"],.grid .cell[data-t="7"],.grid .cell[data-t="8"],.grid .cell[data-t="9"],.grid .cell[data-t="10"],.grid .cell[data-t="11"],.grid .cell[data-t="12"],.grid .cell[data-t="13"],.grid .cell[data-t="14"],.grid .cell[data-t="15"],.grid .cell[data-t="16"],.grid .cell[data-t="17"],.grid .cell[data-t="18"],.grid .cell[data-t="19"],.grid .cell[data-t="20"]{border-left:2px solid #858b94!important}
-.grid .name{font-size:12px!important;border-bottom:1px solid #cfd4da!important}
-.grid .total{font-size:11px!important;border-left:2px solid #858b94!important}
-.sheet{overflow-x:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}/* Excel-faithful planning v4 — aucune superposition */
+.grid{display:grid!important;grid-template-columns:180px repeat(60,34px) 78px!important;grid-auto-flow:row!important;min-width:2298px!important;align-items:stretch!important}
+.grid>.name,.grid>.time,.grid>.cell,.grid>.total{box-sizing:border-box!important;min-width:0!important;margin:0!important}
+.grid .name,.grid .cell,.grid .total{height:34px!important;min-height:34px!important}
+.grid .time{width:34px!important;height:42px!important;min-height:42px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:8px!important;line-height:1!important;letter-spacing:-.25px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;border-right:1px solid #d7dbe0!important}
+.grid .time.hour{font-weight:900!important;color:#111!important;background:#eceff2!important;border-left:2px solid #747b84!important}
+.grid .time.half{font-weight:800!important;color:#20242a!important;background:#f4f5f6!important}
+.grid .time.quarter{font-weight:650!important;color:#555b63!important;background:#fafafa!important}
+.grid .cell{width:34px!important;border-right:1px solid #d7dbe0!important;border-bottom:1px solid #cfd4da!important;padding:0!important}
+.grid .cell[data-t="6"],.grid .cell[data-t="7"],.grid .cell[data-t="8"],.grid .cell[data-t="9"],.grid .cell[data-t="10"],.grid .cell[data-t="11"],.grid .cell[data-t="12"],.grid .cell[data-t="13"],.grid .cell[data-t="14"],.grid .cell[data-t="15"],.grid .cell[data-t="16"],.grid .cell[data-t="17"],.grid .cell[data-t="18"],.grid .cell[data-t="19"],.grid .cell[data-t="20"]{border-left:2px solid #747b84!important}
+.grid .name{font-size:12px!important;padding:0 12px!important;display:flex!important;align-items:center!important;border-bottom:1px solid #cfd4da!important;white-space:nowrap!important;overflow:hidden!important}
+.grid .total{font-size:11px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-left:2px solid #747b84!important}
+.grid .headName{height:42px!important;min-height:42px!important;font-weight:900!important;background:#f4f5f6!important}
+.grid .totalHead{width:78px!important;height:42px!important;min-height:42px!important}
+.sheet{overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important}
 .dangerReset{color:#b42318!important;border:1px solid #f0b7b2!important;background:#fff5f4!important}
-@media(max-width:700px){body.planningEditing .grid{min-width:1740px!important;grid-template-columns:130px repeat(60,25px) 70px!important}}
+@media(max-width:700px){body.planningEditing .grid,.grid{grid-template-columns:130px repeat(60,34px) 70px!important;min-width:2240px!important}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
