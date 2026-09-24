@@ -295,6 +295,11 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 /* Planning inspiré du fichier Excel magasin */
 .grid{min-width:1540px!important;background:#fff}.time{min-height:31px!important;font-size:9px!important;padding:0!important}.time.quarter{background:#fafafa!important}.time.half{background:#f0f1f3!important;border-left:1px solid #bfc3c8!important}.cell{min-height:34px!important;border-right:1px solid #eceef0!important;border-bottom:1px solid #d6d9dd!important}.cell:nth-child(2n){border-right-color:#d2d5d9!important}.cell.on:after{display:none!important}.name{min-height:34px!important;border-bottom-color:#cfd2d6!important}.total{min-height:34px!important;background:#f5f5f6!important}.planningToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:5000;background:#17181b;color:#fff;border-radius:12px;padding:11px 16px;font-size:12px;font-weight:800;box-shadow:0 12px 35px #0004;opacity:0;pointer-events:none;transition:.2s}.planningToast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:700px){body.planningEditing .grid{min-width:1540px!important;grid-template-columns:110px repeat(59,22px) 58px!important}.planningToast{bottom:calc(18px + env(safe-area-inset-bottom));white-space:nowrap}}
+
+/* Correctif structure grille 15 min — doit rester après tous les anciens overrides */
+.grid{display:grid!important;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px!important;grid-auto-flow:row!important;min-width:1540px!important}
+.grid>.name,.grid>.time,.grid>.cell,.grid>.total{min-width:0!important;box-sizing:border-box!important}
+@media(max-width:700px){.grid{grid-template-columns:110px repeat(59,22px) 58px!important;min-width:1466px!important}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -375,10 +380,10 @@ function dayHasData(key){const d=all[key];if(!d)return false;return Object.value
 function openDateFromYear(key){const d=parseISO(key);currentWeekStart=startOfWeek(d);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(d.getDay()+6)%7));setPlanningView('week')}
 function renderYear(){document.getElementById('yearTitle').textContent=currentYear;const months=document.getElementById('yearGrid'),todayKey=isoDate(new Date());let html='';for(let m=0;m<12;m++){const first=new Date(currentYear,m,1),last=new Date(currentYear,m+1,0),offset=(first.getDay()+6)%7;html+='<section class="monthCard"><h3>'+first.toLocaleDateString('fr-FR',{month:'long'}).replace(/^./,x=>x.toUpperCase())+'</h3><div class="monthWeekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="monthDays">'+Array.from({length:offset},()=>'<span></span>').join('');for(let d=1;d<=last.getDate();d++){const dt=new Date(currentYear,m,d),key=isoDate(dt),has=dayHasData(key),isToday=key===todayKey;html+='<button class="yearDay '+(has?'hasData ':'')+(isToday?'today':'')+'" onclick="openDateFromYear(\''+key+'\')">'+d+(has?'<i></i>':'')+'</button>'}html+='</div></section>'}months.innerHTML=html}
 
-let planningPaint={active:false,pointerId:null,cells:new Set(),changed:[]};
+let planningPaint={active:false,pointerId:null,rowName:null,cells:new Set(),changed:[]};
 function paintCell(el){
  if(!editMode||!el?.classList.contains('cell'))return;
- const d=days[current],n=el.dataset.n,t=el.dataset.t,key=n+'|'+t;if(planningPaint.cells.has(key))return;
+ const d=days[current],n=el.dataset.n,t=el.dataset.t;if(planningPaint.active&&planningPaint.rowName&&n!==planningPaint.rowName)return;const key=n+'|'+t;if(planningPaint.cells.has(key))return;
  planningPaint.cells.add(key);all[d.k][n]??={};const before=all[d.k][n][t]||null;
  if(paintColor==='erase')delete all[d.k][n][t];else all[d.k][n][t]=paintColor;
  const after=all[d.k][n][t]||null;if(before===after)return;
@@ -388,14 +393,14 @@ function planningPaintEnd(){
  if(!planningPaint.active)return;planningPaint.active=false;
  if(planningPaint.changed.length){
    save();const d=days[current],first=planningPaint.changed[0],last=planningPaint.changed[planningPaint.changed.length-1];
-   const detail=d.date+' · '+first.n+(first.n===last.n?' · '+fmt(+first.t)+(first.t!==last.t?'–'+fmt(+last.t+.5):''):' · '+planningPaint.changed.length+' cases');
+   const detail=d.date+' · '+first.n+(first.n===last.n?' · '+fmt(+first.t)+(first.t!==last.t?'–'+fmt(+last.t+.25):''):' · '+planningPaint.changed.length+' cases');
    addPlanningLog('modify',detail);render()
  }
- planningPaint.cells.clear();planningPaint.changed=[]
+ planningPaint.cells.clear();planningPaint.changed=[];planningPaint.rowName=null
 }
 function bindPlanningPaint(grid){
  grid.querySelectorAll('.cell').forEach(el=>{
-  el.onpointerdown=e=>{if(!editMode||e.button>0)return;e.preventDefault();planningPaint.active=true;planningPaint.pointerId=e.pointerId;planningPaint.cells.clear();planningPaint.changed=[];try{grid.setPointerCapture(e.pointerId)}catch(_){}paintCell(el)};
+  el.onpointerdown=e=>{if(!editMode||e.button>0)return;e.preventDefault();planningPaint.active=true;planningPaint.pointerId=e.pointerId;planningPaint.rowName=el.dataset.n;planningPaint.cells.clear();planningPaint.changed=[];try{grid.setPointerCapture(e.pointerId)}catch(_){}paintCell(el)};
  });
  grid.onpointermove=e=>{if(!planningPaint.active||e.pointerId!==planningPaint.pointerId)return;e.preventDefault();const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell');if(hit&&grid.contains(hit))paintCell(hit)};
  grid.onpointerup=e=>{if(e.pointerId===planningPaint.pointerId)planningPaintEnd()};
