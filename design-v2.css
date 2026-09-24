@@ -1,0 +1,238 @@
+/* Netto Design System v2 — rouge/orange, surfaces claires, mobile first */
+:root{
+  --netto-red:#ff2b2f!important;
+  --netto-red-deep:#f41424!important;
+  --netto-orange:#ff8500!important;
+  --netto-orange-2:#ff6a00!important;
+  --netto-ink:#111827!important;
+  --netto-muted:#6b7280!important;
+  --netto-bg:#fafafb!important;
+  --netto-surface:#ffffff!important;
+  --netto-line:#e8eaee!important;
+  --netto-soft:#fff3ee!important;
+  --netto-grad:linear-gradient(135deg,#ff2b2f 0%,#ff1d26 46%,#ff8500 100%)!important;
+  --netto-grad-rev:linear-gradient(135deg,#ff8500 0%,#ff5424 45%,#ff1829 100%)!important;
+  --netto-shadow:0 12px 34px rgba(17,24,39,.08)!important;
+}
+html,body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+body{
+  color:var(--netto-ink)!important;
+  background:
+   radial-gradient(circle at -8% 15%,rgba(255,43,47,.07),transparent 27%),
+   radial-gradient(circle at 108% 82%,rgba(255,133,0,.07),transparent 28%),
+   #fafafb!important;
+}
+header{
+  background:rgba(255,255,255,.92)!important;
+  border-color:var(--netto-line)!important;
+  box-shadow:0 4px 18px rgba(17,24,39,.05)!important;
+  backdrop-filter:blur(18px)!important;
+}
+header:after{background:var(--netto-grad)!important;height:3px!important;top:auto!important;bottom:0!important}
+.mark,.brandMark,.loginMark,.welcomeMark{
+  background:var(--netto-grad)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 8px 22px rgba(255,55,31,.22)!important;
+}
+.mark:after,.brandMark:after,.loginMark:after{display:none!important}
+.title,.brand strong,h1,h2,h3{color:var(--netto-ink)!important}
+.sub,.subtitle,.small,.hint,.meta{color:var(--netto-muted)!important}
+.manage,.primary,.dark,.loginSubmit,.send,.fab{
+  background:var(--netto-grad)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 18px rgba(255,69,30,.20)!important;
+}
+.secondary,.light,.logout,.back{
+  background:#fff!important;
+  color:var(--netto-ink)!important;
+  border:1px solid var(--netto-line)!important;
+  box-shadow:0 2px 8px rgba(17,24,39,.04)!important;
+}
+input,select,textarea,.search{
+  background:#fff!important;
+  border:1px solid #dfe2e7!important;
+  color:var(--netto-ink)!important;
+}
+input:focus,select:focus,textarea:focus,.search:focus,.searchBox input:focus{
+  outline:none!important;border-color:#ff6b3d!important;box-shadow:0 0 0 3px rgba(255,88,35,.12)!important
+}
+.pageCard,.panel,.side,.chat,.sheet,.modal,.card,.category,.cat,.group,.monthCard,.uploadBox,.countBox{
+  border-color:var(--netto-line)!important;
+  box-shadow:var(--netto-shadow)!important;
+}
+.nMenu,.brandMenu,.userMenu{
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid var(--netto-line)!important;
+  box-shadow:0 18px 55px rgba(17,24,39,.18)!important;
+}
+.nMenuTitle,.brandMenuTitle{color:#f33b22!important}
+.nMenu button:hover,.brandMenu button:hover,.userMenu button:hover{background:linear-gradient(90deg,#fff1ee,#fff8ef)!important}
+.nMenu button>span,.brandMenu button>span,.userMenu button>span{
+  background:linear-gradient(135deg,#fff0ec,#fff8ee)!important;color:#f44324!important
+}
+.navToolLogo{box-shadow:0 4px 10px rgba(255,64,31,.12)!important}
+.themeIcon{color:#ff6c00!important}
+
+/* Accueil */
+body:has(.pageCard) main{max-width:1120px!important}
+.hello{
+  position:relative!important;overflow:hidden!important;
+  background:var(--netto-grad)!important;border:0!important;
+  box-shadow:0 16px 38px rgba(255,62,29,.20)!important;
+  padding:30px 34px!important;border-radius:24px!important
+}
+.hello:before,.hello:after{
+  content:""!important;position:absolute!important;pointer-events:none!important;
+  border-radius:0!important;clip-path:none!important
+}
+.hello:before{inset:-40% 35% -40% auto!important;width:240px!important;background:rgba(255,255,255,.08)!important;transform:skewX(-28deg)!important}
+.hello:after{inset:-35% 7% -35% auto!important;width:150px!important;background:rgba(255,255,255,.10)!important;transform:skewX(-28deg)!important}
+.hello>*{position:relative!important;z-index:2!important}
+.hello .eyebrow,.hello h1,.hello p{color:#fff!important}
+.hello .eyebrow{opacity:.86!important;letter-spacing:1.8px!important}
+.hello p{opacity:.86!important}
+.pageCard{
+  background:#fff!important;border-radius:20px!important;overflow:hidden!important;
+  box-shadow:0 10px 28px rgba(17,24,39,.07)!important
+}
+.pageCard:after{background:var(--netto-grad)!important;height:4px!important}
+.pageCard .icon{
+  border-radius:16px!important;background:none!important;border:0!important;
+  box-shadow:0 8px 20px rgba(255,67,27,.18)!important
+}
+.cardKicker{background:#fff1ed!important;color:#eb3c23!important}
+.cardFoot{background:#fff!important;border-color:#edf0f3!important}
+.arrow,.stock .arrow,.chatCard .arrow{background:var(--netto-grad)!important;color:#fff!important}
+
+/* Stock F&L — remplace les anciens bandeaux multicolores */
+.category{
+  background:#fff!important;border-radius:18px!important;overflow:hidden!important;
+  box-shadow:0 8px 24px rgba(17,24,39,.06)!important
+}
+.catHeader,.catHeader.fruits,.catHeader.legumes,.catHeader.salades,.catHeader.pommes,.catHeader.herbes,.catHeader.condiments,.catHeader.autres{
+  color:var(--netto-ink)!important;background:#fff!important;
+  min-height:62px!important;padding:12px 14px!important;border-bottom:1px solid #eef0f3!important
+}
+.catHeader:before{
+  content:""!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;
+  width:5px!important;height:auto!important;border-radius:0 5px 5px 0!important;
+  background:var(--netto-grad)!important;opacity:1!important
+}
+.catHeader:after{
+  content:""!important;position:absolute!important;right:-35px!important;top:-65px!important;
+  width:150px!important;height:150px!important;border-radius:50%!important;border:0!important;
+  background:radial-gradient(circle,rgba(255,106,0,.11),transparent 65%)!important;opacity:1!important
+}
+.catHeader .catTitle,.catHeader .small,.catHeader .chevron{color:var(--netto-ink)!important}
+.catHeader .small{opacity:.48!important}
+.catArt{
+  width:38px!important;height:38px!important;border-radius:12px!important;display:grid!important;place-items:center!important;
+  margin-right:10px!important;font-size:19px!important;background:linear-gradient(135deg,#fff0ec,#fff8ef)!important;
+  text-shadow:none!important;filter:none!important;opacity:1!important
+}
+.card{background:#fff!important;border:1px solid #eceef2!important;border-radius:15px!important}
+.counter{background:#f3f4f6!important}
+.counter .plus{background:var(--netto-grad)!important}
+.infoBtn{color:#f34a27!important}
+.stockViewOptions{background:#fff!important;border-color:#eceef2!important;box-shadow:0 7px 18px rgba(17,24,39,.05)!important}
+.daSwitch.on{background:var(--netto-grad)!important}
+.offSaleBadge{background:#737780!important}
+.modal h2:after{background:var(--netto-grad)!important}
+
+/* Login */
+.loginWrap{
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,43,47,.12),transparent 28%),
+    radial-gradient(circle at 92% 90%,rgba(255,133,0,.13),transparent 32%),
+    #f8f9fa!important
+}
+.loginShell{border:1px solid #eceef1!important;box-shadow:0 26px 80px rgba(17,24,39,.14)!important}
+.loginVisual{
+  background:var(--netto-grad)!important;color:#fff!important;isolation:isolate!important
+}
+.loginVisual:before{
+  content:""!important;position:absolute!important;inset:-20% 38% -20% auto!important;width:180px!important;
+  border:0!important;border-radius:0!important;background:rgba(255,255,255,.09)!important;transform:skewX(-26deg)!important
+}
+.loginVisual:after{
+  content:""!important;position:absolute!important;inset:-20% 8% -20% auto!important;width:110px!important;
+  border:0!important;border-radius:0!important;background:rgba(255,255,255,.08)!important;transform:skewX(-26deg)!important
+}
+.loginMark{background:#fff!important;color:#f52f24!important;box-shadow:0 8px 24px rgba(99,25,10,.18)!important}
+.loginNetto{font-style:italic!important;font-weight:950!important;letter-spacing:-1px!important}
+.loginSub,.loginIntro span{color:rgba(255,255,255,.78)!important}
+.loginArt span{background:rgba(255,255,255,.11)!important;border-color:rgba(255,255,255,.18)!important}
+.loginHello{color:#f33d22!important}
+.loginCard{background:#fff!important}
+
+/* Planning / Chat / Référentiel */
+.viewTab.active,.day.active,.filter.active,.paintChoice.active{background:var(--netto-grad)!important;color:#fff!important;border-color:transparent!important}
+.chatHead{background:linear-gradient(90deg,#fff,#fff8f2)!important}
+.mine .bubble{background:#fff5f1!important;border-color:#ffd9ca!important}
+.memberAvatar,.avatar,.userAvatar{background:var(--netto-grad)!important}
+
+/* Mobile */
+@media(max-width:700px){
+  body{overflow-x:hidden!important}
+  header{min-height:60px!important}
+  .top{width:calc(100% - 18px)!important}
+  .mark,.brandMark{width:36px!important;height:36px!important;border-radius:11px!important}
+  .title{font-size:16px!important}.sub,.subtitle{font-size:9px!important}
+  main{padding-left:10px!important;padding-right:10px!important}
+  .nMenu,.brandMenu{
+    position:fixed!important;left:8px!important;right:8px!important;top:auto!important;bottom:max(8px,env(safe-area-inset-bottom))!important;
+    width:auto!important;max-height:76dvh!important;border-radius:22px!important;padding:10px!important;overflow:auto!important;
+    box-shadow:0 22px 70px rgba(0,0,0,.28)!important
+  }
+  .nMenu:before,.brandMenu:before{
+    content:""!important;display:block!important;width:42px!important;height:4px!important;border-radius:99px!important;
+    background:#cfd2d7!important;margin:1px auto 8px!important
+  }
+  .nMenu button,.brandMenu button{min-height:50px!important}
+  /* le menu utilisateur doit rester rattaché à l'en-tête, pas en bottom-sheet */
+  .userMenu{
+    position:fixed!important;top:62px!important;left:8px!important;right:8px!important;bottom:auto!important;
+    width:auto!important;max-height:calc(100dvh - 76px)!important;overflow:auto!important;border-radius:18px!important;padding:9px!important;
+    box-shadow:0 18px 48px rgba(17,24,39,.22)!important
+  }
+  .userMenu:before{display:none!important}
+  .userPill{min-width:0!important;padding:4px!important;border-radius:12px!important}
+  .userText,.userChevron{display:none!important}
+  .userAvatar{width:36px!important;height:36px!important}
+  .hello{padding:21px 20px!important;border-radius:20px!important;margin-bottom:14px!important}
+  .hello h1{font-size:29px!important}.hello p{font-size:11.5px!important}
+  .pages{grid-template-columns:1fr!important;gap:12px!important}
+  .pageCard{min-height:0!important}
+  .cardTop{padding:16px 16px 0!important}.cardContent{padding:16px!important}.cardFoot{padding:11px 14px!important}
+  .pageCard h2{font-size:22px!important}
+  .pageCard .icon{width:52px!important;height:52px!important}
+  .category{border-radius:15px!important}
+  .catHeader{min-height:58px!important;padding:10px 12px!important}
+  .catHeader .catTitle{font-size:16px!important}.catArt{width:34px!important;height:34px!important;font-size:17px!important}
+  .stockViewOptions{margin-bottom:10px!important;border-radius:13px!important}
+  .stockViewOptions strong{font-size:10.5px!important}.stockViewOptions small{font-size:8.8px!important}
+  dialog{max-width:calc(100vw - 12px)!important;width:calc(100vw - 12px)!important}
+  .modal{border-radius:20px!important;padding:16px!important}
+  .loginWrap{padding:10px!important;min-height:100dvh!important}
+  .loginShell{width:100%!important;max-width:430px!important;border-radius:24px!important}
+  .loginVisual{padding:20px 20px 18px!important}
+  .loginBrand{margin-bottom:20px!important}.loginIntro{margin-top:10px!important}
+  .loginCard{padding:28px 20px 26px!important}
+  .loginCard h1{font-size:29px!important}
+}
+/* Dark */
+:root[data-theme="dark"] body{background:#0f172a!important;color:#f4f5f7!important}
+:root[data-theme="dark"] header{background:rgba(20,24,31,.94)!important;border-color:#30343d!important}
+:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] .card,:root[data-theme="dark"] .category,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group,:root[data-theme="dark"] .monthCard,:root[data-theme="dark"] .stockViewOptions{
+  background:#1f2937!important;border-color:#303a49!important;color:#f4f5f7!important
+}
+:root[data-theme="dark"] .catHeader,:root[data-theme="dark"] .catHeader.fruits,:root[data-theme="dark"] .catHeader.legumes,:root[data-theme="dark"] .catHeader.salades,:root[data-theme="dark"] .catHeader.pommes,:root[data-theme="dark"] .catHeader.herbes,:root[data-theme="dark"] .catHeader.condiments{
+  background:#1f2937!important;border-color:#303a49!important
+}
+:root[data-theme="dark"] .catHeader .catTitle,:root[data-theme="dark"] .catHeader .small,:root[data-theme="dark"] .catHeader .chevron{color:#f4f5f7!important}
+:root[data-theme="dark"] .nMenu,:root[data-theme="dark"] .brandMenu,:root[data-theme="dark"] .userMenu{background:rgba(28,32,40,.97)!important;border-color:#3a404c!important}
+:root[data-theme="dark"] .cardFoot,:root[data-theme="dark"] .chatHead{background:#202a38!important;border-color:#303a49!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea,:root[data-theme="dark"] .searchBox input{background:#202a38!important;border-color:#394352!important;color:#f4f5f7!important}
+:root[data-theme="dark"] .title,:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3{color:#f4f5f7!important}
