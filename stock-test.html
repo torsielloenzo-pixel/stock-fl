@@ -188,6 +188,22 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .navToolLogo.equipe{background-image:url('assets/logo-equipe.svg')!important}
 .pageCard .icon{overflow:hidden;padding:0!important}
 .pageCard .icon img{width:100%;height:100%;object-fit:cover;display:block}
+
+@media(max-width:700px){
+  .nMenu,.brandMenu,.userMenu{
+    position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:10px!important;
+    width:auto!important;max-width:none!important;max-height:min(74dvh,620px)!important;overflow-y:auto!important;
+    overscroll-behavior:contain;padding:10px!important;border-radius:20px!important;
+    box-shadow:0 22px 70px #00000045!important;backdrop-filter:blur(22px)!important;z-index:500!important
+  }
+  .nMenu:before,.brandMenu:before,.userMenu:before{content:"";display:block;width:42px;height:4px;border-radius:99px;background:#c9c9ce;margin:1px auto 8px}
+  .nMenuTitle,.brandMenuTitle{padding:5px 10px 9px!important;font-size:9px!important}
+  .nMenu button,.brandMenu button,.userMenu button{min-height:50px!important;padding:8px 9px!important;border-radius:12px!important;grid-template-columns:38px 1fr!important;gap:10px!important}
+  .nMenu button>span,.brandMenu button>span,.userMenu button>span{width:36px!important;height:36px!important;border-radius:10px!important}
+  .nMenu button strong,.brandMenu button strong,.userMenu button strong{font-size:12px!important}
+  .nMenu button small,.brandMenu button small,.userMenu button small{font-size:9.5px!important}
+  .logoutItem,.brandLogout,.userLogout{margin-top:6px!important;padding-top:9px!important}
+}
 </style></head><body>
 <header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Stock groupé <span style="font-size:11px;color:#888">TEST</span></div><div class="sub">Vue ordinateur • Fruits & Légumes</div></div></div><div class="topActions"><button id="editMenusBtn" class="btn" onclick="toggleMenuEdit()">✎ Menus</button><button class="btn backBtn" onclick="location.href='index.html'">← Retour</button></div></div></header>
 <main><div class="intro"><div><h1>Vue par familles</h1><p>Sélectionne les catégories à afficher. Toutes sont actives par défaut.</p></div><input id="search" class="search" type="search" placeholder="Rechercher…" oninput="render()"></div><div id="categoryFilters" class="categoryFilters"></div><div class="columnGuide"><span>Famille / Article</span><span>Conditionnement</span><span>Catégorie</span><span>Quantité</span></div><div id="app"><div class="empty">Chargement…</div></div></main>
