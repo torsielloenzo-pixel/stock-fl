@@ -285,6 +285,12 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .planningLogs{margin-top:18px;background:#fff;border:1px solid #e1e3e7;border-radius:15px;padding:13px 14px;box-shadow:0 5px 18px #00000007}.planningLogsHead{display:flex;justify-content:space-between;align-items:center;gap:12px}.planningLogsHead strong{display:block;font-size:13px}.planningLogsHead small{display:block;color:#888;font-size:9.5px;margin-top:2px}.planningLogsList{display:grid;gap:7px;margin-top:11px;max-height:260px;overflow:auto}.planningLog{display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;padding:8px 9px;background:#f7f8fa;border-radius:10px}.logIcon{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#fff0e9;color:#e64724;font-weight:900}.planningLog div{min-width:0}.planningLog strong,.planningLog span,.planningLog small{display:inline}.planningLog strong{font-size:10.5px;margin-right:4px}.planningLog div>span{font-size:10px}.planningLog small{display:block;color:#888;font-size:8.5px;margin-top:2px}.logsEmpty{color:#999;font-size:10px;padding:7px 2px}
 @media(max-width:700px){.planningLogs{padding:11px;margin-top:13px}.planningLogsHead{align-items:flex-start}.planningLogsHead .btn{font-size:9px;padding:7px 8px}.planningLogsList{max-height:220px}.planningLog{grid-template-columns:30px 1fr}.logIcon{width:28px;height:28px}.legend{justify-content:flex-start!important}}
 :root[data-theme="dark"] .planningLogs{background:#1a1b1e;border-color:#303136}:root[data-theme="dark"] .planningLog{background:#23252a}:root[data-theme="dark"] .logIcon{background:#39231e}
+
+/* Peinture rapide du planning : maintenir + glisser */
+.planningEditing .grid{touch-action:none}
+.planningEditing .cell.editable{cursor:crosshair}
+.planningEditing .cell.editable:active{outline:2px solid #111;outline-offset:-2px}
+@media(max-width:700px){.planningEditing .sheet{overscroll-behavior:contain}.planningEditing .grid{touch-action:none}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -349,7 +355,7 @@ function renderMobileCards(d){
   return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
  }).join('');
 }
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent='Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.';renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time">'+(i===slots().length-1?'20:00–20:30':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';names.forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.5).toFixed(1).replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){grid.querySelectorAll('.cell').forEach(el=>{el.onclick=e=>{e.preventDefault();apply(el)}})}}
+function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent='Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.';renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time">'+(i===slots().length-1?'20:00–20:30':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';names.forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.5).toFixed(1).replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
 function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
 function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();playUISound('soft')}
 function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();playUISound('soft')}
@@ -358,7 +364,34 @@ function dayHasData(key){const d=all[key];if(!d)return false;return Object.value
 function openDateFromYear(key){const d=parseISO(key);currentWeekStart=startOfWeek(d);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(d.getDay()+6)%7));setPlanningView('week')}
 function renderYear(){document.getElementById('yearTitle').textContent=currentYear;const months=document.getElementById('yearGrid'),todayKey=isoDate(new Date());let html='';for(let m=0;m<12;m++){const first=new Date(currentYear,m,1),last=new Date(currentYear,m+1,0),offset=(first.getDay()+6)%7;html+='<section class="monthCard"><h3>'+first.toLocaleDateString('fr-FR',{month:'long'}).replace(/^./,x=>x.toUpperCase())+'</h3><div class="monthWeekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="monthDays">'+Array.from({length:offset},()=>'<span></span>').join('');for(let d=1;d<=last.getDate();d++){const dt=new Date(currentYear,m,d),key=isoDate(dt),has=dayHasData(key),isToday=key===todayKey;html+='<button class="yearDay '+(has?'hasData ':'')+(isToday?'today':'')+'" onclick="openDateFromYear(\''+key+'\')">'+d+(has?'<i></i>':'')+'</button>'}html+='</div></section>'}months.innerHTML=html}
 
-function apply(el){if(!editMode)return;playUISound('tick');const d=days[current],n=el.dataset.n,t=el.dataset.t;all[d.k][n]??={};if(paintColor==='erase')delete all[d.k][n][t];else all[d.k][n][t]=paintColor;save();addPlanningLog('modify',d.date+' · '+n+' · '+fmt(+t));render()}
+let planningPaint={active:false,pointerId:null,cells:new Set(),changed:[]};
+function paintCell(el){
+ if(!editMode||!el?.classList.contains('cell'))return;
+ const d=days[current],n=el.dataset.n,t=el.dataset.t,key=n+'|'+t;if(planningPaint.cells.has(key))return;
+ planningPaint.cells.add(key);all[d.k][n]??={};const before=all[d.k][n][t]||null;
+ if(paintColor==='erase')delete all[d.k][n][t];else all[d.k][n][t]=paintColor;
+ const after=all[d.k][n][t]||null;if(before===after)return;
+ planningPaint.changed.push({n,t});el.classList.toggle('on',!!after);el.style.setProperty('--c',after?colors[after]:'');playUISound('soft')
+}
+function planningPaintEnd(){
+ if(!planningPaint.active)return;planningPaint.active=false;
+ if(planningPaint.changed.length){
+   save();const d=days[current],first=planningPaint.changed[0],last=planningPaint.changed[planningPaint.changed.length-1];
+   const detail=d.date+' · '+first.n+(first.n===last.n?' · '+fmt(+first.t)+(first.t!==last.t?'–'+fmt(+last.t+.5):''):' · '+planningPaint.changed.length+' cases');
+   addPlanningLog('modify',detail);render()
+ }
+ planningPaint.cells.clear();planningPaint.changed=[]
+}
+function bindPlanningPaint(grid){
+ grid.querySelectorAll('.cell').forEach(el=>{
+  el.onpointerdown=e=>{if(!editMode||e.button>0)return;e.preventDefault();planningPaint.active=true;planningPaint.pointerId=e.pointerId;planningPaint.cells.clear();planningPaint.changed=[];try{grid.setPointerCapture(e.pointerId)}catch(_){}paintCell(el)};
+ });
+ grid.onpointermove=e=>{if(!planningPaint.active||e.pointerId!==planningPaint.pointerId)return;e.preventDefault();const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell');if(hit&&grid.contains(hit))paintCell(hit)};
+ grid.onpointerup=e=>{if(e.pointerId===planningPaint.pointerId)planningPaintEnd()};
+ grid.onpointercancel=planningPaintEnd;
+ grid.onlostpointercapture=planningPaintEnd;
+}
+function apply(el){if(!editMode)return;planningPaint.active=true;planningPaint.cells.clear();planningPaint.changed=[];paintCell(el);planningPaintEnd()}
 function setPaintColor(color){paintColor=color;document.querySelectorAll('.paintChoice').forEach(b=>b.classList.toggle('active',b.dataset.color===color));playUISound('soft')}
 
 
