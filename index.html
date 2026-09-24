@@ -1017,22 +1017,12 @@ async function reorderProduct(fromId,toId){const from=products.find(p=>p.id===fr
 async function removeProduct(id){if(!confirm('Supprimer ce produit ?'))return;const {error}=await db.from('products').delete().eq('id',id);if(error)return alert('Suppression impossible.');await loadProducts();renderManage()}
 db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});boot();
 
-let uiAudioCtx=null;
-function playUISound(type='tick'){
- try{
-  const A=window.AudioContext||window.webkitAudioContext;if(!A)return;
-  uiAudioCtx=uiAudioCtx||new A();const ctx=uiAudioCtx;if(ctx.state==='suspended')ctx.resume();
-  const o=ctx.createOscillator(),g=ctx.createGain(),now=ctx.currentTime;
-  o.type='sine';const f=type==='open'?390:type==='close'?310:520;o.frequency.setValueAtTime(f,now);o.frequency.exponentialRampToValueAtTime(type==='open'?470:type==='close'?260:600,now+.055);
-  g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(type==='tick'?.018:.024,now+.008);g.gain.exponentialRampToValueAtTime(.0001,now+.085);
-  o.connect(g);g.connect(ctx.destination);o.start(now);o.stop(now+.09);
- }catch(e){}
-}
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.closest('.counter')||b.classList.contains('catHeader'))return;playUISound('tick')},{passive:true});
+function playUISound(type='tick'){const map={tick:'tap',open:'menuOpen',close:'menuClose'};window.NettoSounds?.play?.(map[type]||'tap')}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.closest('.counter')||b.classList.contains('catHeader')||b.closest('.nettoGlobalTools'))return;playUISound('tick')},{passive:true});
 
 function toggleBrandMenu(e){if(e)e.stopPropagation();if(profile?.role!=='admin')return;const m=$('brandMenu'),b=$('brandMenuBtn'),opening=m.classList.contains('hidden');m.classList.toggle('hidden',!opening);b.classList.toggle('active',opening);b.setAttribute('aria-expanded',opening?'true':'false');playUISound(opening?'open':'close')}
 function closeBrandMenu(sound=false){const m=$('brandMenu'),b=$('brandMenuBtn');if(!m||m.classList.contains('hidden'))return;m.classList.add('hidden');b.classList.remove('active');b.setAttribute('aria-expanded','false');if(sound)playUISound('close')}
-function goBrand(url){closeBrandMenu();location.href=url}
+function goBrand(url){closeBrandMenu();window.NettoSounds?.play?.('navigate');setTimeout(()=>location.href=url,55)}
 function openUsersFromBrand(){closeBrandMenu();openUsers()}
 document.addEventListener('click',e=>{const w=e.target.closest('.brandMenuWrap');if(!w)closeBrandMenu(true)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBrandMenu(true)});
