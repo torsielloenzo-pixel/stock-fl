@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#ff8a00"/><stop offset=".5" stop-color="#ff351f"/><stop offset="1" stop-color="#f51224"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-opacity=".22"/></filter></defs>
+<rect width="512" height="512" rx="118" fill="url(#g)"/>
+<path d="M70 174V82h92M442 338v92h-92" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="square"/>
+<g filter="url(#s)"><rect x="116" y="128" width="280" height="256" rx="58" fill="#fff" fill-opacity=".98"/><text x="256" y="305" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="900" fill="#ff2f1f">N</text></g>
+</svg>
