@@ -1,5 +1,5 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script><title>Planning Netto</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:linear-gradient(135deg,#f0f1f3,#fafafa 45%,#eef0f1);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input{font:inherit}header{position:sticky;top:0;z-index:10;background:#ffffffed;backdrop-filter:blur(14px);border-bottom:1px solid #ddd;padding:12px 16px}.top{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:39px;height:39px;border-radius:12px;background:#202024;color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}.title{font-weight:850;font-size:20px}.sub{font-size:12px;color:#777;margin-top:2px}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer}.dark{background:#202024;color:#fff}.light{background:#ececef;color:#333}main{max-width:1400px;margin:auto;padding:18px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}.days{display:flex;gap:6px;overflow:auto;padding-bottom:2px}.day{border:0;background:#e7e7ea;border-radius:10px;padding:9px 12px;font-weight:700;white-space:nowrap}.day.active{background:#202024;color:#fff}.hint{font-size:12px;color:#777}.sheet{background:#fff;border:1px solid #ddd;border-radius:16px;overflow:auto;box-shadow:0 8px 30px #0000000b}.grid{display:grid;min-width:1050px;grid-template-columns:150px repeat(29,1fr) 68px}.cell,.name,.time,.total{min-height:38px;border-right:1px solid #d8d8dc;border-bottom:1px solid #d8d8dc;display:grid;place-items:center;font-size:11px}.name{position:sticky;left:0;z-index:3;background:#fff;justify-items:start;padding:0 10px;font-weight:750;font-size:13px}.time{background:#f5f5f7;font-size:10px;font-weight:700;min-height:34px}.total{background:#fafafa;font-weight:800}.cell{cursor:pointer;user-select:none;background:#fff;transition:.08s;position:relative}.cell.on{background:var(--c)}.cell.on:after{content:'1';font-size:9px;font-weight:800;color:#111a}.cell:hover{outline:2px solid #222;outline-offset:-2px}.headName{background:#f5f5f7!important}.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.legend span{font-size:12px;color:#666}.sw{width:13px;height:13px;border-radius:4px;display:inline-block;vertical-align:-2px;margin-right:4px}.saveState{font-size:12px;color:#6a6a6a}.dateTitle{font-size:22px;font-weight:850;margin:4px 0 14px}.footerActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.navActions{display:flex;gap:7px}.desktopTest{display:inline-block}@media(max-width:799px){.desktopTest{display:none}}@media(max-width:650px){main{padding:12px}.title{font-size:18px}.sub{display:none}.grid{grid-template-columns:110px repeat(29,28px) 58px}.name{font-size:12px}.cell{min-height:36px}.toolbar{align-items:flex-start}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:linear-gradient(135deg,#f0f1f3,#fafafa 45%,#eef0f1);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input{font:inherit}header{position:sticky;top:0;z-index:10;background:#ffffffed;backdrop-filter:blur(14px);border-bottom:1px solid #ddd;padding:12px 16px}.top{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:39px;height:39px;border-radius:12px;background:#202024;color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}.title{font-weight:850;font-size:20px}.sub{font-size:12px;color:#777;margin-top:2px}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer}.dark{background:#202024;color:#fff}.light{background:#ececef;color:#333}main{max-width:1400px;margin:auto;padding:18px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}.days{display:flex;gap:6px;overflow:auto;padding-bottom:2px}.day{border:0;background:#e7e7ea;border-radius:10px;padding:9px 12px;font-weight:700;white-space:nowrap}.day.active{background:#202024;color:#fff}.hint{font-size:12px;color:#777}.sheet{background:#fff;border:1px solid #ddd;border-radius:16px;overflow:auto;box-shadow:0 8px 30px #0000000b}.grid{display:grid;min-width:1050px;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px}.cell,.name,.time,.total{min-height:38px;border-right:1px solid #d8d8dc;border-bottom:1px solid #d8d8dc;display:grid;place-items:center;font-size:11px}.name{position:sticky;left:0;z-index:3;background:#fff;justify-items:start;padding:0 10px;font-weight:750;font-size:13px}.time{background:#f5f5f7;font-size:10px;font-weight:700;min-height:34px}.total{background:#fafafa;font-weight:800}.cell{cursor:pointer;user-select:none;background:#fff;transition:.08s;position:relative}.cell.on{background:var(--c)}.cell.on:after{content:'1';font-size:9px;font-weight:800;color:#111a}.cell:hover{outline:2px solid #222;outline-offset:-2px}.headName{background:#f5f5f7!important}.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.legend span{font-size:12px;color:#666}.sw{width:13px;height:13px;border-radius:4px;display:inline-block;vertical-align:-2px;margin-right:4px}.saveState{font-size:12px;color:#6a6a6a}.dateTitle{font-size:22px;font-weight:850;margin:4px 0 14px}.footerActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.navActions{display:flex;gap:7px}.desktopTest{display:inline-block}@media(max-width:799px){.desktopTest{display:none}}@media(max-width:650px){main{padding:12px}.title{font-size:18px}.sub{display:none}.grid{grid-template-columns:110px repeat(59,22px) 58px}.name{font-size:12px}.cell{min-height:36px}.toolbar{align-items:flex-start}}
 html{scroll-behavior:smooth}.btn,.day,.cell,.sheet{transition:transform .18s ease,box-shadow .22s ease,background-color .2s ease,opacity .2s ease}.btn:active,.day:active{transform:scale(.96)}@media(hover:hover){.btn:hover{background:#dedee2}.day:hover:not(.active){background:#dcdce0}.sheet:hover{box-shadow:0 12px 36px #00000010}.cell:hover{transform:scale(1.04);z-index:2}}.day.active{box-shadow:0 5px 15px #0002}.dateTitle{animation:fadeSlide .28s ease}.grid{animation:fadeSlide .28s ease}@keyframes fadeSlide{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}.saveState{transition:opacity .2s ease}.cell.on{animation:cellPop .18s ease}@keyframes cellPop{50%{transform:scale(.92)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 /* Planning plein écran desktop */
 main{width:min(97vw,1700px);max-width:none;padding:24px 26px 60px}.top{width:min(97vw,1700px);max-width:none}
@@ -291,6 +291,10 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .planningEditing .cell.editable{cursor:crosshair}
 .planningEditing .cell.editable:active{outline:2px solid #111;outline-offset:-2px}
 @media(max-width:700px){.planningEditing .sheet{overscroll-behavior:contain}.planningEditing .grid{touch-action:none}}
+
+/* Planning inspiré du fichier Excel magasin */
+.grid{min-width:1540px!important;background:#fff}.time{min-height:31px!important;font-size:9px!important;padding:0!important}.time.quarter{background:#fafafa!important}.time.half{background:#f0f1f3!important;border-left:1px solid #bfc3c8!important}.cell{min-height:34px!important;border-right:1px solid #eceef0!important;border-bottom:1px solid #d6d9dd!important}.cell:nth-child(2n){border-right-color:#d2d5d9!important}.cell.on:after{display:none!important}.name{min-height:34px!important;border-bottom-color:#cfd2d6!important}.total{min-height:34px!important;background:#f5f5f6!important}.planningToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:5000;background:#17181b;color:#fff;border-radius:12px;padding:11px 16px;font-size:12px;font-weight:800;box-shadow:0 12px 35px #0004;opacity:0;pointer-events:none;transition:.2s}.planningToast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){body.planningEditing .grid{min-width:1540px!important;grid-template-columns:110px repeat(59,22px) 58px!important}.planningToast{bottom:calc(18px + env(safe-area-inset-bottom));white-space:nowrap}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -313,7 +317,7 @@ const seedDays=[
  {k:'dim',label:'Dimanche',date:'27 septembre 2026',blocks:{'Clément':[['12.5','20','r']],'Delphine':[['12.5','20','r']],'Laetitia':[['7.5','12.5','g'],['12.5','20','r']],'Enzo L':[['12.5','20','r']],'Manuel':[['6','12.5','r'],['12.5','20','r']],'Enzo C':[['7.5','12.5','g'],['12.5','20','r']],'Gwen':[['6','12.5','y'],['12.5','20','r']],'Kenza':[['7.5','12.5','g'],['12.5','20','r']],'Candy':[['12.5','20','r']],'Nathanael':[['12.5','20','r']],'Chantal':[['12.5','20','r']],'Giani':[['7.5','12.5','g'],['12.5','20','r']]}}
 ];
 let current=0,paintColor='g',editMode=false,planningView='week',currentWeekStart=null,currentYear=(new Date()).getFullYear(),days=[];
-function slots(){return Array.from({length:29},(_,i)=>6+i*.5)}
+function slots(){return Array.from({length:59},(_,i)=>6+i*.25)}
 function isoDate(d){const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function parseISO(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
 function startOfWeek(d){const x=new Date(d),day=(x.getDay()+6)%7;x.setHours(0,0,0,0);x.setDate(x.getDate()-day);return x}
@@ -332,7 +336,7 @@ if(!Object.keys(all).length){try{const old=JSON.parse(localStorage.getItem('nett
 const today=new Date();currentWeekStart=startOfWeek(today);currentYear=today.getFullYear();buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(today.getDay()+6)%7));
 function save(){localStorage.setItem('nettoPlanningV2',JSON.stringify(all));const e=document.getElementById('saveState');if(e){e.textContent='✓ Enregistré';setTimeout(()=>e.textContent=editMode?'Mode modification':'Lecture seule',900)}}
 
-function fmt(t){const h=Math.floor(t),m=t%1?'30':'00';return h+':'+m}
+function fmt(t){const h=Math.floor(t),m=Math.round((t-h)*60);return h+':'+String(m).padStart(2,'0')}
 function playUISound(type='tick'){try{const A=window.AudioContext||window.webkitAudioContext;window._uac=window._uac||new A();const x=window._uac;if(x.state==='suspended')x.resume();const o=x.createOscillator(),g=x.createGain(),n=x.currentTime;o.type='sine';o.frequency.setValueAtTime(type==='soft'?390:520,n);o.frequency.exponentialRampToValueAtTime(type==='soft'?450:590,n+.05);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.016,n+.007);g.gain.exponentialRampToValueAtTime(.0001,n+.075);o.connect(g);g.connect(x.destination);o.start(n);o.stop(n+.08)}catch(e){}}
 function renderDays(){
  const box=document.getElementById('days');
@@ -340,6 +344,12 @@ function renderDays(){
  if(innerWidth<=700)setTimeout(()=>box.querySelector('.day.active')?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),0);
 }
 function updateWeekLabel(){const a=days[0].dateObj,b=days[6].dateObj,txt='Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});document.getElementById('weekLabel').textContent=txt;const sub=document.querySelector('header .sub');if(sub)sub.textContent='Netto • '+txt}
+
+function weekKeyForDate(d){return isoDate(startOfWeek(d))}
+function importedWeekNames(){try{return JSON.parse(localStorage.getItem('nettoPlanningWeekNames')||'{}')||{}}catch(e){return{}}}
+function displayNamesForWeek(){return importedWeekNames()[weekKeyForDate(days[0].dateObj)]||names}
+function saveWeekNames(key,list){const x=importedWeekNames();x[key]=list;localStorage.setItem('nettoPlanningWeekNames',JSON.stringify(x))}
+function showPlanningToast(msg){let t=document.getElementById('planningToast');if(!t){t=document.createElement('div');t.id='planningToast';t.className='planningToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window._planningToast);window._planningToast=setTimeout(()=>t.classList.remove('show'),2600)}
 function employeeRanges(dayKey,name){
  const row=all[dayKey]?.[name]||{};if(Array.isArray(row.__exact)&&row.__exact.length)return row.__exact;
  const out=[];let start=null,last=null,color=null;
@@ -350,13 +360,13 @@ function employeeRanges(dayKey,name){
 function renderMobileCards(d){
  const box=document.getElementById('mobilePlanningCards');if(!box)return;
  const labels={g:'Matin',b:'Après-midi',r:'Indisponible',y:'Journée jaune',o:'Journée orange'};
- box.innerHTML=names.map(n=>{
+ box.innerHTML=displayNamesForWeek().map(n=>{
   const ranges=employeeRanges(d.k,n);
   const body=ranges.length?ranges.map(x=>'<span class="shiftChip shift-'+x.c+'"><i></i><b>'+fmt(x.a)+'–'+fmt(x.b)+'</b><small>'+labels[x.c]+'</small></span>').join(''):'<span class="offChip">Aucun horaire</span>';
   return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
  }).join('');
 }
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent='Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.';renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time">'+(i===slots().length-1?'20:00–20:30':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';names.forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.5).toFixed(1).replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
+function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent='Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.';renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(i%2?'quarter':'half')+'">'+(i%2?'':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val)count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
 function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
 function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();playUISound('soft')}
 function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();playUISound('soft')}
@@ -466,34 +476,57 @@ async function importPlanningFile(file){
  const state=document.getElementById('excelImportState');state.textContent='Analyse du planning Excel…';state.className='excelImportState loading';
  try{
   if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas encore chargé.');
-  const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true}),imported={},bounds={};let matches=0,peopleSeen=0,daySheets=0;
-  wb.SheetNames.forEach(sn=>{
-   const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''}),day=sheetDayInfo(sn,rows),timeline=detectTimeline(rows);
-   if(day.off===null||!day.dt||!timeline)return;daySheets++;
-   const key=isoDate(day.dt);imported[key]??={};
-   rows.forEach(row=>{
-    let name=null;for(let c=0;c<Math.min(timeline.startCol,8);c++){name=excelName(row[c]);if(name)break}if(!name)return;peopleSeen++;
-    const ranges=rangesFromOccupancy(row,timeline);if(!ranges.length){imported[key][name]={};return}
-    imported[key][name]={};
+  const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true,cellStyles:true}),imported={},bounds={};
+  const dayMap={lundi:0,mardi:1,mercredi:2,jeudi:3,vendredi:4,samedi:5,dimanche:6};
+  let monday=null,employeeOrder=[],matches=0,daySheets=0;
+  // The Monday sheet contains the real date. All other daily sheets inherit Monday + offset,
+  // which also works when their date/name cells are Excel formulas.
+  for(const sn of wb.SheetNames){
+   const n=normExcel(sn);if(!n.includes('lundi'))continue;
+   const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
+   for(let r=0;r<Math.min(8,rows.length)&&!monday;r++)for(let col=0;col<Math.min(8,rows[r]?.length||0)&&!monday;col++)monday=excelDateValue(rows[r][col],currentWeekStart.getFullYear());
+   if(monday)break;
+  }
+  if(!monday)throw new Error('La date du lundi n’a pas pu être déterminée.');
+  for(const sn of wb.SheetNames){
+   const ns=normExcel(sn);let off=null;for(const [d,o] of Object.entries(dayMap))if(ns.includes(d)){off=o;break}if(off===null)continue;
+   const ws=wb.Sheets[sn],rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}),timeline=detectTimeline(rows);if(!timeline)continue;
+   daySheets++;const dt=addDays(monday,off),key=isoDate(dt);imported[key]={};
+   // Employee names are literal on Monday and formulas on later sheets. Keep the row/name mapping from Monday.
+   const sheetPeople=[];
+   rows.forEach((row,ri)=>{let raw=cleanExcelText(row[1]);if(raw&&raw.toUpperCase()!=='TOTAL'&&!raw.startsWith('='))sheetPeople.push({ri,name:raw})});
+   if(off===0&&sheetPeople.length)employeeOrder=sheetPeople.map(x=>x.name);
+   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(sheetPeople[i]?.ri??(3+i)),name}));
+   people.forEach(({ri,name})=>{
+    const row=rows[ri]||[],ranges=rangesFromOccupancy(row,timeline);imported[key][name]={};
     ranges.forEach(x=>{
-      // Site currently paints half-hour cells. Preserve exact start/end separately so mobile preview can show the real Excel hours.
-      const color=x.a<12.5?'g':'b',paintA=Math.floor(x.a*2)/2,paintB=Math.ceil(x.b*2)/2;
-      for(let t=paintA;t<paintB;t+=.5)imported[key][name][String(Math.round(t*2)/2)]=color;
-      imported[key][name].__exact=(imported[key][name].__exact||[]).concat([{a:x.a,b:x.b,c:color}]);
+      let color=x.a<12.5?'g':'b';
+      // Read the original Excel fill so the web planning visually follows the imported document.
+      for(let cc=Math.max(timeline.startCol,Math.round((x.a-timeline.startTime)/timeline.step)+timeline.startCol);cc<Math.min(timeline.endCol+1,Math.round((x.b-timeline.startTime)/timeline.step)+timeline.startCol);cc++){
+       const cell=ws[XLSX.utils.encode_cell({r:ri,c:cc})],rgb=String(cell?.s?.fgColor?.rgb||cell?.s?.fill?.fgColor?.rgb||'').replace(/^FF/,'').toUpperCase();
+       if(rgb.includes('1FB714')){color='g';break}if(rgb.includes('00ABEA')){color='b';break}if(rgb.includes('DD0806')){color='r';break}if(rgb.includes('FFFF00')){color='y';break}if(rgb.includes('EDA900')||rgb.includes('FFC000')){color='o';break}
+      }
+      for(let t=x.a;t<x.b;t+=.25)imported[key][name][String(Math.round(t*4)/4)]=color;
       const q=bounds[key]||{min:x.a,max:x.b};q.min=Math.min(q.min,x.a);q.max=Math.max(q.max,x.b);bounds[key]=q;matches++;
     });
    });
-  });
-  if(!daySheets)throw new Error('Aucune feuille journalière reconnue dans ce fichier.');
-  if(!matches)throw new Error('Le fichier a bien été lu, mais aucune plage de présence n’a été détectée.');
-  Object.entries(imported).forEach(([key,day])=>{all[key]??={};names.forEach(n=>{if(Object.prototype.hasOwnProperty.call(day,n))all[key][n]=day[n]})});
-  localStorage.setItem('nettoPlanningAmplitude',JSON.stringify({...getPlanningAmplitude(),...bounds}));save();addPlanningLog('import',file.name+' · '+matches+' plage'+(matches>1?'s':'')+' importée'+(matches>1?'s':''));
-  const keys=Object.keys(imported).sort(),first=parseISO(keys[0]);currentWeekStart=startOfWeek(first);buildWeek(currentWeekStart);current=0;render();
-  state.textContent='✓ Planning compris : '+daySheets+' jours, '+matches+' plages horaires importées.';state.className='excelImportState success';playUISound('tick');
+  }
+  if(daySheets<1||!matches)throw new Error('Le fichier a été lu mais aucun planning journalier exploitable n’a été trouvé.');
+  const weekStart=startOfWeek(monday),weekKeys=Array.from({length:7},(_,i)=>isoDate(addDays(weekStart,i)));
+  const occupied=weekKeys.some(k=>{const day=all[k];return day&&Object.values(day).some(row=>row&&Object.keys(row).some(t=>!t.startsWith('__')&&row[t]))});
+  if(occupied&&!confirm('Êtes-vous sûr de remplacer le planning actuel de la semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' ?\n\nLe planning Excel remplacera entièrement cette semaine.')){state.textContent='Import annulé.';state.className='excelImportState';return}
+  // Absolute priority: clear the whole target week first, then write exactly what Excel contains.
+  weekKeys.forEach(k=>{all[k]={}});
+  Object.entries(imported).forEach(([key,day])=>{all[key]=day});
+  saveWeekNames(isoDate(weekStart),employeeOrder);
+  localStorage.setItem('nettoPlanningAmplitude',JSON.stringify({...getPlanningAmplitude(),...bounds}));save();
+  addPlanningLog('import',file.name+' · semaine du '+weekStart.toLocaleDateString('fr-FR')+' · '+matches+' plages');
+  currentWeekStart=weekStart;currentYear=weekStart.getFullYear();buildWeek(currentWeekStart);current=0;setPlanningView('week');render();
+  state.textContent='✓ Planning importé · semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+'.';state.className='excelImportState success';
+  showPlanningToast('✓ Planning importé');playUISound('tick');
  }catch(err){state.textContent='⚠ '+(err?.message||'Import impossible.');state.className='excelImportState error'}
  finally{const input=document.getElementById('excelFile');if(input)input.value=''}
 }
-
 function getPlanningAmplitude(){try{return JSON.parse(localStorage.getItem('nettoPlanningAmplitude')||'{}')||{}}catch(e){return{}}}
 function toggleEditMode(){if(!window.planningCanEdit)return;editMode=!editMode;const tools=document.getElementById('editTools'),btn=document.getElementById('editPlanningBtn'),hint=document.getElementById('planningHint'),state=document.getElementById('saveState');tools.classList.toggle('hidden',!editMode);btn.textContent=editMode?'✓ Terminer':'✎ Modifier le planning';btn.classList.toggle('editing',editMode);hint.textContent=editMode?'Mode modification actif • clique sur une case pour la modifier. Amplitude 6:00 → 20:30.':'Planning en lecture seule • amplitude 6:00 → 20:30.';state.textContent=editMode?'Mode modification':'Lecture seule';render();playUISound(editMode?'soft':'tick')}
 function resetDay(){if(!window.planningCanEdit||!editMode)return;if(!confirm('Réinitialiser ce jour avec le planning saisi depuis les photos ?'))return;all[days[current].k]=baseState(days[current]);save();addPlanningLog('modify','Réinitialisation · '+days[current].date);render()}
