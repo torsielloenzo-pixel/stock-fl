@@ -1,4 +1,4 @@
-const CACHE='netto-tools-v2';
+const CACHE='netto-tools-v3';
 const CORE=['./','./index.html','./home.html','./articles.html','./planning.html','./chat.html','./profile.html','./settings.html','./stock-test.html','./manifest.webmanifest','./design-v2.css','./assets/app-icon.svg','./assets/logo-stock.svg','./assets/logo-planning.svg','./assets/logo-equipe.svg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
