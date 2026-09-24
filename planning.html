@@ -414,60 +414,92 @@ function excelDrag(e,on){e.preventDefault();if(!window.planningCanEdit)return;do
 function excelDropFile(e){e.preventDefault();excelDrag(e,false);if(!window.planningCanEdit)return;const f=e.dataTransfer?.files?.[0];if(f)importPlanningFile(f)}
 function cleanExcelText(v){return String(v??'').replace(/\s+/g,' ').trim()}
 function normExcel(v){return cleanExcelText(v).toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-function excelName(v){const n=normExcel(v);return names.find(x=>{const q=normExcel(x);return n===q||n.includes(q)||q.includes(n)})||null}
+function excelName(v){
+ const n=normExcel(v);if(!n)return null;
+ return names.find(x=>{const q=normExcel(x),parts=q.split(/\s+/).filter(z=>z.length>2);return n===q||n.includes(q)||q.includes(n)||(parts.length&&parts.every(z=>n.includes(z)))})||null
+}
 function excelTime(v){
- if(typeof v==='number'&&v>=0&&v<1)return Math.round(v*48)/2;
+ if(v instanceof Date)return Math.round((v.getHours()+v.getMinutes()/60)*2)/2;
+ if(typeof v==='number'){
+   if(v>=0&&v<1)return Math.round(v*48)/2;
+   if(v>=1&&v<24)return Math.round(v*2)/2;
+ }
  const s=cleanExcelText(v).replace(/h/gi,':').replace(/\./g,':');
- const m=s.match(/\b([0-2]?\d)(?::([0-5]\d))?\b/);if(!m)return null;
+ const m=s.match(/(?:^|\D)([0-2]?\d)(?::([0-5]\d))?(?:\D|$)/);if(!m)return null;
  const h=+m[1],min=+(m[2]||0);if(h>23)return null;return Math.round((h+min/60)*2)/2
 }
 function excelRanges(v){
  const s=cleanExcelText(v);if(!s)return[];
- const special=normExcel(s);if(/\brouge\b/.test(special))return[{special:'r'}];if(/\bjaune\b/.test(special))return[{special:'y'}];if(/\borange\b/.test(special))return[{special:'o'}];
- const out=[],re=/([0-2]?\d(?:[:h.]?[0-5]\d)?)\s*(?:-|–|—|a|à|>)\s*([0-2]?\d(?:[:h.]?[0-5]\d)?)/gi;let m;
- while((m=re.exec(s))){const a=excelTime(m[1]),b=excelTime(m[2]);if(a!==null&&b!==null&&b>a)out.push({a,b})}
+ const n=normExcel(s);
+ if(/repos|conge|absence|absent|formation|maladie|off/.test(n))return[];
+ if(/\brouge\b/.test(n))return[{special:'r'}];if(/\bjaune\b/.test(n))return[{special:'y'}];if(/\borange\b/.test(n))return[{special:'o'}];
+ const times=[];const re=/\b([0-2]?\d)(?:[:h.]([0-5]\d))?\b/gi;let m;
+ while((m=re.exec(s))){const t=excelTime(m[1]+(m[2]?':'+m[2]:''));if(t!==null&&t>=4&&t<=23)times.push(t)}
+ const out=[];for(let i=0;i+1<times.length;i+=2)if(times[i+1]>times[i])out.push({a:times[i],b:times[i+1]});
  return out
 }
-function headerDate(rows,col){
- const dayMap={lundi:1,mardi:2,mercredi:3,jeudi:4,vendredi:5,samedi:6,dimanche:0};
- for(let r=0;r<Math.min(rows.length,12);r++){
-  const s=cleanExcelText(rows[r]?.[col]);if(!s)continue;
-  let m=s.match(/\b(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2,4}))?\b/);
-  if(m){let y=m[3]?+m[3]:currentWeekStart.getFullYear();if(y<100)y+=2000;return new Date(y,+m[2]-1,+m[1])}
-  const n=normExcel(s);for(const [d,js] of Object.entries(dayMap))if(n.includes(d)){const start=currentWeekStart;const offset=(js+6)%7;return addDays(start,offset)}
+function excelDateValue(v,baseYear){
+ if(v instanceof Date&&!isNaN(v))return new Date(v.getFullYear(),v.getMonth(),v.getDate());
+ if(typeof v==='number'&&v>30000&&window.XLSX){const x=XLSX.SSF.parse_date_code(v);if(x)return new Date(x.y,x.m-1,x.d)}
+ const s=cleanExcelText(v),m=s.match(/\b(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2,4}))?\b/);
+ if(m){let y=m[3]?+m[3]:baseYear;if(y<100)y+=2000;return new Date(y,+m[2]-1,+m[1])}return null
+}
+function detectWorkbookPlanning(rows){
+ const maxCols=Math.max(0,...rows.map(r=>r.length)),baseYear=currentWeekStart.getFullYear();
+ const dates={},days={},dayNames={lundi:0,mardi:1,mercredi:2,jeudi:3,vendredi:4,samedi:5,dimanche:6};
+ // Understand the header structure instead of requiring a fixed template.
+ for(let r=0;r<Math.min(rows.length,25);r++)for(let col=0;col<maxCols;col++){
+   const v=rows[r]?.[col],dt=excelDateValue(v,baseYear);if(dt)dates[col]=dt;
+   const n=normExcel(v);for(const [day,off] of Object.entries(dayNames))if(n.includes(day))days[col]=off
  }
- return null
+ const knownDateCols=Object.keys(dates).map(Number).sort((x,y)=>x-y);
+ let inferredStart=knownDateCols.length?startOfWeek(dates[knownDateCols[0]]):currentWeekStart;
+ for(const [col,off] of Object.entries(days))if(!dates[col])dates[col]=addDays(inferredStart,off);
+ // Propagate merged/grouped day headers to adjacent columns until the next recognized day/date.
+ const anchors=Object.keys(dates).map(Number).sort((x,y)=>x-y);
+ anchors.forEach((col,i)=>{const end=(anchors[i+1]??maxCols);for(let x=col;x<end;x++)if(!dates[x])dates[x]=dates[col]});
+ const people=[];
+ rows.forEach((row,ri)=>{for(let ci=0;ci<row.length;ci++){const name=excelName(row[ci]);if(name){people.push({ri,ci,name});break}}});
+ return{dates,people,maxCols};
 }
 async function importPlanningFile(file){
  if(!window.planningCanEdit||!file)return;
- const state=document.getElementById('excelImportState');state.textContent='Lecture du fichier…';state.className='excelImportState loading';
+ const state=document.getElementById('excelImportState');state.textContent='Analyse de la structure du fichier…';state.className='excelImportState loading';
  try{
   if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas encore chargé.');
-  const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true}),imported={},bounds={};let matches=0;
+  const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true}),imported={},bounds={};let matches=0,peopleSeen=0,daysSeen=new Set();
   wb.SheetNames.forEach(sn=>{
-   const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
-   rows.forEach((row,ri)=>{
-    let name=null,nameCol=-1;for(let ci=0;ci<Math.min(row.length,8);ci++){name=excelName(row[ci]);if(name){nameCol=ci;break}}
-    if(!name)return;
-    for(let ci=nameCol+1;ci<row.length;ci++){
-      const ranges=excelRanges(row[ci]);if(!ranges.length)continue;const dt=headerDate(rows,ci);if(!dt)continue;
-      const key=isoDate(dt);imported[key]??={};imported[key][name]??={};
+   const ws=wb.Sheets[sn],rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}),layout=detectWorkbookPlanning(rows);
+   peopleSeen+=layout.people.length;
+   layout.people.forEach(({ri,ci,name})=>{
+    const row=rows[ri]||[];
+    // Search the whole employee row. Date association comes from the detected column/group above.
+    for(let col=0;col<row.length;col++){
+      if(col===ci)continue;const ranges=excelRanges(row[col]);if(!ranges.length)continue;
+      let dt=layout.dates[col];
+      // Some exports put one day in a block with start/end in separate adjacent columns.
+      if(!dt){for(let x=col;x>=0&&!dt;x--)dt=layout.dates[x]}
+      if(!dt)continue;const key=isoDate(dt);daysSeen.add(key);imported[key]??={};imported[key][name]??={};
       ranges.forEach(x=>{
        if(x.special){for(let t=6;t<20.5;t+=.5)imported[key][name][String(t)]=x.special;bounds[key]={min:6,max:20.5};matches++;return}
-       const color=x.a<12.5?'g':'b';for(let t=Math.max(0,x.a);t<Math.min(24,x.b);t+=.5)imported[key][name][String(Math.round(t*2)/2)]=color;
-       const b=bounds[key]||{min:x.a,max:x.b};b.min=Math.min(b.min,x.a);b.max=Math.max(b.max,x.b);bounds[key]=b;matches++;
+       const color=x.a<12.5?'g':'b';for(let t=x.a;t<x.b;t+=.5)imported[key][name][String(Math.round(t*2)/2)]=color;
+       const q=bounds[key]||{min:x.a,max:x.b};q.min=Math.min(q.min,x.a);q.max=Math.max(q.max,x.b);bounds[key]=q;matches++;
       });
     }
    });
   });
-  if(!matches)throw new Error('Aucun horaire reconnu. Le fichier doit contenir les noms des employés et des plages du type 6:00-12:00.');
+  if(!matches){
+    const info=(peopleSeen?'Employés reconnus : '+peopleSeen+'. ':'Aucun nom d’employé reconnu. ')+(daysSeen.size?'Jours reconnus : '+daysSeen.size+'.':'');
+    throw new Error('Structure analysée, mais aucune plage horaire exploitable. '+info+' Le lecteur doit être ajusté à la construction exacte de ce fichier.');
+  }
   Object.entries(imported).forEach(([key,day])=>{all[key]??={};names.forEach(n=>{if(day[n])all[key][n]=day[n]})});
   localStorage.setItem('nettoPlanningAmplitude',JSON.stringify({...getPlanningAmplitude(),...bounds}));save();addPlanningLog('import',file.name+' · '+matches+' plage'+(matches>1?'s':'')+' importée'+(matches>1?'s':''));
   const keys=Object.keys(imported).sort(),first=parseISO(keys[0]);currentWeekStart=startOfWeek(first);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(first.getDay()+6)%7));render();
-  state.textContent='✓ '+matches+' plage'+(matches>1?'s':'')+' importée'+(matches>1?'s':'')+' depuis '+file.name;state.className='excelImportState success';playUISound('tick');
+  state.textContent='✓ Fichier compris : '+peopleSeen+' employé'+(peopleSeen>1?'s':'')+', '+daysSeen.size+' jour'+(daysSeen.size>1?'s':'')+', '+matches+' plage'+(matches>1?'s':'')+'.';state.className='excelImportState success';playUISound('tick');
  }catch(err){state.textContent='⚠ '+(err?.message||'Import impossible.');state.className='excelImportState error'}
  finally{const input=document.getElementById('excelFile');if(input)input.value=''}
 }
+
 function getPlanningAmplitude(){try{return JSON.parse(localStorage.getItem('nettoPlanningAmplitude')||'{}')||{}}catch(e){return{}}}
 function toggleEditMode(){if(!window.planningCanEdit)return;editMode=!editMode;const tools=document.getElementById('editTools'),btn=document.getElementById('editPlanningBtn'),hint=document.getElementById('planningHint'),state=document.getElementById('saveState');tools.classList.toggle('hidden',!editMode);btn.textContent=editMode?'✓ Terminer':'✎ Modifier le planning';btn.classList.toggle('editing',editMode);hint.textContent=editMode?'Mode modification actif • clique sur une case pour la modifier. Amplitude 6:00 → 20:30.':'Planning en lecture seule • amplitude 6:00 → 20:30.';state.textContent=editMode?'Mode modification':'Lecture seule';render();playUISound(editMode?'soft':'tick')}
 function resetDay(){if(!window.planningCanEdit||!editMode)return;if(!confirm('Réinitialiser ce jour avec le planning saisi depuis les photos ?'))return;all[days[current].k]=baseState(days[current]);save();addPlanningLog('modify','Réinitialisation · '+days[current].date);render()}
