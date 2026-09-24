@@ -85,26 +85,22 @@ begin
 end $$;
 
 create function public.reward_buy(p_item uuid) returns void language plpgsql security invoker set search_path='' as $$
-declare c public.reward_catalog; u uuid:=auth.uid(); b integer;
+declare c public.reward_catalog; u uuid:=auth.uid();
 begin
- if u is null or not public.has_role(array['admin']) then raise exception 'Boutique en avant-première : administrateur uniquement'; end if;
- insert into public.reward_wallets(user_id) values(u) on conflict do nothing;
- select balance into b from public.reward_wallets where user_id=u for update;
+ if u is null or not public.has_role(array['admin']) then raise exception 'Boutique réservée à l’administrateur'; end if;
  select * into c from public.reward_catalog where id=p_item and active for share;
  if not found then raise exception 'Objet indisponible'; end if;
- if exists(select 1 from public.reward_inventory where user_id=u and item_id=p_item) then raise exception 'Cet objet est déjà dans ta collection'; end if;
- if b<c.price then raise exception 'Solde de jetons insuffisant'; end if;
- insert into public.reward_inventory(user_id,item_id) values(u,p_item);
- update public.reward_wallets set balance=balance-c.price where user_id=u;
- insert into public.reward_ledger(user_id,amount,description,item_id) values(u,-c.price,c.name,c.id);
+ insert into public.reward_inventory(user_id,item_id) values(u,p_item) on conflict(user_id,item_id) do nothing;
 end $$;
 create function public.reward_equip(p_kind text,p_item uuid default null) returns void language plpgsql security invoker set search_path='' as $$
-declare u uuid:=auth.uid();
+declare u uuid:=auth.uid(); c public.reward_catalog;
 begin
  if u is null or not public.has_role(array['admin']) then raise exception 'Personnalisation réservée à l’administrateur'; end if;
  if p_kind not in ('avatar','frame','accessory','title','theme') then raise exception 'Catégorie inconnue'; end if;
  if p_item is null then delete from public.reward_equipment where user_id=u and kind=p_kind; return; end if;
- if not exists(select 1 from public.reward_inventory i join public.reward_catalog c on c.id=i.item_id where i.user_id=u and i.item_id=p_item and c.kind=p_kind) then raise exception 'Achète cet objet avant de l’équiper'; end if;
+ select * into c from public.reward_catalog where id=p_item and kind=p_kind and active for share;
+ if not found then raise exception 'Objet indisponible'; end if;
+ insert into public.reward_inventory(user_id,item_id) values(u,p_item) on conflict(user_id,item_id) do nothing;
  insert into public.reward_equipment(user_id,kind,item_id) values(u,p_kind,p_item) on conflict(user_id,kind) do update set item_id=excluded.item_id;
 end $$;
 revoke all on function public.reward_mission_action(uuid,text,text),public.reward_buy(uuid),public.reward_equip(text,uuid) from public,anon;
