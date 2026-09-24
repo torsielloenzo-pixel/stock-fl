@@ -261,6 +261,22 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
   .arrow{width:31px!important;height:31px!important;font-size:15px!important;position:static!important}
   .status{display:none!important}
 }
+
+@media(max-width:700px){
+  .nMenu,.brandMenu,.userMenu{
+    position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:10px!important;
+    width:auto!important;max-width:none!important;max-height:min(74dvh,620px)!important;overflow-y:auto!important;
+    overscroll-behavior:contain;padding:10px!important;border-radius:20px!important;
+    box-shadow:0 22px 70px #00000045!important;backdrop-filter:blur(22px)!important;z-index:500!important
+  }
+  .nMenu:before,.brandMenu:before,.userMenu:before{content:"";display:block;width:42px;height:4px;border-radius:99px;background:#c9c9ce;margin:1px auto 8px}
+  .nMenuTitle,.brandMenuTitle{padding:5px 10px 9px!important;font-size:9px!important}
+  .nMenu button,.brandMenu button,.userMenu button{min-height:50px!important;padding:8px 9px!important;border-radius:12px!important;grid-template-columns:38px 1fr!important;gap:10px!important}
+  .nMenu button>span,.brandMenu button>span,.userMenu button>span{width:36px!important;height:36px!important;border-radius:10px!important}
+  .nMenu button strong,.brandMenu button strong,.userMenu button strong{font-size:12px!important}
+  .nMenu button small,.brandMenu button small,.userMenu button small{font-size:9.5px!important}
+  .logoutItem,.brandLogout,.userLogout{margin-top:6px!important;padding-top:9px!important}
+}
 </style>
 </head>
 <body>
