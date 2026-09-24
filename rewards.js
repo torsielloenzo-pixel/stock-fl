@@ -37,9 +37,9 @@ function renderShop(){
  const manage=tab==='manage',owned=tab==='collection';let rows=catalog.filter(c=>(manage||c.active||owned&&inventory.some(i=>i.item_id===c.id))&&(!category||c.kind===category)&&(!owned||inventory.some(i=>i.item_id===c.id)));
  $('content').innerHTML=`<div class="row toolbar"><h2>${manage?'Gérer les récompenses':owned?'Ma collection':'Choisis ton prochain objectif'}</h2><div class="filters"><select id="category" aria-label="Catégorie"><option value="">Toutes les catégories</option>${Object.entries(kinds).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>${manage?action('newItem','','Ajouter un objet',true):''}</div></div><div class="grid">${rows.map(c=>{
  const has=inventory.some(i=>i.item_id===c.id),equipped=equipment.some(e=>e.user_id===user.id&&e.item_id===c.id);
- let buttons=admin?(has?action(equipped?'unequip':'equip',c.id,equipped?'Retirer':'Équiper',!equipped):action('buy',c.id,'Ajouter à ma collection',true)):'';
+ let buttons=admin?action('profile',c.id,'Personnaliser dans Mon profil',true):'';
  if(manage)buttons=action('editItem',c.id,'Modifier')+action('toggleItem',c.id,c.active?'Retirer de la vente':'Remettre en vente');
- return `<article class="card">${preview(c)}<div class="row"><span class="meta">${kinds[c.kind]}</span><span class="points">${c.price} jetons</span></div><h3>${esc(c.name)}</h3>${equipped?'<span class="tag">Équipé</span>':has?'<span class="tag">Dans ma collection</span>':''}${!c.active?'<span class="tag">Hors boutique</span>':''}<div class="actions">${buttons}</div></article>`;
+ return `<article class="card">${preview(c)}<div class="row"><span class="meta">${kinds[c.kind]}</span><span class="points">${c.price} jetons · accès libre admin</span></div><h3>${esc(c.name)}</h3>${equipped?'<span class="tag">Équipé</span>':has?'<span class="tag">Dans ma collection</span>':''}${!c.active?'<span class="tag">Hors boutique</span>':''}<div class="actions">${buttons}</div></article>`;
  }).join('')||'<div class="empty">'+(owned?'Ta collection commence avec ton premier achat.':'Aucun objet dans cette catégorie.')+'</div>'}</div>`;
  $('category').value=category;$('category').onchange=e=>{category=e.target.value;renderShop()};
 }
@@ -58,6 +58,7 @@ async function click(a,id){if(!admin)return;const m=missions.find(x=>x.id===id),
  if(a==='submit'||a==='reject'){openForm(a==='submit'?'Terminer la mission':'Demander une correction',`<p>${esc(m.title)}</p><label>${a==='submit'?'Compte rendu du travail réalisé':'Correction attendue'}<textarea name="note" required minlength="3" maxlength="${a==='submit'?2000:1000}"></textarea></label>`,a==='submit'?'Envoyer pour validation':'Rouvrir la mission',f=>rpc(a,f.get('note')));return}
  if(a==='approve'){confirmAction('Valider la mission',`${m.title} : attribuer ${m.points} jetons à ${name(m.assigned_to)} ? Pendant le pilote, l’admin peut valider son propre essai.`,'Valider',()=>rpc(a));return}
  if(a==='cancel'||a==='release'){confirmAction(a==='cancel'?'Annuler la mission':'Libérer la mission',m.title,a==='cancel'?'Annuler la mission':'Libérer',()=>rpc(a));return}
+ if(a==='profile'){location.href='profile.html';return}
  if(a==='buy'){confirmAction('Ajouter à la collection',`${c.name} sera ajouté à ta collection administrateur sans utiliser de jetons.`,'Ajouter',()=>db.rpc('reward_buy',{p_item:id}).then(check));return}
  if(a==='toggleItem'){confirmAction(c.active?'Retirer de la vente':'Remettre en vente',c.active?'Les propriétaires conserveront cet objet et pourront toujours l’équiper.':c.name,'Confirmer',()=>db.from('reward_catalog').update({active:!c.active}).eq('id',id).then(check));return}
  if(busy)return;busy=true;try{if(a==='reserve')await rpc(a);else if(a==='equip'||a==='unequip')check(await db.rpc('reward_equip',{p_kind:c.kind,p_item:a==='equip'?id:null}));await load();message('Modification enregistrée.')}catch(e){message(e.message||'Opération impossible.',true)}finally{busy=false}
