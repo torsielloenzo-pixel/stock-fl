@@ -44,6 +44,21 @@ main{width:min(92vw,760px);margin:auto;padding:50px 0 70px}.hero{text-align:cent
   .nMenu button small,.brandMenu button small,.userMenu button small{font-size:9.5px!important}
   .logoutItem,.brandLogout,.userLogout{margin-top:6px!important;padding-top:9px!important}
 }
+
+/* Menu N mobile — overlay plein écran fiable sur iOS/PWA */
+.mobileNavBackdrop{display:none}
+@media(max-width:700px){
+  body.mobileNavOpen{overflow:hidden!important}
+  body.mobileNavOpen .mobileNavBackdrop{display:block!important;position:fixed!important;inset:0!important;background:rgba(17,24,39,.38)!important;backdrop-filter:blur(2px)!important;z-index:998!important}
+  body.mobileNavOpen #nMenu{
+    display:block!important;position:fixed!important;left:10px!important;right:10px!important;top:max(64px,calc(env(safe-area-inset-top) + 50px))!important;bottom:auto!important;
+    width:auto!important;max-width:none!important;max-height:calc(100dvh - max(82px,calc(env(safe-area-inset-top) + 68px)))!important;
+    overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;
+    padding:9px!important;border-radius:20px!important;z-index:999!important;
+    box-shadow:0 22px 70px rgba(0,0,0,.32)!important
+  }
+  body.mobileNavOpen #nMenu:before{display:none!important}
+}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -52,7 +67,7 @@ main{width:min(92vw,760px);margin:auto;padding:50px 0 70px}.hero{text-align:cent
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="design-v2.css?v=3">
 </head>
-<body>
+<body><div class="mobileNavBackdrop" onclick="closeNMenu()"></div>
 <header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark" onclick="toggleMenu(event)">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button onclick="location.href='articles.html'"><span>▤</span><div><strong>Fiches articles</strong><small>Référentiel EAN</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="logout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Mon profil</div><div class="sub">Personnalisation du compte</div></div></div><button class="back" onclick="location.href='home.html'">← Retour</button></div></header>
 <main><div class="hero"><h1>Mon profil</h1><p>Choisis l’image qui te représentera dans les outils du site.</p></div><section class="card"><div class="profileTop"><div class="avatarWrap"><div id="avatar" class="avatar">U</div><div class="avatarBadge">✎</div></div><div><div id="displayName" class="name">Utilisateur</div><div id="role" class="role"></div><div id="email" class="email"></div></div></div><div class="divider"></div><div class="uploadBox"><strong>Icône de profil</strong><p>Image JPG, PNG, WebP ou GIF • 5 Mo maximum. L’image sera affichée au format carré.</p><input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="previewFile(this)"><div class="buttons"><button class="btn primary" onclick="avatarInput.click()">Choisir une image</button><button id="saveBtn" class="btn secondary" onclick="saveAvatar()" disabled>Enregistrer</button><button id="removeBtn" class="btn danger" onclick="removeAvatar()">Supprimer la photo</button></div><div id="state" class="state"></div></div></section></main>
 <script>
