@@ -109,7 +109,7 @@ function setMode(v){mode=v;activeCat='Tous';document.querySelectorAll('.modeBtn'
 function visible(){return products.filter(p=>(activeCat==='Tous'||p.category===activeCat)&&(!search||[p.name,p.category,p.packaging,p.article_code,p.ean].some(v=>String(v||'').toLocaleLowerCase('fr').includes(search))))}
 function toolbar(){
  const cats=['Tous',...bakeryCats().map(x=>x.name).filter(n=>products.some(p=>p.category===n))];
- return '<div class="toolbar"><input class="search" placeholder="Rechercher un article…" oninput="search=this.value.trim().toLocaleLowerCase(\'fr\');render()"><button class="addBtn" onclick="openAdd()">＋ Ajouter</button></div><div class="catBar">'+cats.map(x=>'<button class="catBtn '+(activeCat===x?'active':'')+'" onclick="activeCat=\''+x.replace(/'/g,"\\'")+'\';render()">'+esc(x)+'</button>').join('')+'</div>'
+ return '<div class="toolbar" style="grid-template-columns:minmax(0,1fr) '+(mode==='consult'?'auto':'')+'"><input class="search" placeholder="Rechercher un article…" oninput="search=this.value.trim().toLocaleLowerCase(\'fr\');render()">'+(mode==='consult'?'<button class="addBtn" onclick="openAdd()">＋ Ajouter</button>':'')+'</div><div class="catBar">'+cats.map(x=>'<button class="catBtn '+(activeCat===x?'active':'')+'" onclick="activeCat=\''+x.replace(/'/g,"\\'")+'\';render()">'+esc(x)+'</button>').join('')+'</div>'
 }
 function render(){
  const w=$('work');if(mode==='manage')return renderManage();
