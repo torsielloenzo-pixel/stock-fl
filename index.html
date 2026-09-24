@@ -479,10 +479,54 @@ function shelfStatus(id){try{return JSON.parse(localStorage.getItem('nettoShelfS
 function shelfMeta(v){return v==='abundant'?{label:'Abondant',cls:'abundant',hint:'Suggestion faible'}:v==='rupture'?{label:'Rupture',cls:'rupture',hint:'Suggestion importante'}:{label:'À surveiller',cls:'watch',hint:'Suggestion modérée'}}
 function resetSuggestionView(){const d=$('suggestDialog');if(d?.open)renderSuggestions()}
 function setShelfStatus(id,v){let s={};try{s=JSON.parse(localStorage.getItem('nettoShelfStatus')||'{}')}catch(e){s={}}s[id]=v;localStorage.setItem('nettoShelfStatus',JSON.stringify(s));render();const p=products.find(x=>x.id===id);if(p&&$('infoId')?.value===id)renderInfoView(p);resetSuggestionView();playUISound('tick')}
-function render(){const app=$('app');app.innerHTML='';let shown=0;Object.keys(meta).forEach(cat=>{const all=products.filter(p=>p.category===cat&&(p.on_sale!==false||showOffSale));const items=searchTerm?all.filter(p=>[p.name,p.packaging,p.origin,p.caliber,p.article_code,p.ean].some(v=>String(v||'').toLocaleLowerCase('fr').includes(searchTerm))):all;if(searchTerm&&!items.length)return;shown+=items.length;const s=document.createElement('section');s.className='category'+(!searchTerm&&collapsed[cat]?' collapsed':'');s.innerHTML='<button class="catHeader '+(cat==='Fruits'?'fruits':cat==='Légumes'?'legumes':cat==='Salades'?'salades':cat==='Pommes de terre'?'pommes':cat==='Herbes aromatiques'?'herbes':'condiments')+'" onclick="toggleCategory(\''+cat.replace(/'/g,"\\'")+'\')"><span class="catArt">'+(cat==='Fruits'?'🍎':cat==='Légumes'?'🥕':cat==='Salades'?'🥬':cat==='Pommes de terre'?'🥔':cat==='Herbes aromatiques'?'🌿':'🧅')+'</span><div class="catTitle">'+esc(cat)+' <span class="small">('+items.length+')</span></div><span class="chevron">⌄</span></button><div class="grid"></div>';const g=s.querySelector('.grid');items.forEach(p=>{const c=document.createElement('div');c.className='card'+(Number(p.quantity)===0?' zero':'')+(p.on_sale===false?' offSale':'');const visual=p.photo_url?'<img class="photo" src="'+esc(p.photo_url)+'" alt="">':'<div class="placeholder">'+(meta[p.category]?.emoji||'📦')+'</div>';const offBadge=p.on_sale===false?'<span class="offSaleBadge">Hors vente</span>':'';const canEdit=(profile.role==='admin'||profile.role==='responsable')&&p.on_sale!==false;c.innerHTML=visual+offBadge+'<div class="cardHead"><div class="name">'+esc(p.name)+'</div><button class="infoBtn" onclick="openInfo(\''+p.id+'\')">i</button></div>'+((p.article_code||p.packaging)?'<div class="productMeta">'+(p.article_code?'<span class="code">'+esc(p.article_code)+'</span>':'')+(p.article_code&&p.packaging?'<span class="sep">•</span>':'')+(p.packaging?'<span class="pack">'+esc(p.packaging)+'</span>':'')+'</div>':'')+'<div class="counter"><button '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',-.5)">−</button><div class="qty">'+fmt(p.quantity)+'</div><button class="plus" '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',.5)">+</button></div>';g.appendChild(c)});app.appendChild(s)});if(searchTerm&&!shown)app.innerHTML='<div class="loading">Aucun produit trouvé.</div>'}
+function render(){const app=$('app');app.innerHTML='';let shown=0;Object.keys(meta).forEach(cat=>{const all=products.filter(p=>p.category===cat&&(p.on_sale!==false||showOffSale));const filtered=searchTerm?all.filter(p=>[p.name,p.packaging,p.origin,p.caliber,p.article_code,p.ean].some(v=>String(v||'').toLocaleLowerCase('fr').includes(searchTerm))):all;const items=[...filtered].sort((a,b)=>productLogicalSort(cat,a,b));if(searchTerm&&!items.length)return;shown+=items.length;const s=document.createElement('section');s.className='category'+(!searchTerm&&collapsed[cat]?' collapsed':'');s.innerHTML='<button class="catHeader '+(cat==='Fruits'?'fruits':cat==='Légumes'?'legumes':cat==='Salades'?'salades':cat==='Pommes de terre'?'pommes':cat==='Herbes aromatiques'?'herbes':'condiments')+'" onclick="toggleCategory(\''+cat.replace(/'/g,"\\'")+'\')"><span class="catArt">'+(cat==='Fruits'?'🍎':cat==='Légumes'?'🥕':cat==='Salades'?'🥬':cat==='Pommes de terre'?'🥔':cat==='Herbes aromatiques'?'🌿':'🧅')+'</span><div class="catTitle">'+esc(cat)+' <span class="small">('+items.length+')</span></div><span class="chevron">⌄</span></button><div class="grid"></div>';const g=s.querySelector('.grid');items.forEach(p=>{const c=document.createElement('div');c.className='card'+(Number(p.quantity)===0?' zero':'')+(p.on_sale===false?' offSale':'');const visual=p.photo_url?'<img class="photo" src="'+esc(p.photo_url)+'" alt="">':'<div class="placeholder">'+(meta[p.category]?.emoji||'📦')+'</div>';const offBadge=p.on_sale===false?'<span class="offSaleBadge">Hors vente</span>':'';const canEdit=(profile.role==='admin'||profile.role==='responsable')&&p.on_sale!==false;c.innerHTML=visual+offBadge+'<div class="cardHead"><div class="name">'+esc(p.name)+'</div><button class="infoBtn" onclick="openInfo(\''+p.id+'\')">i</button></div>'+((p.article_code||p.packaging)?'<div class="productMeta">'+(p.article_code?'<span class="code">'+esc(p.article_code)+'</span>':'')+(p.article_code&&p.packaging?'<span class="sep">•</span>':'')+(p.packaging?'<span class="pack">'+esc(p.packaging)+'</span>':'')+'</div>':'')+'<div class="counter"><button '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',-.5)">−</button><div class="qty">'+fmt(p.quantity)+'</div><button class="plus" '+(!canEdit?'disabled':'')+' onclick="change(\''+p.id+'\',.5)">+</button></div>';g.appendChild(c)});app.appendChild(s)});if(searchTerm&&!shown)app.innerHTML='<div class="loading">Aucun produit trouvé.</div>'}
 async function change(id,d){playUISound('tick');if(profile.role==='lecture')return;const p=products.find(x=>x.id===id);if(!p||p.on_sale===false)return;const v=Number(p.quantity)||0,q=d>0?(v===0?0.5:v===0.5?1:Math.floor(v)+1):(v<=0.5?0:v<=1?0.5:Math.max(1,Math.ceil(v)-1)),old=p.quantity;p.quantity=q;render();resetSuggestionView();const {error}=await db.from('products').update({quantity:q}).eq('id',id);if(error){p.quantity=old;render();resetSuggestionView();alert('Modification refusée.')} }
 
 function normProduct(s){return String(s||'').toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+const categoryFamilyOrder={
+ 'Fruits':[
+  ['pomme'],['poire'],['orange'],['clementine'],['mandarine'],['pomelo'],['citron'],
+  ['kiwi'],['raisin'],['peche'],['nectarine'],['abricot'],['prune'],
+  ['fraise'],['framboise'],['myrtille'],['figue'],
+  ['melon'],['pasteque'],
+  ['banane'],['ananas'],['mangue'],['passion'],
+  ['coing'],['noix'],['marron'],['gingembre']
+ ],
+ 'Légumes':[
+  ['tomate'],['poivron'],['aubergine'],['courgette'],['concombre'],
+  ['avocat'],['carotte'],['navet'],['radis'],['poireau'],['celeri'],['fenouil'],
+  ['brocoli'],['chou-fleur','chou fleur'],['chou'],
+  ['champignon'],['artichaut'],
+  ['butternut'],['potimarron']
+ ],
+ 'Salades':[
+  ['laitue','feuille de chene','batavia','pommee'],['iceberg'],['sucrine'],['mache'],['endive']
+ ],
+ 'Pommes de terre':[
+  ['pomme de terre'],['patate douce']
+ ],
+ 'Herbes aromatiques':[
+  ['persil'],['basilic'],['menthe']
+ ],
+ 'Condiments':[
+  ['oignon'],['echalote'],['ail'],['gingembre']
+ ]
+};
+function familyRank(cat,name){
+ const n=normProduct(name),groups=categoryFamilyOrder[cat]||[];
+ for(let i=0;i<groups.length;i++)if(groups[i].some(k=>n.includes(k)))return i;
+ return 999;
+}
+function productLogicalSort(cat,a,b){
+ const ra=familyRank(cat,a.name),rb=familyRank(cat,b.name);
+ if(ra!==rb)return ra-rb;
+ const na=normProduct(a.name),nb=normProduct(b.name);
+ if(na!==nb)return na.localeCompare(nb,'fr',{numeric:true,sensitivity:'base'});
+ const packOrder={vrac:0,botte:1,piece:2,filet:3,sachet:4,barquette:5};
+ const pa=packOrder[normProduct(a.packaging)]??99,pb=packOrder[normProduct(b.packaging)]??99;
+ if(pa!==pb)return pa-pb;
+ return (Number(a.position)||0)-(Number(b.position)||0);
+}
 function orderFamily(name){const n=normProduct(name),keys=['raisin','pomme','poire','tomate','courgette','orange','citron','melon','pasteque','kiwi','banane','aubergine','poivron','concombre','carotte','oignon','echalote','ail','avocat','mangue','ananas','peche','nectarine','abricot','prune','fraise','framboise','myrtille','champignon','radis','navet','poireau','celeri','fenouil','chou','endive'];return keys.find(k=>n.includes(k))||n.split(/[ -]/)[0]}
 function seasonScore(name,date=new Date()){const n=normProduct(name),m=date.getMonth()+1;const ranges={raisin:[8,9,10],pomme:[9,10,11,12,1,2,3],poire:[8,9,10,11,12,1,2],fraise:[4,5,6],framboise:[6,7,8,9],myrtille:[6,7,8],peche:[6,7,8,9],nectarine:[6,7,8,9],abricot:[6,7,8],melon:[6,7,8,9],pasteque:[6,7,8],tomate:[5,6,7,8,9],courgette:[5,6,7,8,9],aubergine:[6,7,8,9],poivron:[6,7,8,9],concombre:[5,6,7,8,9],poireau:[9,10,11,12,1,2,3],chou:[9,10,11,12,1,2,3],endive:[10,11,12,1,2,3],fenouil:[6,7,8,9,10],celeri:[7,8,9,10,11]};const k=Object.keys(ranges).find(k=>n.includes(k));return k?(ranges[k].includes(m)?1:-1):0}
 function isLargePackaging(p){const s=normProduct((p.packaging||'')+' '+(p.name||''));return /(caisse|colis|plateau|sac|filet.*(5|10|15|20|25)|kg|gros condition)/.test(s)}
