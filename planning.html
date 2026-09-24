@@ -4,8 +4,8 @@ html{scroll-behavior:smooth}.btn,.day,.cell,.sheet{transition:transform .18s eas
 /* Planning plein écran desktop */
 main{width:min(97vw,1700px);max-width:none;padding:24px 26px 60px}.top{width:min(97vw,1700px);max-width:none}
 .dateTitle{font-size:27px}.day{padding:11px 15px;font-size:14px}.hint,.saveState{font-size:13px}
-.sheet{border-radius:18px}.grid{min-width:1420px;grid-template-columns:180px repeat(29,minmax(38px,1fr)) 82px}.cell,.name,.time,.total{min-height:44px;font-size:12px}.name{font-size:14px;padding:0 12px}.time{font-size:11px;min-height:38px}.legend span{font-size:13px}
-@media(max-width:1100px){main,.top{width:100%}main{padding:16px}.grid{min-width:1180px;grid-template-columns:145px repeat(29,34px) 70px}}
+.sheet{border-radius:18px}.grid{min-width:1660px;grid-template-columns:180px repeat(59,minmax(23px,1fr)) 82px}.cell,.name,.time,.total{min-height:44px;font-size:12px}.name{font-size:14px;padding:0 12px}.time{font-size:11px;min-height:38px}.legend span{font-size:13px}
+@media(max-width:1100px){main,.top{width:100%}main{padding:16px}.grid{min-width:1640px;grid-template-columns:145px repeat(59,24px) 70px}}
 
 /* Planning : lecture seule par défaut + mode modification dédié */
 .planningActions{display:flex;align-items:center;gap:10px}.planningActions .saveState{white-space:nowrap}.btn.editing{background:#d71920;color:#fff}
@@ -300,7 +300,7 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 .grid{display:grid!important;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px!important;grid-auto-flow:row!important;min-width:1540px!important}
 .grid>.name,.grid>.time,.grid>.cell,.grid>.total{min-width:0!important;box-sizing:border-box!important}
 @media(max-width:700px){.grid{grid-template-columns:110px repeat(59,22px) 58px!important;min-width:1466px!important}}
-</style><link rel="manifest" href="manifest.webmanifest">
+/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}</style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -375,7 +375,7 @@ function renderMobileCards(d){
   return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
  }).join('');
 }
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(i%2?'quarter':'half')+'">'+(i%2?'':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
+function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(i%2?'quarter':'half')+'">'+fmt(t)+'</div>').join('')+'<div class="time">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
 function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
 function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();playUISound('soft')}
 function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();playUISound('soft')}
@@ -511,8 +511,8 @@ async function importPlanningFile(file){
     const hasTimeline=row.slice(timeline.startCol,timeline.endCol+1).some(occupiedPlanningCell);
     if(hasTimeline||employeeOrder.includes(raw))sheetPeople.push({ri,name:raw});
    });
-   if(off===0&&sheetPeople.length)employeeOrder=sheetPeople.map(x=>x.name);
-   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(sheetPeople[i]?.ri??(timeline.headerRow+1+i)),name}));
+   if(off===0&&sheetPeople.length){employeeOrder=sheetPeople.map(x=>x.name);employeeOrder.__rows=sheetPeople.map(x=>x.ri)}
+   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(employeeOrder.__rows?.[i]??sheetPeople[i]?.ri??(timeline.headerRow+1+i)),name}));
    people.forEach(({ri,name})=>{
     const row=rows[ri]||[];imported[key][name]={};let first=null,last=null,rowHas=false;
     for(let cc=timeline.startCol;cc<=timeline.endCol;cc++){
