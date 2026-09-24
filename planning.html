@@ -352,6 +352,10 @@ function updateWeekLabel(){const a=days[0].dateObj,b=days[6].dateObj,txt='Semain
 
 function weekKeyForDate(d){return isoDate(startOfWeek(d))}
 function importedWeekNames(){try{return JSON.parse(localStorage.getItem('nettoPlanningWeekNames')||'{}')||{}}catch(e){return{}}}
+function importedPlanningMeta(){try{return JSON.parse(localStorage.getItem('nettoPlanningMeta')||'{}')||{}}catch(e){return{}}}
+function savePlanningMeta(meta){localStorage.setItem('nettoPlanningMeta',JSON.stringify(meta))}
+function importedDayCaption(key){return importedPlanningMeta()[key]?.caption||''}
+
 function displayNamesForWeek(){return importedWeekNames()[weekKeyForDate(days[0].dateObj)]||names}
 function saveWeekNames(key,list){const x=importedWeekNames();x[key]=list;localStorage.setItem('nettoPlanningWeekNames',JSON.stringify(x))}
 function showPlanningToast(msg){let t=document.getElementById('planningToast');if(!t){t=document.createElement('div');t.id='planningToast';t.className='planningToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window._planningToast);window._planningToast=setTimeout(()=>t.classList.remove('show'),2600)}
@@ -371,7 +375,7 @@ function renderMobileCards(d){
   return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
  }).join('');
 }
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent='Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.';renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(i%2?'quarter':'half')+'">'+(i%2?'':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val)count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
+function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>'<div class="time '+(i%2?'quarter':'half')+'">'+(i%2?'':fmt(t))+'</div>').join('')+'<div class="time">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+n+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on':'')+(editMode?' editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+n+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
 function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
 function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();playUISound('soft')}
 function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();playUISound('soft')}
@@ -499,21 +503,33 @@ async function importPlanningFile(file){
    daySheets++;const dt=addDays(monday,off),key=isoDate(dt);imported[key]={};
    // Employee names are literal on Monday and formulas on later sheets. Keep the row/name mapping from Monday.
    const sheetPeople=[];
-   rows.forEach((row,ri)=>{let raw=cleanExcelText(row[1]);if(raw&&raw.toUpperCase()!=='TOTAL'&&!raw.startsWith('='))sheetPeople.push({ri,name:raw})});
+   rows.forEach((row,ri)=>{
+    if(ri<=timeline.headerRow)return;
+    const raw=cleanExcelText(row[1]||row[0]),nr=normExcel(raw);
+    if(!raw||raw.startsWith('=')||raw.toUpperCase()==='TOTAL'||nr.startsWith('semaine ')||/gmt|heure d.?ete|europe centrale/.test(nr))return;
+    // An employee row must belong to the actual planning body: either it has timeline cells or it is aligned with the employee block.
+    const hasTimeline=row.slice(timeline.startCol,timeline.endCol+1).some(occupiedPlanningCell);
+    if(hasTimeline||employeeOrder.includes(raw))sheetPeople.push({ri,name:raw});
+   });
    if(off===0&&sheetPeople.length)employeeOrder=sheetPeople.map(x=>x.name);
-   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(sheetPeople[i]?.ri??(3+i)),name}));
+   const people=off===0?sheetPeople:employeeOrder.map((name,i)=>({ri:(sheetPeople[i]?.ri??(timeline.headerRow+1+i)),name}));
    people.forEach(({ri,name})=>{
-    const row=rows[ri]||[],ranges=rangesFromOccupancy(row,timeline);imported[key][name]={};
-    ranges.forEach(x=>{
-      let color=x.a<12.5?'g':'b';
-      // Read the original Excel fill so the web planning visually follows the imported document.
-      for(let cc=Math.max(timeline.startCol,Math.round((x.a-timeline.startTime)/timeline.step)+timeline.startCol);cc<Math.min(timeline.endCol+1,Math.round((x.b-timeline.startTime)/timeline.step)+timeline.startCol);cc++){
-       const cell=ws[XLSX.utils.encode_cell({r:ri,c:cc})],rgb=String(cell?.s?.fgColor?.rgb||cell?.s?.fill?.fgColor?.rgb||'').replace(/^FF/,'').toUpperCase();
-       if(rgb.includes('1FB714')){color='g';break}if(rgb.includes('00ABEA')){color='b';break}if(rgb.includes('DD0806')){color='r';break}if(rgb.includes('FFFF00')){color='y';break}if(rgb.includes('EDA900')||rgb.includes('FFC000')){color='o';break}
-      }
-      for(let t=x.a;t<x.b;t+=.25)imported[key][name][String(Math.round(t*4)/4)]=color;
-      const q=bounds[key]||{min:x.a,max:x.b};q.min=Math.min(q.min,x.a);q.max=Math.max(q.max,x.b);bounds[key]=q;matches++;
-    });
+    const row=rows[ri]||[];imported[key][name]={};let first=null,last=null,rowHas=false;
+    for(let cc=timeline.startCol;cc<=timeline.endCol;cc++){
+      if(!occupiedPlanningCell(row[cc]))continue;
+      const t=timeline.startTime+(cc-timeline.startCol)*timeline.step,cell=ws[XLSX.utils.encode_cell({r:ri,c:cc})];
+      const style=cell?.s||{},fg=style.fgColor||style.fill?.fgColor||{},rgb=String(fg.rgb||'').replace(/^FF/,'').toUpperCase();
+      let color=null;
+      if(/1FB714|00B050|49A900|70AD47|92D050/.test(rgb))color='g';
+      else if(/00ABEA|1594DF|5B9BD5|00B0F0|2196F3/.test(rgb))color='b';
+      else if(/DD0806|F0180B|FF0000|C00000/.test(rgb))color='r';
+      else if(/FFFF00|FFF200|F2EF00/.test(rgb))color='y';
+      else if(/EDA900|FFC000|F4B183|FF9900|F5A800/.test(rgb))color='o';
+      // If XLSX cannot expose a legacy .xls fill, use the existing time convention only as a fallback.
+      if(!color)color=t<12.5?'g':'b';
+      imported[key][name][String(Math.round(t*4)/4)]=color;first=first===null?t:Math.min(first,t);last=last===null?t+.25:Math.max(last,t+.25);rowHas=true;
+    }
+    if(rowHas){const q=bounds[key]||{min:first,max:last};q.min=Math.min(q.min,first);q.max=Math.max(q.max,last);bounds[key]=q;matches++}
    });
   }
   if(daySheets<1||!matches)throw new Error('Le fichier a été lu mais aucun planning journalier exploitable n’a été trouvé.');
@@ -524,6 +540,7 @@ async function importPlanningFile(file){
   weekKeys.forEach(k=>{all[k]={}});
   Object.entries(imported).forEach(([key,day])=>{all[key]=day});
   saveWeekNames(isoDate(weekStart),employeeOrder);
+  const meta=importedPlanningMeta();weekKeys.forEach((k,i)=>{const dt=addDays(weekStart,i);meta[k]={caption:'Planning importé • '+frDay(dt)+' '+frDate(dt)+' • amplitude '+(bounds[k]?fmt(bounds[k].min)+' → '+fmt(bounds[k].max):'non renseignée')};});savePlanningMeta(meta);
   localStorage.setItem('nettoPlanningAmplitude',JSON.stringify({...getPlanningAmplitude(),...bounds}));save();
   addPlanningLog('import',file.name+' · semaine du '+weekStart.toLocaleDateString('fr-FR')+' · '+matches+' plages');
   currentWeekStart=weekStart;currentYear=weekStart.getFullYear();buildWeek(currentWeekStart);current=0;setPlanningView('week');render();
