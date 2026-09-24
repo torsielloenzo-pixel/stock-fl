@@ -1,325 +1,42 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script><title>Planning Netto</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:linear-gradient(135deg,#f0f1f3,#fafafa 45%,#eef0f1);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input{font:inherit}header{position:sticky;top:0;z-index:10;background:#ffffffed;backdrop-filter:blur(14px);border-bottom:1px solid #ddd;padding:12px 16px}.top{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:39px;height:39px;border-radius:12px;background:#202024;color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}.title{font-weight:850;font-size:20px}.sub{font-size:12px;color:#777;margin-top:2px}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer}.dark{background:#202024;color:#fff}.light{background:#ececef;color:#333}main{max-width:1400px;margin:auto;padding:18px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}.days{display:flex;gap:6px;overflow:auto;padding-bottom:2px}.day{border:0;background:#e7e7ea;border-radius:10px;padding:9px 12px;font-weight:700;white-space:nowrap}.day.active{background:#202024;color:#fff}.hint{font-size:12px;color:#777}.sheet{background:#fff;border:1px solid #ddd;border-radius:16px;overflow:auto;box-shadow:0 8px 30px #0000000b}.grid{display:grid;min-width:1050px;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px}.cell,.name,.time,.total{min-height:38px;border-right:1px solid #d8d8dc;border-bottom:1px solid #d8d8dc;display:grid;place-items:center;font-size:11px}.name{position:sticky;left:0;z-index:3;background:#fff;justify-items:start;padding:0 10px;font-weight:750;font-size:13px}.time{background:#f5f5f7;font-size:10px;font-weight:700;min-height:34px}.total{background:#fafafa;font-weight:800}.cell{cursor:pointer;user-select:none;background:#fff;transition:.08s;position:relative}.cell.on{background:var(--c)}.cell.on:after{content:'1';font-size:9px;font-weight:800;color:#111a}.cell:hover{outline:2px solid #222;outline-offset:-2px}.headName{background:#f5f5f7!important}.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.legend span{font-size:12px;color:#666}.sw{width:13px;height:13px;border-radius:4px;display:inline-block;vertical-align:-2px;margin-right:4px}.saveState{font-size:12px;color:#6a6a6a}.dateTitle{font-size:22px;font-weight:850;margin:4px 0 14px}.footerActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.navActions{display:flex;gap:7px}.desktopTest{display:inline-block}@media(max-width:799px){.desktopTest{display:none}}@media(max-width:650px){main{padding:12px}.title{font-size:18px}.sub{display:none}.grid{grid-template-columns:110px repeat(60,22px) 58px}.name{font-size:12px}.cell{min-height:36px}.toolbar{align-items:flex-start}}
-html{scroll-behavior:smooth}.btn,.day,.cell,.sheet{transition:transform .18s ease,box-shadow .22s ease,background-color .2s ease,opacity .2s ease}.btn:active,.day:active{transform:scale(.96)}@media(hover:hover){.btn:hover{background:#dedee2}.day:hover:not(.active){background:#dcdce0}.sheet:hover{box-shadow:0 12px 36px #00000010}.cell:hover{transform:scale(1.04);z-index:2}}.day.active{box-shadow:0 5px 15px #0002}.dateTitle{animation:fadeSlide .28s ease}.grid{animation:fadeSlide .28s ease}@keyframes fadeSlide{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}.saveState{transition:opacity .2s ease}.cell.on{animation:cellPop .18s ease}@keyframes cellPop{50%{transform:scale(.92)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-/* Planning plein écran desktop */
-main{width:min(97vw,1700px);max-width:none;padding:24px 26px 60px}.top{width:min(97vw,1700px);max-width:none}
-.dateTitle{font-size:27px}.day{padding:11px 15px;font-size:14px}.hint,.saveState{font-size:13px}
-.sheet{border-radius:18px}.grid{min-width:1660px;grid-template-columns:180px repeat(60,minmax(23px,1fr)) 82px}.cell,.name,.time,.total{min-height:44px;font-size:12px}.name{font-size:14px;padding:0 12px}.time{font-size:11px;min-height:38px}.legend span{font-size:13px}
-@media(max-width:1100px){main,.top{width:100%}main{padding:16px}.grid{min-width:1640px;grid-template-columns:145px repeat(60,24px) 70px}}
-
-/* Planning : lecture seule par défaut + mode modification dédié */
-.planningActions{display:flex;align-items:center;gap:10px}.planningActions .saveState{white-space:nowrap}.btn.editing{background:#d71920;color:#fff}
-.editTools{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;background:#fff;border:1px solid #dedee2;border-radius:14px;box-shadow:0 5px 18px #00000008}.editTools.hidden{display:none}.editToolsTitle{min-width:180px;flex:1}.editToolsTitle strong{display:block;font-size:13px}.editToolsTitle span{display:block;font-size:11px;color:#777;margin-top:2px}.paintChoices{display:flex;flex-wrap:wrap;gap:6px}.paintChoice{border:1px solid #e1e1e5;background:#f7f7f8;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:750;display:flex;align-items:center;gap:6px;cursor:pointer}.paintChoice i{width:10px;height:10px;border-radius:3px}.paintChoice.active{background:#202024;color:#fff;border-color:#202024}.paintChoice.erase.active{background:#d71920;border-color:#d71920}.resetEdit{font-size:11px;padding:8px 10px}
-.cell{cursor:default}.cell:hover{outline:none;transform:none!important}.cell.editable{cursor:crosshair}.cell.editable:hover{outline:2px solid #222;outline-offset:-2px}
-.totalRule{margin-left:auto;font-weight:750;color:#555!important}
-@media(max-width:800px){.planningActions{width:100%;justify-content:space-between}.editTools{align-items:stretch}.paintChoices{width:100%}.totalRule{width:100%;margin-left:0}}
-.hidden{display:none!important}
-
-.nMenuWrap{position:relative}.nMenuBtn{border:0;padding:0;cursor:pointer}.nMenu{position:absolute;left:0;top:48px;width:245px;padding:8px;background:#fffffff5;border:1px solid #dedee2;border-radius:15px;box-shadow:0 16px 44px #00000022;backdrop-filter:blur(16px);z-index:80}.nMenu.hidden{display:none!important}.nMenuTitle{padding:7px 10px 8px;color:#999;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.8px}.nMenu button{width:100%;display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;text-align:left;padding:9px;border:0;border-radius:10px;background:transparent;cursor:pointer}.nMenu button:hover{background:#f4f4f5}.nMenu button>span{width:32px;height:32px;border-radius:9px;background:#f0f0f2;display:grid;place-items:center}.nMenu button strong{display:block;font-size:12px}.nMenu button small{display:block;font-size:10px;color:#888;margin-top:2px}.nMenu .logoutItem{margin-top:4px;border-top:1px solid #ececee;border-radius:0 0 9px 9px;color:#a30d15}.nMenu .logoutItem>span{background:#fff0f1;color:#b90710}
-.backBtn{display:inline-flex;align-items:center;gap:5px}
-
-/* Mode clair / sombre global */
-:root[data-theme="dark"]{color-scheme:dark}
-:root[data-theme="dark"] body{background:#111214!important;color:#f3f3f4!important}
-:root[data-theme="dark"] body:before{background:#e3061310!important}
-:root[data-theme="dark"] body:after{background:#ffffff05!important}
-:root[data-theme="dark"] header{background:#17181bea!important;border-color:#2d2e32!important;box-shadow:0 4px 18px #0005!important}
-:root[data-theme="dark"] header:after{background:linear-gradient(90deg,#e30613 0 43%,#f5f5f5 43% 49%,#17181b 49%)!important}
-:root[data-theme="dark"] .title,:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] strong{color:#f4f4f5}
-:root[data-theme="dark"] .sub,:root[data-theme="dark"] .subtitle,:root[data-theme="dark"] .small,:root[data-theme="dark"] .meta,:root[data-theme="dark"] .hint,:root[data-theme="dark"] .status,:root[data-theme="dark"] .saveState,:root[data-theme="dark"] .panelIntro,:root[data-theme="dark"] .hello p,:root[data-theme="dark"] .pageCard p{color:#a6a6ab!important}
-:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] dialog .modal,:root[data-theme="dark"] .tabPanel,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4}
-:root[data-theme="dark"] .pageCard:hover,:root[data-theme="dark"] .panel:hover{border-color:#44464d!important}
-:root[data-theme="dark"] .cardFoot,:root[data-theme="dark"] .chatHead,:root[data-theme="dark"] .composer,:root[data-theme="dark"] .row,:root[data-theme="dark"] .familySection{border-color:#303136!important}
-:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .search,:root[data-theme="dark"] .searchBox input{background:#202126!important;color:#f4f4f5!important;border-color:#393a40!important}
-:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#777b82}
-:root[data-theme="dark"] .light,:root[data-theme="dark"] .logout,:root[data-theme="dark"] .back,:root[data-theme="dark"] .btn:not(.dark),:root[data-theme="dark"] .suggestTop,:root[data-theme="dark"] .categoryFilter:not(.active){background:#242529!important;color:#eee!important;border-color:#393a40!important}
-:root[data-theme="dark"] .nMenu,:root[data-theme="dark"] .brandMenu,:root[data-theme="dark"] .userMenu{background:#1c1d20f5!important;border-color:#38393e!important;box-shadow:0 18px 50px #0008!important;color:#f4f4f5}
-:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:#292a2f!important}
-:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#2b2c31!important;color:#f2f2f3}
-:root[data-theme="dark"] .nMenu small,:root[data-theme="dark"] .brandMenu small,:root[data-theme="dark"] .userMenu small{color:#9c9da3!important}
-:root[data-theme="dark"] .themeToggle{border-top:1px solid #33343a!important;margin-top:4px;border-radius:0!important}
-:root[data-theme="dark"] .userPill{background:#1b1c20!important;border-color:#36373c!important;color:#f4f4f5}
-:root[data-theme="dark"] .bubble,:root[data-theme="dark"] .member,:root[data-theme="dark"] .me,:root[data-theme="dark"] .item,:root[data-theme="dark"] .editTools,:root[data-theme="dark"] .orderConfigField,:root[data-theme="dark"] .attachPreview{background:#232429!important;border-color:#36373c!important;color:#f1f1f2}
-:root[data-theme="dark"] .mine .bubble{background:#2b1d20!important;border-color:#5a2b30!important}
-:root[data-theme="dark"] .attachment,:root[data-theme="dark"] .fileRow{background:#1d1e22!important;border-color:#35363b!important}
-:root[data-theme="dark"] .cell,:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{border-color:#36373c!important}
-:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{background:#1c1d20!important;color:#f2f2f3!important}
-:root[data-theme="dark"] .cell:not(.on){background:#202126!important}
-:root[data-theme="dark"] .variants,:root[data-theme="dark"] .catBody{background:#17181b!important}
-:root[data-theme="dark"] .counter{background:#242529!important;border-color:#393a40!important}
-:root[data-theme="dark"] .counter button{background:#303137!important;color:#f4f4f5!important}
-:root[data-theme="dark"] .suggestTabList,:root[data-theme="dark"] .suggestTabs{background:#1a1b1e!important;border-color:#33343a!important}
-:root[data-theme="dark"] .suggestRow{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4!important}
-:root[data-theme="dark"] .suggestRow:hover{background:#232429!important}
-:root[data-theme="dark"] .loginWrap{background:#111214!important}
-:root[data-theme="dark"] .loginCard{background:#1b1c1f!important;color:#f4f4f5!important}
-:root[data-theme="dark"] .loginCard input{background:#232429!important;color:#fff!important;border-color:#393a40!important}
-:root[data-theme="dark"] .notice{background:#202126!important;border-color:#36373c!important;color:#aaa!important}
-:root[data-theme="dark"] .actions{background:#1a1b1eee!important;border-color:#36373c!important}
-:root[data-theme="dark"] .editTabs{background:#242529!important}
-:root[data-theme="dark"] .editTab.active{background:#34353a!important;color:#fff!important}
-
-/* DA Netto rouge-orangé inspirée du visuel fourni */
-:root{
-  --netto-red:#ff2f1f;
-  --netto-red-2:#ff151f;
-  --netto-orange:#ff8500;
-  --netto-orange-soft:#ff9f1a;
-  --netto-gradient:linear-gradient(135deg,#ff2f1f 0%,#ff151f 44%,#ff8500 100%);
-  --netto-gradient-soft:linear-gradient(135deg,#fff2ef 0%,#fff7ed 100%);
-  --netto-ink:#182235;
-  --netto-surface:#ffffff;
-  --netto-border:#e7e9ed;
-}
-body{background:
-  radial-gradient(circle at 0% 16%,#ff2f1f0a 0,transparent 26%),
-  radial-gradient(circle at 100% 88%,#ff85000b 0,transparent 28%),
-  linear-gradient(135deg,#f7f8fa 0%,#ffffff 48%,#f3f5f7 100%)!important}
-header{background:#ffffffef!important;border-bottom:1px solid #e8e9ec!important;box-shadow:0 5px 20px #1b23300b!important}
-header:after{background:var(--netto-gradient)!important;height:3px!important}
-.mark,.brandMark,.loginMark,.welcomeMark{
-  background:var(--netto-gradient)!important;
-  color:#fff!important;
-  box-shadow:0 6px 16px #ff3b1f2d!important;
-  border:0!important;
-}
-.manage,.primary,.dark,.send,.loginSubmit{
-  background:var(--netto-gradient)!important;
-  color:#fff!important;
-  box-shadow:0 7px 18px #ff3b1f28!important;
-  border:0!important;
-}
-.manage:hover,.primary:hover,.dark:hover,.send:hover,.loginSubmit:hover{filter:brightness(.98);transform:translateY(-1px)}
-.fab,.cartCount{background:var(--netto-gradient)!important}
-.suggestTopIcon{background:#fff1ed!important;color:#ff3b1f!important;box-shadow:none!important}
-.suggestTop:hover .suggestTopIcon{background:var(--netto-gradient)!important;color:#fff!important}
-.nMenuTitle,.brandMenuTitle{color:#f33a22!important}
-.nMenu button:hover,.brandMenu button:hover,.userMenu button:hover{background:linear-gradient(90deg,#fff1ef,#fff8ef)!important}
-.nMenu button>span,.brandMenu button>span,.userMenu button>span{
-  background:linear-gradient(135deg,#fff0ed,#fff7ec)!important;
-  color:#f43a20!important;
-}
-.themeToggle .themeIcon,.userThemeToggle .themeIcon{color:#ff6f00!important}
-.logoutItem,.brandLogout,.userLogout{color:#b81717!important}
-.logoutItem>span,.brandLogout>span,.userLogout>span{background:#fff0ef!important;color:#e3261a!important}
-input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
-  border-color:#ff6a3d88!important;
-  box-shadow:0 0 0 3px #ff5a2a16!important;
-}
-.modal h2:after,.subtitle:before{background:var(--netto-gradient)!important}
-.editTab.active{box-shadow:inset 0 -3px 0 #ff4b22,0 2px 6px #0000000b!important}
-.categoryFilter.active,.suggestTab.active{box-shadow:0 7px 18px #ff4c2024!important}
-.userAvatar,.avatar,.memberAvatar{
-  background:var(--netto-gradient)!important;
-  box-shadow:0 4px 12px #ff3b1f2a!important;
-}
-.pageCard,.panel,.side,.chat,.sheet,.modal,.category,.cat,.group,.tabPanel{
-  border-color:#e5e7eb!important;
-  box-shadow:0 10px 28px #1a22300b!important;
-}
-.pageCard:hover,.panel:hover{box-shadow:0 16px 38px #ff522012!important;border-color:#ffd3c7!important}
-.cardKicker,.eyebrow{color:#ed2d1d!important}
-.stock .arrow,.chatCard .arrow{background:var(--netto-gradient)!important;color:#fff!important}
-.stock .icon,.planning .icon,.chatCard .icon{
-  background:linear-gradient(135deg,#fff0ec,#fff7ed)!important;
-  color:#f43b20!important;
-  border:1px solid #ffd8ca!important;
-  box-shadow:none!important;
-}
-.stock .icon{background:var(--netto-gradient)!important;color:#fff!important;border:0!important}
-.cardFoot{background:linear-gradient(180deg,#fff,#fffaf7)!important}
-.pageCard.stock:after,.pageCard.planning:after,.pageCard.chatCard:after{background:var(--netto-gradient)!important}
-.day.active,.paintChoice.active{background:var(--netto-gradient)!important;color:#fff!important;border-color:transparent!important}
-.btn.activeEdit{background:var(--netto-gradient)!important;color:#fff!important}
-.adminReset,.danger{background:#fff3ef!important;border-color:#ffd8cc!important;color:#c62518!important}
-.live i,.onlineDot.on{background:#23ad55!important}
-.notice{border-left:4px solid #ff5f1f!important}
-.loginVisual{background:
-  linear-gradient(145deg,#14161a 0 56%,#201a18 100%)!important}
-.loginVisual:before{border-color:#ff352331!important}
-.loginVisual:after{border-color:#ff910022!important}
-.loginArt span{background:linear-gradient(145deg,#ffffff0d,#ff6f0014)!important}
-.loginHello{color:#f43a20!important}
-.loginSubmit{box-shadow:0 8px 20px #ff3a1f30!important}
-@media(hover:hover){
-  .pageCard:hover .icon{transform:translateY(-2px)}
-}
-:root[data-theme="dark"]{
-  --netto-surface:#1b1d22;
-  --netto-border:#30333a;
-  --netto-ink:#f4f5f7;
-}
-:root[data-theme="dark"] body{background:
-  radial-gradient(circle at 0% 16%,#ff3b1f12 0,transparent 28%),
-  radial-gradient(circle at 100% 88%,#ff850010 0,transparent 30%),
-  #111317!important}
-:root[data-theme="dark"] header{background:#17191df0!important;border-color:#2d3036!important}
-:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] .category,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group,:root[data-theme="dark"] .tabPanel{background:#1b1d22!important;border-color:#30333a!important;box-shadow:0 10px 28px #0005!important}
-:root[data-theme="dark"] .cardFoot{background:#1d2025!important}
-:root[data-theme="dark"] .stock .icon,:root[data-theme="dark"] .planning .icon,:root[data-theme="dark"] .chatCard .icon{background:linear-gradient(135deg,#4c241c,#39251a)!important;color:#ff9a55!important;border-color:#5a3023!important}
-:root[data-theme="dark"] .stock .icon{background:var(--netto-gradient)!important;color:#fff!important}
-:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:linear-gradient(90deg,#38211d,#2d241d)!important}
-:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#32231f!important;color:#ff8a55!important}
-
-/* planningNettoAccent */
-.day{border:1px solid #e4e6e9!important;background:#fff!important}.day.active{background:var(--netto-gradient)!important;color:#fff!important}
-.editTools{border-top:3px solid #ff5b22!important}.paintChoice i{box-shadow:0 0 0 2px #fff,0 0 0 3px #ddd}
-
-/* Navigation semaine / année */
-.planningViewBar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}.viewTabs{display:inline-flex;padding:4px;background:#f0f1f3;border:1px solid #e2e4e8;border-radius:12px}.viewTab{border:0;background:transparent;border-radius:9px;padding:8px 14px;font-weight:850;font-size:12px;cursor:pointer;color:#6d7076}.viewTab.active{background:var(--netto-gradient);color:#fff;box-shadow:0 5px 14px #ff4b2220}.weekNav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.miniNav{width:38px;padding:9px}.currentWeekBtn{white-space:nowrap}.weekLabel{font-size:11px;color:#777;font-weight:750;margin-left:4px}.days .day{display:flex;flex-direction:column;gap:2px;align-items:center;min-width:88px}.days .day small{font-size:9px;font-weight:650;opacity:.72}
-.yearView{animation:fadeSlide .25s ease}.yearHead{display:flex;align-items:center;justify-content:center;gap:14px;margin:4px 0 18px}.yearTitle{font-size:30px;font-weight:900;min-width:90px;text-align:center}.yearGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.monthCard{background:#fff;border:1px solid #e3e5e8;border-radius:18px;padding:14px;box-shadow:0 8px 24px #00000008}.monthCard h3{font-size:14px;margin:0 0 10px}.monthWeekdays,.monthDays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.monthWeekdays span{text-align:center;font-size:9px;font-weight:850;color:#9a9da3;padding-bottom:3px}.yearDay{position:relative;aspect-ratio:1;border:0;border-radius:9px;background:transparent;font-size:10px;font-weight:700;color:#333;cursor:pointer}.yearDay:hover{background:#fff0eb;color:#ef3b20}.yearDay.today{background:var(--netto-gradient);color:#fff}.yearDay.hasData:not(.today){background:#fff7f2}.yearDay i{position:absolute;bottom:4px;left:50%;width:4px;height:4px;border-radius:50%;transform:translateX(-50%);background:#ff4b22}.yearDay.today i{background:#fff}
-:root[data-theme="dark"] .viewTabs{background:#212328;border-color:#34373d}:root[data-theme="dark"] .weekLabel{color:#a5a7ad}:root[data-theme="dark"] .monthCard{background:#1b1d22;border-color:#30333a}:root[data-theme="dark"] .yearDay{color:#ddd}:root[data-theme="dark"] .yearDay:hover,:root[data-theme="dark"] .yearDay.hasData:not(.today){background:#37231d;color:#ff9b66}
-@media(max-width:1100px){.yearGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){.planningViewBar{align-items:stretch}.viewTabs{width:100%}.viewTab{flex:1}.weekNav{width:100%;justify-content:center}.weekLabel{width:100%;text-align:center}.yearGrid{grid-template-columns:1fr}.days .day{min-width:76px}}
-
-/* Logos personnalisés des outils */
-.toolLogoImg{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
-.navToolLogo{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;color:transparent!important;overflow:hidden}
-.navToolLogo.stock{background-image:url('assets/logo-stock.svg')!important}
-.navToolLogo.planning{background-image:url('assets/logo-planning.svg')!important}
-.navToolLogo.equipe{background-image:url('assets/logo-equipe.svg')!important}
-.pageCard .icon{overflow:hidden;padding:0!important}
-.pageCard .icon img{width:100%;height:100%;object-fit:cover;display:block}
-
-.mobileScrollHint{display:none}
-@media(max-width:700px){
-  body{overflow-x:hidden}
-  header{height:62px}
-  .top{width:calc(100% - 18px)!important}
-  .brand .title{font-size:16px!important}.brand .sub{display:none!important}
-  .navActions .btn{padding:8px 10px;font-size:11px}
-  main{width:100%!important;padding:12px 10px 34px!important}
-  .planningViewBar{gap:9px;margin-bottom:10px}
-  .viewTabs{width:100%;padding:3px}.viewTab{flex:1;padding:9px 10px;font-size:11px}
-  .weekNav{width:100%;display:grid;grid-template-columns:40px 1fr 40px;gap:6px}
-  .weekNav .miniNav{width:40px;height:38px;padding:0}.currentWeekBtn{height:38px;padding:0 8px;font-size:11px}
-  .weekLabel{grid-column:1/-1;text-align:center;margin:1px 0 0;font-size:10px}
-  .toolbar{display:block;margin-bottom:9px}
-  .days{gap:5px;margin:0 -10px;padding:0 10px 8px;scroll-snap-type:x proximity;scrollbar-width:none}
-  .days::-webkit-scrollbar{display:none}
-  .days .day{min-width:76px;padding:8px 9px!important;font-size:11px!important;scroll-snap-align:center}
-  .planningActions{justify-content:space-between;gap:8px;margin-top:4px}
-  .planningActions .saveState{font-size:10px!important}.planningActions .btn{padding:8px 10px;font-size:10px}
-  .dateTitle{font-size:21px!important;margin:7px 0 8px!important}
-  .hint{font-size:10.5px!important;line-height:1.35}
-  .mobileScrollHint{display:flex;align-items:center;justify-content:center;margin:8px 0 7px;padding:7px 10px;border-radius:10px;background:#fff4ef;color:#c63b22;font-size:9.5px;font-weight:800}
-  .sheet{width:100%;border-radius:13px!important;overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;box-shadow:0 5px 18px #0000000b!important}
-  .grid{min-width:1102px!important;grid-template-columns:112px repeat(29,32px) 62px!important}
-  .cell,.name,.time,.total{min-height:38px!important;font-size:10px!important}
-  .name{position:sticky!important;left:0!important;z-index:5!important;width:112px;padding:0 8px!important;font-size:10.5px!important;box-shadow:3px 0 6px #0000000d}
-  .headName{z-index:7!important}
-  .time{min-height:32px!important;font-size:8px!important}
-  .total{font-size:9.5px!important}
-  .cell.on:after{font-size:7px!important}
-  .legend{gap:7px;margin-top:9px}.legend span{font-size:9.5px!important}.sw{width:10px;height:10px}
-  .totalRule{width:100%;margin-left:0!important;padding-top:2px}
-  .editTools{padding:10px!important;gap:9px!important;border-radius:12px!important}
-  .editToolsTitle{min-width:100%}.editToolsTitle strong{font-size:12px}.editToolsTitle span{font-size:9.5px}
-  .paintChoices{display:grid!important;grid-template-columns:repeat(2,1fr);width:100%;gap:6px!important}
-  .paintChoice{justify-content:center;padding:9px 7px!important;font-size:10px!important}
-  .resetEdit{width:100%}
-  .yearGrid{grid-template-columns:1fr!important;gap:10px!important}
-  .monthCard{padding:12px!important;border-radius:14px!important}
-  .yearTitle{font-size:25px!important}
-}
-:root[data-theme="dark"] .mobileScrollHint{background:#33211c;color:#ff9a65}
-
-@media(max-width:700px){
-  .nMenu,.brandMenu,.userMenu{
-    position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:10px!important;
-    width:auto!important;max-width:none!important;max-height:min(74dvh,620px)!important;overflow-y:auto!important;
-    overscroll-behavior:contain;padding:10px!important;border-radius:20px!important;
-    box-shadow:0 22px 70px #00000045!important;backdrop-filter:blur(22px)!important;z-index:500!important
-  }
-  .nMenu:before,.brandMenu:before,.userMenu:before{content:"";display:block;width:42px;height:4px;border-radius:99px;background:#c9c9ce;margin:1px auto 8px}
-  .nMenuTitle,.brandMenuTitle{padding:5px 10px 9px!important;font-size:9px!important}
-  .nMenu button,.brandMenu button,.userMenu button{min-height:50px!important;padding:8px 9px!important;border-radius:12px!important;grid-template-columns:38px 1fr!important;gap:10px!important}
-  .nMenu button>span,.brandMenu button>span,.userMenu button>span{width:36px!important;height:36px!important;border-radius:10px!important}
-  .nMenu button strong,.brandMenu button strong,.userMenu button strong{font-size:12px!important}
-  .nMenu button small,.brandMenu button small,.userMenu button small{font-size:9.5px!important}
-  .logoutItem,.brandLogout,.userLogout{margin-top:6px!important;padding-top:9px!important}
-}
-
-/* Planning mobile réellement lisible */
-.mobilePlanningCards{display:none}
-@media(max-width:700px){
-  .mobilePlanningCards{display:grid;gap:8px;margin-top:8px}
-  .mobileEmployee{background:#fff;border:1px solid #e3e6ea;border-radius:14px;padding:11px 12px;box-shadow:0 4px 14px #00000008}
-  .mobileEmployee>strong{display:block;font-size:13px;margin-bottom:8px}
-  .mobileShifts{display:flex;gap:6px;flex-wrap:wrap}
-  .shiftChip{display:inline-grid;grid-template-columns:8px auto;column-gap:7px;row-gap:1px;align-items:center;min-width:132px;padding:7px 9px;border-radius:10px;background:#f7f8fa;border:1px solid #e6e8eb}
-  .shiftChip i{grid-row:1/3;width:8px;height:28px;border-radius:99px}
-  .shiftChip b{font-size:11px;line-height:1.05}.shiftChip small{font-size:8.5px;color:#777}
-  .shift-g i{background:#49a900}.shift-b i{background:#1594df}.shift-r i{background:#f0180b}.shift-y i{background:#f2d900}.shift-o i{background:#eda900}
-  .offChip{font-size:10px;color:#9a9da3;font-style:italic;padding:3px 0}
-  .mobileScrollHint{display:none!important}
-  .sheet{display:none!important}
-  body.planningEditing .mobilePlanningCards{display:none!important}
-  body.planningEditing .mobileScrollHint{display:flex!important}
-  body.planningEditing .sheet{display:block!important}
-  .legend{margin-top:10px!important}
-}
-:root[data-theme="dark"] .mobileEmployee{background:#1b1d22;border-color:#30333a}
-:root[data-theme="dark"] .shiftChip{background:#23262b;border-color:#353940}
-:root[data-theme="dark"] .shiftChip small,:root[data-theme="dark"] .offChip{color:#a5a7ad}
-
-/* Menu N mobile — overlay plein écran fiable sur iOS/PWA */
-.mobileNavBackdrop{display:none}
-@media(max-width:700px){
-  body.mobileNavOpen{overflow:hidden!important}
-  body.mobileNavOpen .mobileNavBackdrop{display:block!important;position:fixed!important;inset:0!important;background:rgba(17,24,39,.38)!important;backdrop-filter:blur(2px)!important;z-index:998!important}
-  body.mobileNavOpen #nMenu{
-    display:block!important;position:fixed!important;left:10px!important;right:10px!important;top:max(64px,calc(env(safe-area-inset-top) + 50px))!important;bottom:auto!important;
-    width:auto!important;max-width:none!important;max-height:calc(100dvh - max(82px,calc(env(safe-area-inset-top) + 68px)))!important;
-    overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;
-    padding:9px!important;border-radius:20px!important;z-index:999!important;
-    box-shadow:0 22px 70px rgba(0,0,0,.32)!important
-  }
-  body.mobileNavOpen #nMenu:before{display:none!important}
-}
-
-.excelImport{margin:10px 0 14px}.excelDrop{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 13px;border:1.5px dashed #ff6b3d;background:#fff8f4;border-radius:14px;cursor:pointer;transition:.18s}.excelDrop:hover,.excelDrop.drag{background:#fff0e8;border-color:#ff2d20;transform:translateY(-1px)}.excelIcon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#ff2d20,#ff8a00);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:900}.excelDrop strong{display:block;font-size:12px}.excelDrop small{display:block;color:#777;font-size:10px;margin-top:2px;line-height:1.3}.excelDrop>b{font-size:10px;color:#d7351e;background:#fff;border:1px solid #ffd1c2;border-radius:9px;padding:7px 9px}.excelImportState{font-size:10px;margin-top:6px;min-height:13px}.excelImportState.loading{color:#777}.excelImportState.success{color:#238441;font-weight:750}.excelImportState.error{color:#c42a32;font-weight:750}
-@media(max-width:700px){.excelImport{margin:8px 0 12px}.excelDrop{grid-template-columns:38px minmax(0,1fr);padding:10px}.excelDrop>b{display:none}.excelIcon{width:36px;height:36px}.excelDrop strong{font-size:11px}.excelDrop small{font-size:9px}.legend{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important}.legend span{width:auto!important}}
-:root[data-theme="dark"] .excelDrop{background:#251d1a;border-color:#91452e}:root[data-theme="dark"] .excelDrop:hover,:root[data-theme="dark"] .excelDrop.drag{background:#30201b}:root[data-theme="dark"] .excelDrop small{color:#aaa}:root[data-theme="dark"] .excelDrop>b{background:#1c1d20;border-color:#5b3327;color:#ff9a72}
-
-.planningLogs{margin-top:18px;background:#fff;border:1px solid #e1e3e7;border-radius:15px;padding:13px 14px;box-shadow:0 5px 18px #00000007}.planningLogsHead{display:flex;justify-content:space-between;align-items:center;gap:12px}.planningLogsHead strong{display:block;font-size:13px}.planningLogsHead small{display:block;color:#888;font-size:9.5px;margin-top:2px}.planningLogsList{display:grid;gap:7px;margin-top:11px;max-height:260px;overflow:auto}.planningLog{display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;padding:8px 9px;background:#f7f8fa;border-radius:10px}.logIcon{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#fff0e9;color:#e64724;font-weight:900}.planningLog div{min-width:0}.planningLog strong,.planningLog span,.planningLog small{display:inline}.planningLog strong{font-size:10.5px;margin-right:4px}.planningLog div>span{font-size:10px}.planningLog small{display:block;color:#888;font-size:8.5px;margin-top:2px}.logsEmpty{color:#999;font-size:10px;padding:7px 2px}
-@media(max-width:700px){.planningLogs{padding:11px;margin-top:13px}.planningLogsHead{align-items:flex-start}.planningLogsHead .btn{font-size:9px;padding:7px 8px}.planningLogsList{max-height:220px}.planningLog{grid-template-columns:30px 1fr}.logIcon{width:28px;height:28px}.legend{justify-content:flex-start!important}}
-:root[data-theme="dark"] .planningLogs{background:#1a1b1e;border-color:#303136}:root[data-theme="dark"] .planningLog{background:#23252a}:root[data-theme="dark"] .logIcon{background:#39231e}
-
-/* Peinture rapide du planning : maintenir + glisser */
-.planningEditing .grid{touch-action:none}
-.planningEditing .cell.editable{cursor:crosshair}
-.planningEditing .cell.editable:active{outline:2px solid #111;outline-offset:-2px}
-@media(max-width:700px){.planningEditing .sheet{overscroll-behavior:contain}.planningEditing .grid{touch-action:none}}
-
-/* Planning inspiré du fichier Excel magasin */
-.grid{min-width:1540px!important;background:#fff}.time{min-height:31px!important;font-size:9px!important;padding:0!important}.time.quarter{background:#fafafa!important}.time.half{background:#f0f1f3!important;border-left:1px solid #bfc3c8!important}.cell{min-height:34px!important;border-right:1px solid #eceef0!important;border-bottom:1px solid #d6d9dd!important}.cell:nth-child(2n){border-right-color:#d2d5d9!important}.cell.on:after{display:none!important}.name{min-height:34px!important;border-bottom-color:#cfd2d6!important}.total{min-height:34px!important;background:#f5f5f6!important}.planningToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);z-index:5000;background:#17181b;color:#fff;border-radius:12px;padding:11px 16px;font-size:12px;font-weight:800;box-shadow:0 12px 35px #0004;opacity:0;pointer-events:none;transition:.2s}.planningToast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:700px){body.planningEditing .grid{min-width:1540px!important;grid-template-columns:110px repeat(60,22px) 58px!important}.planningToast{bottom:calc(18px + env(safe-area-inset-bottom));white-space:nowrap}}
-
-/* Correctif structure grille 15 min — doit rester après tous les anciens overrides */
-.grid{display:grid!important;grid-template-columns:150px repeat(59,minmax(18px,1fr)) 68px!important;grid-auto-flow:row!important;min-width:1540px!important}
-.grid>.name,.grid>.time,.grid>.cell,.grid>.total{min-width:0!important;box-sizing:border-box!important}
-@media(max-width:700px){.grid{grid-template-columns:110px repeat(60,22px) 58px!important;min-width:1466px!important}}
-/* Grille planning fidèle Excel : 1 colonne = 15 minutes */.grid .time.quarter{font-size:9px;color:#60646c;background:#fafafa}.grid .time.half{font-size:10px;color:#111;background:#f3f4f6}.grid .cell,.grid .time{min-width:23px}.grid .cell.on:after{content:none!important}/* Excel-faithful planning v5 — structure reconstruite sur les fichiers réels */
-.grid{display:grid!important;grid-template-columns:165px repeat(58,30px) 76px!important;grid-auto-flow:row!important;grid-auto-rows:34px!important;min-width:1981px!important;align-items:stretch!important}
-.grid>.name,.grid>.time,.grid>.cell,.grid>.total{box-sizing:border-box!important;min-width:0!important;max-width:none!important;margin:0!important;position:relative!important;float:none!important}
-.grid .name,.grid .cell,.grid .total{height:34px!important;min-height:34px!important}
-.grid .time{width:30px!important;height:40px!important;min-height:40px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:8px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;border-right:1px solid #d8dce1!important}
-.grid .time.hour{font-weight:900!important;color:#111!important;background:#eef0f2!important;border-left:2px solid #747b84!important}
-.grid .time.half{font-weight:800!important;color:#20242a!important;background:#f6f7f8!important;border-left:1px solid #aeb3ba!important}
-.grid .time.quarter{background:#fbfbfc!important;color:transparent!important}
-.grid .cell{width:30px!important;padding:0!important;border-right:1px solid #dde0e4!important;border-bottom:1px solid #cbd0d6!important;background-clip:padding-box!important}
-.grid .cell.hourStart{border-left:2px solid #747b84!important}
-.grid .cell.halfStart:not(.hourStart){border-left:1px solid #aeb3ba!important}
-.grid .cell.on{background:var(--c)!important}
-.grid .cell.on:after{display:none!important;content:none!important}
-.grid .name{font-size:12px!important;padding:0 11px!important;display:flex!important;align-items:center!important;border-bottom:1px solid #cbd0d6!important;background:#fff!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;z-index:4!important}
-.grid .total{font-size:11px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-left:2px solid #747b84!important;background:#f7f7f8!important;font-weight:850!important}
-.grid .headName{height:40px!important;min-height:40px!important;background:#f3f4f5!important;font-weight:900!important;z-index:6!important}
-.grid .totalHead{width:76px!important;height:40px!important;min-height:40px!important;background:#f3f4f5!important}
-.sheet{overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important;scrollbar-gutter:stable}
-.dangerReset{color:#b42318!important;border:1px solid #f0b7b2!important;background:#fff5f4!important}
-@media(max-width:700px){body.planningEditing .grid,.grid{grid-template-columns:125px repeat(58,28px) 68px!important;min-width:1817px!important}.grid .time,.grid .cell{width:28px!important}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--red:#ff2d20;--orange:#ff8a00;--ink:#171717;--muted:#737780;--line:#cfd3d8;--soft:#f5f6f7}
+body{margin:0;background:#f7f8fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+button,input{font:inherit}.hidden{display:none!important}
+header{position:sticky;top:0;z-index:900;background:#ffffffed;backdrop-filter:blur(14px);border-bottom:1px solid #e3e5e8;padding:12px 16px}
+.top{width:min(97vw,1700px);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.mark{width:39px;height:39px;border:0;border-radius:12px;background:#202024;color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;cursor:pointer}
+.title{font-weight:850;font-size:20px}.sub{font-size:12px;color:#777;margin-top:2px}.navActions{display:flex;gap:7px}
+.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer}.dark{background:#202024;color:#fff}.light{background:#eceef1;color:#303238}.danger{background:#fff1f0;color:#b42318;border:1px solid #f1b8b3}
+main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
+.planningViewBar,.toolbar,.weekNav,.planningActions,.yearHead{display:flex;align-items:center;gap:9px}.planningViewBar{justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.viewTabs{display:flex;background:#eceef1;padding:4px;border-radius:12px}.viewTab{border:0;padding:8px 13px;border-radius:9px;font-weight:800;background:transparent;cursor:pointer}.viewTab.active{background:linear-gradient(135deg,var(--red),var(--orange));color:white}
+.weekNav{flex-wrap:wrap}.miniNav{padding:8px 11px}.weekLabel{font-size:12px;font-weight:800;color:#666}
+.toolbar{justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.days{display:flex;gap:6px;overflow-x:auto;padding:2px 0 5px;max-width:100%}.day{border:0;background:#e8eaed;border-radius:10px;padding:9px 12px;font-weight:780;white-space:nowrap;cursor:pointer}.day small{display:block;font-size:9px;font-weight:650;margin-top:2px;opacity:.72}.day.active{background:#202024;color:#fff}
+.saveState{font-size:11px;color:#7b7f86;white-space:nowrap}
+.importPanel{margin:8px 0 14px}.excelDrop{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 13px;border:1.5px dashed #ff6b3d;background:#fff8f4;border-radius:14px;cursor:pointer;transition:.18s}.excelDrop:hover,.excelDrop.drag{background:#fff0e8;border-color:#ff2d20}.excelIcon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;display:grid;place-items:center;font-size:20px;font-weight:900}.excelDrop strong{display:block;font-size:12px}.excelDrop small{display:block;color:#777;font-size:10px;margin-top:2px}.excelDrop>b{font-size:10px;color:#d7351e;background:#fff;border:1px solid #ffd1c2;border-radius:9px;padding:7px 9px}.importState{font-size:10px;min-height:14px;margin-top:5px}.importState.ok{color:#188443;font-weight:800}.importState.err{color:#c22b33;font-weight:800}
+.readerHead{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;margin:8px 0 10px}.dateTitle{font-size:25px;font-weight:900}.readerMeta{font-size:11px;color:#767b83;margin-top:3px}.sourceBadge{font-size:10px;font-weight:800;background:#fff3ec;color:#d84b28;border:1px solid #ffd8c9;border-radius:999px;padding:6px 9px}
+.editTools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:10px 12px;border:1px solid #e0e3e6;border-radius:13px;background:#fff}.editTools strong{font-size:11px}.paintChoices{display:flex;gap:6px;flex-wrap:wrap}.paintChoice{border:1px solid #dfe2e6;background:#f7f8f9;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:5px;cursor:pointer}.paintChoice i{width:10px;height:10px;border-radius:2px}.paintChoice.active{background:#202024;color:white;border-color:#202024}
+.emptyState{padding:40px 18px;text-align:center;background:#fff;border:1px solid #e1e4e8;border-radius:16px;color:#777}.emptyState strong{display:block;color:#222;font-size:15px;margin-bottom:5px}
+.sheetViewport{background:#fff;border:1px solid #cfd3d8;border-radius:12px;overflow:auto;box-shadow:0 7px 24px #0000000a;max-width:100%;-webkit-overflow-scrolling:touch}
+.xlsTable{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:11px}
+.xlsTable col.nameCol{width:176px}.xlsTable col.slotCol{width:29px}.xlsTable col.totalCol{width:72px}
+.xlsTable th,.xlsTable td{height:34px;padding:0;border-right:1px solid #d6d9dd;border-bottom:1px solid #c9cdd2;text-align:center;vertical-align:middle}
+.xlsTable thead th{height:42px;background:#f1f2f4;font-size:9px;font-weight:850;position:sticky;top:0;z-index:5}
+.xlsTable .nameCell,.xlsTable .nameHead{position:sticky;left:0;z-index:6;text-align:left;padding:0 10px;background:#fff;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:2px solid #7d838b}
+.xlsTable .nameHead{z-index:8;background:#eceef1}
+.xlsTable .totalCell,.xlsTable .totalHead{position:sticky;right:0;z-index:6;background:#f6f7f8;font-weight:900;border-left:2px solid #7d838b}.xlsTable .totalHead{z-index:8;background:#eceef1}
+.xlsTable .slot{width:29px;min-width:29px;background:#fff;user-select:none;padding:0}.xlsTable .slot.hourStart,.xlsTable .timeHead.hourStart{border-left:2px solid #777e87}.xlsTable .slot.halfStart:not(.hourStart),.xlsTable .timeHead.halfStart:not(.hourStart){border-left:1px solid #9ea4ab}
+.xlsTable .timeHead.blankQuarter{color:transparent;background:#fafafa}.xlsTable .slot.editable{cursor:crosshair}.xlsTable.editing{touch-action:none}.xlsTable .slot.editable:hover{outline:2px solid #202024;outline-offset:-2px;z-index:3}
+.xlsTable tfoot th,.xlsTable tfoot td{height:28px;background:#f2f3f5;font-weight:850;font-size:9px}
+.legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}.legend span{font-size:11px;color:#666}.sw{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:4px}
+.planningLogs{margin-top:17px;background:#fff;border:1px solid #e1e3e7;border-radius:14px;padding:12px 13px}.planningLogsHead{display:flex;justify-content:space-between;align-items:center;gap:10px}.planningLogsHead strong{display:block;font-size:12px}.planningLogsHead small{display:block;font-size:9px;color:#888;margin-top:2px}.planningLogsList{display:grid;gap:6px;margin-top:9px;max-height:220px;overflow:auto}.planningLog{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:center;padding:7px 8px;background:#f7f8fa;border-radius:9px}.logIcon{width:28px;height:28px;border-radius:8px;background:#fff0e9;color:#e64724;display:grid;place-items:center;font-weight:900}.planningLog strong{font-size:10px;margin-right:4px}.planningLog span{font-size:9.5px}.planningLog small{display:block;color:#888;font-size:8.5px;margin-top:1px}.logsEmpty{font-size:10px;color:#999;padding:6px 1px}
+.yearView{margin-top:4px}.yearGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.monthCard{background:#fff;border:1px solid #e1e4e8;border-radius:14px;padding:11px}.monthCard h3{font-size:12px;margin:0 0 8px;text-transform:capitalize}.monthWeekdays,.monthDays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.monthWeekdays span{font-size:8px;color:#92969d;text-align:center}.yearDay{border:0;background:transparent;border-radius:7px;min-height:27px;font-size:9px;cursor:pointer;position:relative}.yearDay.hasData{background:#fff0e8;color:#d64124;font-weight:850}.yearDay.today{outline:1px solid #202024}.yearDay i{position:absolute;width:4px;height:4px;border-radius:50%;background:#ff5c27;bottom:3px;left:50%;transform:translateX(-50%)}
+.nMenuWrap{position:relative}.nMenu{position:absolute;left:0;top:48px;width:245px;padding:8px;background:#fffffff7;border:1px solid #dedee2;border-radius:15px;box-shadow:0 16px 44px #0002;backdrop-filter:blur(16px);z-index:950}.nMenuTitle{padding:7px 10px 8px;color:#999;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.8px}.nMenu button{width:100%;display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;text-align:left;padding:9px;border:0;border-radius:10px;background:transparent;cursor:pointer}.nMenu button:hover{background:#f4f4f5}.nMenu button>span{width:32px;height:32px;border-radius:9px;background:#f0f0f2;display:grid;place-items:center}.nMenu button strong{display:block;font-size:12px}.nMenu button small{display:block;font-size:10px;color:#888;margin-top:2px}
+.mobileNavBackdrop{display:none}.planningToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,15px);opacity:0;transition:.18s;background:#17181b;color:#fff;border-radius:11px;padding:10px 14px;font-size:11px;font-weight:850;z-index:5000;pointer-events:none}.planningToast.show{opacity:1;transform:translate(-50%,0)}
+:root[data-theme="dark"] body{background:#111214;color:#f3f3f4}:root[data-theme="dark"] header{background:#17181bef;border-color:#303136}:root[data-theme="dark"] .sheetViewport,:root[data-theme="dark"] .editTools,:root[data-theme="dark"] .planningLogs,:root[data-theme="dark"] .monthCard,:root[data-theme="dark"] .emptyState{background:#1a1b1e;border-color:#34363b}:root[data-theme="dark"] .xlsTable .nameCell,:root[data-theme="dark"] .xlsTable .slot{background:#1c1d20}:root[data-theme="dark"] .xlsTable thead th,:root[data-theme="dark"] .xlsTable .nameHead,:root[data-theme="dark"] .xlsTable .totalHead,:root[data-theme="dark"] .xlsTable .totalCell{background:#25272b;color:#f4f4f5}:root[data-theme="dark"] .xlsTable th,:root[data-theme="dark"] .xlsTable td{border-color:#3b3d43}:root[data-theme="dark"] .readerMeta,:root[data-theme="dark"] .weekLabel{color:#aaa}:root[data-theme="dark"] .nMenu{background:#1c1d20f7;border-color:#38393e;color:#fff}:root[data-theme="dark"] .nMenu button:hover{background:#292a2f}
+@media(max-width:900px){main{padding:14px 10px 50px}.top{width:100%}.yearGrid{grid-template-columns:1fr 1fr}.xlsTable col.nameCol{width:135px}.xlsTable .nameCell,.xlsTable .nameHead{max-width:135px}.excelDrop{grid-template-columns:38px minmax(0,1fr)}.excelDrop>b{display:none}}
+@media(max-width:620px){.sub{display:none}.title{font-size:18px}.planningViewBar{align-items:flex-start}.weekNav{width:100%}.days{width:100%}.planningActions{width:100%;justify-content:space-between}.dateTitle{font-size:21px}.yearGrid{grid-template-columns:1fr}.xlsTable col.slotCol{width:27px}.xlsTable .slot{width:27px;min-width:27px}.paintChoices{width:100%}.planningLogsHead{align-items:flex-start}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -328,359 +45,156 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="design-v2.css?v=3">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-</head><body><div class="mobileNavBackdrop" onclick="closeNMenu()"></div><header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button onclick="location.href='articles.html'"><span>▤</span><div><strong>Fiches articles</strong><small>Référentiel EAN</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Planning</div><div class="sub">Netto • Semaine du 21 au 27 septembre 2026</div></div></div><div class="navActions"><button class="btn light backBtn" onclick="location.href='home.html'">← Retour</button></div></div></header><main><div class="planningViewBar"><div class="viewTabs"><button id="weekViewBtn" class="viewTab active" onclick="setPlanningView('week')">Semaine</button><button id="yearViewBtn" class="viewTab" onclick="setPlanningView('year')">Année</button></div><div class="weekNav"><button class="btn light miniNav" onclick="changeWeek(-1)">←</button><button class="btn light currentWeekBtn" onclick="goCurrentWeek()">Cette semaine</button><button class="btn light miniNav" onclick="changeWeek(1)">→</button><span id="weekLabel" class="weekLabel"></span></div></div><div id="weekView"><div class="toolbar"><div class="days" id="days"></div><div class="planningActions"><div class="saveState" id="saveState">Lecture seule</div><button id="editPlanningBtn" class="btn dark hidden" onclick="toggleEditMode()">✎ Modifier le planning</button></div></div><div id="excelImport" class="excelImport hidden"><input id="excelFile" type="file" accept=".xls,.xlsx,.xlsm" hidden onchange="importPlanningFile(this.files[0])"><div class="excelDrop" onclick="document.getElementById('excelFile').click()" ondragover="excelDrag(event,true)" ondragleave="excelDrag(event,false)" ondrop="excelDropFile(event)"><span class="excelIcon">▦</span><div><strong>Importer le planning Excel</strong><small>Glisse le fichier XLS/XLSX de la semaine ici, ou touche pour le sélectionner.</small></div><b>Importer</b></div><div id="excelImportState" class="excelImportState"></div></div><div class="dateTitle" id="dateTitle"></div><div id="editTools" class="editTools hidden"><div class="editToolsTitle"><strong>Mode modification</strong><span>Choisis le type de plage puis clique sur les cases du planning.</span></div><div class="paintChoices"><button class="paintChoice active" data-color="g" onclick="setPaintColor('g')"><i style="background:#49a900"></i>Matin</button><button class="paintChoice" data-color="b" onclick="setPaintColor('b')"><i style="background:#1594df"></i>Après-midi</button><button class="paintChoice" data-color="r" onclick="setPaintColor('r')"><i style="background:#f0180b"></i>Rouge</button><button class="paintChoice" data-color="y" onclick="setPaintColor('y')"><i style="background:#f2ef00"></i>Jaune</button><button class="paintChoice" data-color="o" onclick="setPaintColor('o')"><i style="background:#eda900"></i>Orange</button><button class="paintChoice erase" data-color="erase" onclick="setPaintColor('erase')">⌫ Effacer</button></div><button class="btn light resetEdit" onclick="resetDay()">RAZ du jour</button><button class="btn light resetEdit dangerReset" onclick="resetWeek()">RAZ de la semaine</button></div><div id="planningHint" class="hint" style="margin-bottom:10px">Planning en lecture seule • amplitude 6:00 → 20:30.</div><div id="mobilePlanningCards" class="mobilePlanningCards"></div><div class="mobileScrollHint">↔ Mode modification : fais glisser horizontalement pour modifier les cases</div><div class="sheet"><div class="grid" id="grid"></div></div><div class="legend"><span><i class="sw" style="background:#49a900"></i>Matin</span><span><i class="sw" style="background:#1594df"></i>Après-midi</span></div><section id="planningLogs" class="planningLogs hidden"><div class="planningLogsHead"><div><strong>Historique du planning</strong><small>Imports et modifications enregistrés</small></div><button id="clearPlanningLogs" class="btn light hidden" onclick="clearPlanningLogs()">Effacer les logs</button></div><div id="planningLogsList" class="planningLogsList"><span class="logsEmpty">Aucune activité enregistrée.</span></div></section></div><div id="yearView" class="yearView hidden"><div class="yearHead"><button class="btn light" onclick="changeYear(-1)">←</button><div id="yearTitle" class="yearTitle"></div><button class="btn light" onclick="changeYear(1)">→</button></div><div id="yearGrid" class="yearGrid"></div></div></main><script>
-const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';let db=null;
-const names=['Clément','Delphine','Laetitia','Enzo L','Manuel','Enzo C','Gwen','Kenza','Candy','Nathanael','Chantal','Giani'];
-const colors={g:'#49a900',b:'#1594df',r:'#f0180b',y:'#f2ef00',o:'#eda900'};
-const seedDays=[
- {k:'lun',label:'Lundi',date:'21 septembre 2026',blocks:{'Clément':[['6','12','g']],'Delphine':[['6','12','g']],'Laetitia':[['6','12','g']],'Enzo L':[['14','20','b']],'Manuel':[['6','14','r']],'Enzo C':[['14','20','b']],'Gwen':[['6','20','y']],'Kenza':[['12','14','b'],['14','18.5','b']],'Candy':[['14','20','b']],'Nathanael':[['9.5','14','g']],'Chantal':[['6','20','o']],'Giani':[['6','20','o']]}},
- {k:'mar',label:'Mardi',date:'22 septembre 2026',blocks:{'Clément':[['6','12','g']],'Delphine':[['6','12','g']],'Laetitia':[['6','12','g']],'Enzo L':[['12','18','b']],'Manuel':[['6','18.5','r']],'Enzo C':[['14','20','b']],'Gwen':[['13.5','19.5','b']],'Kenza':[['6','20','y']],'Candy':[['6','20','o']],'Nathanael':[['7.5','14','g']],'Chantal':[['6','20','o']],'Giani':[['13.5','20','b']]}},
- {k:'mer',label:'Mercredi',date:'23 septembre 2026',blocks:{'Clément':[['6','12','g']],'Delphine':[['13','18.5','b']],'Laetitia':[['14.5','20','b']],'Enzo L':[['6','12','g']],'Manuel':[['6','20','r']],'Enzo C':[['6','13','g']],'Gwen':[['6','20','y']],'Kenza':[['14.5','20','b']],'Candy':[['6','20','o']],'Nathanael':[['10.5','14.5','g']],'Chantal':[['7.5','11','g']],'Giani':[['6','20','o']]}},
- {k:'jeu',label:'Jeudi',date:'24 septembre 2026',blocks:{'Clément':[['14','20','b']],'Delphine':[['6','11.5','g']],'Laetitia':[['6','11.5','g']],'Enzo L':[['6','11.5','g']],'Manuel':[['6','20','r']],'Enzo C':[['6','20','o']],'Gwen':[['6','20','y']],'Kenza':[['13.5','20','b']],'Candy':[['7.5','13.5','g']],'Nathanael':[['16','20','b']],'Chantal':[['11.5','16','b']],'Giani':[['6','20','o']]}},
- {k:'ven',label:'Vendredi',date:'25 septembre 2026',blocks:{'Clément':[['6','12','g']],'Delphine':[['6','12','g']],'Laetitia':[['6','20','o']],'Enzo L':[['14.5','20','b']],'Manuel':[['6','20','r']],'Enzo C':[['6','11','g']],'Gwen':[['6','20','y']],'Kenza':[['13.5','18.5','b']],'Candy':[['13.5','20','b']],'Nathanael':[['11','14','g']],'Chantal':[['8','13.5','g']],'Giani':[['6','20','o']]}},
- {k:'sam',label:'Samedi',date:'26 septembre 2026',blocks:{'Clément':[['6','12','g']],'Delphine':[['6','12','g']],'Laetitia':[['13','20','b']],'Enzo L':[['6','11.5','g']],'Manuel':[['6','20','r']],'Enzo C':[['13','20','b']],'Gwen':[['6','20','y']],'Kenza':[['12','18','b']],'Candy':[['7.5','13','g']],'Nathanael':[['6','20','o']],'Chantal':[['6','20','o']],'Giani':[['13.5','20','b']]}},
- {k:'dim',label:'Dimanche',date:'27 septembre 2026',blocks:{'Clément':[['12.5','20','r']],'Delphine':[['12.5','20','r']],'Laetitia':[['7.5','12.5','g'],['12.5','20','r']],'Enzo L':[['12.5','20','r']],'Manuel':[['6','12.5','r'],['12.5','20','r']],'Enzo C':[['7.5','12.5','g'],['12.5','20','r']],'Gwen':[['6','12.5','y'],['12.5','20','r']],'Kenza':[['7.5','12.5','g'],['12.5','20','r']],'Candy':[['12.5','20','r']],'Nathanael':[['12.5','20','r']],'Chantal':[['12.5','20','r']],'Giani':[['7.5','12.5','g'],['12.5','20','r']]}}
-];
-let current=0,paintColor='g',editMode=false,planningView='week',currentWeekStart=null,currentYear=(new Date()).getFullYear(),days=[];
-function slots(){return Array.from({length:58},(_,i)=>6+i*.25)}
+</head><body><div class="mobileNavBackdrop" onclick="closeNMenu()"></div><header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="toggleNMenu(event)" aria-label="Menu">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button onclick="location.href='articles.html'"><span>▤</span><div><strong>Fiches articles</strong><small>Référentiel EAN</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Planning</div><div class="sub">Netto • Semaine du 21 au 27 septembre 2026</div></div></div><div class="navActions"><button class="btn light backBtn" onclick="location.href='home.html'">← Retour</button></div></div></header><main id="planningApp">
+  <div class="planningViewBar">
+    <div class="viewTabs"><button id="weekViewBtn" class="viewTab active" onclick="setPlanningView('week')">Semaine</button><button id="yearViewBtn" class="viewTab" onclick="setPlanningView('year')">Année</button></div>
+    <div class="weekNav"><button class="btn light miniNav" onclick="changeWeek(-1)">←</button><button class="btn light" onclick="goCurrentWeek()">Cette semaine</button><button class="btn light miniNav" onclick="changeWeek(1)">→</button><span id="weekLabel" class="weekLabel"></span></div>
+  </div>
+  <section id="weekView">
+    <div class="toolbar">
+      <div id="days" class="days"></div>
+      <div class="planningActions"><span id="saveState" class="saveState">Lecture seule</span><button id="editPlanningBtn" class="btn dark hidden" onclick="toggleEditMode()">✎ Modifier le planning</button></div>
+    </div>
+    <div id="importPanel" class="importPanel hidden">
+      <input id="excelFile" type="file" accept=".xls,.xlsx,.xlsm" hidden onchange="importPlanningFile(this.files[0])">
+      <div class="excelDrop" onclick="document.getElementById('excelFile').click()" ondragover="excelDrag(event,true)" ondragleave="excelDrag(event,false)" ondrop="excelDropFile(event)">
+        <span class="excelIcon">▦</span><div><strong>Importer / remplacer le planning Excel</strong><small>Le fichier XLS devient la source du planning Web de sa semaine.</small></div><b>Importer</b>
+      </div>
+      <div id="importState" class="importState"></div>
+    </div>
+    <div class="readerHead"><div><div id="dateTitle" class="dateTitle"></div><div id="readerMeta" class="readerMeta"></div></div><span id="sourceBadge" class="sourceBadge hidden"></span></div>
+    <div id="editTools" class="editTools hidden">
+      <strong>Modifier directement le tableau</strong>
+      <div class="paintChoices">
+        <button class="paintChoice active" data-color="g" onclick="setPaintColor('g')"><i style="background:#1FB714"></i>Vert</button>
+        <button class="paintChoice" data-color="b" onclick="setPaintColor('b')"><i style="background:#00ABEA"></i>Bleu</button>
+        <button class="paintChoice" data-color="r" onclick="setPaintColor('r')"><i style="background:#DD0806"></i>Rouge</button>
+        <button class="paintChoice" data-color="y" onclick="setPaintColor('y')"><i style="background:#FFFF00;border:1px solid #d9cf00"></i>Jaune</button>
+        <button class="paintChoice" data-color="o" onclick="setPaintColor('o')"><i style="background:#EDA900"></i>Orange</button>
+        <button class="paintChoice" data-color="erase" onclick="setPaintColor('erase')">⌫ Effacer</button>
+      </div>
+      <button class="btn light" onclick="resetDay()">RAZ du jour</button><button class="btn danger" onclick="resetWeek()">RAZ de la semaine</button>
+    </div>
+    <div id="emptyState" class="emptyState hidden"><strong>Aucun planning importé pour cette semaine</strong><span>Un administrateur ou responsable peut glisser le fichier Excel correspondant.</span></div>
+    <div id="sheetViewport" class="sheetViewport hidden"><div id="sheetMount"></div></div>
+    <div class="legend"><span><i class="sw" style="background:#1FB714"></i>Matin</span><span><i class="sw" style="background:#00ABEA"></i>Après-midi</span></div>
+    <section id="planningLogs" class="planningLogs hidden"><div class="planningLogsHead"><div><strong>Historique du planning</strong><small>Imports et modifications du tableau</small></div><button id="clearPlanningLogs" class="btn light hidden" onclick="clearPlanningLogs()">Effacer les logs</button></div><div id="planningLogsList" class="planningLogsList"><span class="logsEmpty">Aucune activité enregistrée.</span></div></section>
+  </section>
+  <section id="yearView" class="yearView hidden"><div class="yearHead"><button class="btn light" onclick="changeYear(-1)">←</button><strong id="yearTitle"></strong><button class="btn light" onclick="changeYear(1)">→</button></div><div id="yearGrid" class="yearGrid"></div></section>
+</main><script>
+const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
+const COLOR={g:'#1FB714',b:'#00ABEA',r:'#DD0806',y:'#FFFF00',o:'#EDA900',w:'#FFFFFF'};
+const DAYS=[['LUNDI','Lundi'],['MARDI','Mardi'],['MERCREDI','Mercredi'],['JEUDI','Jeudi'],['VENDREDI','Vendredi'],['SAMEDI','Samedi'],['DIMANCHE','Dimanche']];
+let db=null,role=null,canEdit=false,currentUser=null,model=null,editMode=false,paintColor='g',planningView='week';
+let currentWeekStart=startOfWeek(new Date()),currentDay=Math.max(0,Math.min(6,(new Date().getDay()+6)%7)),currentYear=new Date().getFullYear();
+let drag={active:false,row:null,pointerId:null,changed:new Set(),first:null,last:null};
+
 function isoDate(d){const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function parseISO(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
-function startOfWeek(d){const x=new Date(d),day=(x.getDay()+6)%7;x.setHours(0,0,0,0);x.setDate(x.getDate()-day);return x}
+function startOfWeek(d){const x=new Date(d),n=(x.getDay()+6)%7;x.setHours(0,0,0,0);x.setDate(x.getDate()-n);return x}
 function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
-function frDay(d){return d.toLocaleDateString('fr-FR',{weekday:'long'}).replace(/^./,x=>x.toUpperCase())}
 function frDate(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}
-function seedByIso(){const map={};seedDays.forEach((d,i)=>{map['2026-09-'+String(21+i).padStart(2,'0')]=d});return map}
-const SEED=seedByIso();
-function makeDay(date){const key=isoDate(date),seed=SEED[key];return{k:key,label:frDay(date),date:frDate(date),blocks:seed?.blocks||{},dateObj:new Date(date)}}
-function buildWeek(start){days=Array.from({length:7},(_,i)=>makeDay(addDays(start,i)));const meta=importedPlanningMeta();days.forEach(d=>{if(meta[d.k]?.imported){if(!all[d.k]||typeof all[d.k]!=='object')all[d.k]={}}else all[d.k]=normalizeDayState(d,all[d.k])})}
-function baseState(day){const s={};names.forEach(n=>{s[n]={};(day.blocks[n]||[]).forEach(([a,b,c])=>slots().forEach(t=>{if(t>=+a&&t<+b)s[n][String(t)]=c}))});return s}
-function normalizeDayState(day,state){const base=baseState(day);if(!state||typeof state!=='object')return base;names.forEach(n=>{if(!state[n]||typeof state[n]!=='object')state[n]={};Object.keys(base[n]).forEach(t=>{if(state[n][t]===undefined)state[n][t]=base[n][t]})});return state}
-function getState(){try{return JSON.parse(localStorage.getItem('nettoPlanningV2'))||{}}catch{return {}}}
-let all=getState();
-if(!Object.keys(all).length){try{const old=JSON.parse(localStorage.getItem('nettoPlanningV1')||'{}');['lun','mar','mer','jeu','ven','sam','dim'].forEach((k,i)=>{if(old[k])all['2026-09-'+String(21+i).padStart(2,'0')]=old[k]})}catch(e){}}
-const today=new Date();currentWeekStart=startOfWeek(today);currentYear=today.getFullYear();buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(today.getDay()+6)%7));
-function save(){localStorage.setItem('nettoPlanningV2',JSON.stringify(all));const e=document.getElementById('saveState');if(e){e.textContent='✓ Enregistré';setTimeout(()=>e.textContent=editMode?'Mode modification':'Lecture seule',900)}}
+function fmtTime(t){const h=Math.floor(t),m=Math.round((t-h)*60);return h+(m?':'+String(m).padStart(2,'0'):'')}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function norm(v){return String(v??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function showToast(msg){let t=document.getElementById('planningToast');if(!t){t=document.createElement('div');t.id='planningToast';t.className='planningToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window._pt);window._pt=setTimeout(()=>t.classList.remove('show'),2400)}
+function setSaveState(v){const e=document.getElementById('saveState');if(e)e.textContent=v}
+function playUISound(){try{const A=window.AudioContext||window.webkitAudioContext;window._uac=window._uac||new A();const a=window._uac,o=a.createOscillator(),g=a.createGain(),n=a.currentTime;o.frequency.value=520;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.015,n+.006);g.gain.exponentialRampToValueAtTime(.0001,n+.06);o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+.07)}catch(e){}}
 
-function fmt(t){const h=Math.floor(t),m=Math.round((t-h)*60);return h+':'+String(m).padStart(2,'0')}
-function playUISound(type='tick'){try{const A=window.AudioContext||window.webkitAudioContext;window._uac=window._uac||new A();const x=window._uac;if(x.state==='suspended')x.resume();const o=x.createOscillator(),g=x.createGain(),n=x.currentTime;o.type='sine';o.frequency.setValueAtTime(type==='soft'?390:520,n);o.frequency.exponentialRampToValueAtTime(type==='soft'?450:590,n+.05);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.016,n+.007);g.gain.exponentialRampToValueAtTime(.0001,n+.075);o.connect(g);g.connect(x.destination);o.start(n);o.stop(n+.08)}catch(e){}}
-function renderDays(){
- const box=document.getElementById('days');
- box.innerHTML=days.map((d,i)=>'<button class="day '+(i===current?'active':'')+'" onclick="playUISound(&quot;soft&quot;);current='+i+';render()"><span>'+d.label+'</span><small>'+d.dateObj.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})+'</small></button>').join('');
- if(innerWidth<=700)setTimeout(()=>box.querySelector('.day.active')?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),0);
-}
-function updateWeekLabel(){const a=days[0].dateObj,b=days[6].dateObj,txt='Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});document.getElementById('weekLabel').textContent=txt;const sub=document.querySelector('header .sub');if(sub)sub.textContent='Netto • '+txt}
+function slots(m=model){const count=m?.slotCount||58,start=m?.startTime??6;return Array.from({length:count},(_,i)=>start+i*.25)}
+function dayKey(index=currentDay){return isoDate(addDays(currentWeekStart,index))}
+function modelDay(index=currentDay){return model?.days?.[dayKey(index)]||null}
+function totalForRow(row){if(!row)return 0;let n=0;for(const v of row)if(v==='g'||v==='b')n++;return n*.25}
 
-function weekKeyForDate(d){return isoDate(startOfWeek(d))}
-function importedWeekNames(){try{return JSON.parse(localStorage.getItem('nettoPlanningWeekNames')||'{}')||{}}catch(e){return{}}}
-function importedPlanningMeta(){try{return JSON.parse(localStorage.getItem('nettoPlanningMeta')||'{}')||{}}catch(e){return{}}}
-function savePlanningMeta(meta){localStorage.setItem('nettoPlanningMeta',JSON.stringify(meta))}
-function importedDayCaption(key){return importedPlanningMeta()[key]?.caption||''}
+function renderWeekHeader(){
+ const a=currentWeekStart,b=addDays(a,6);document.getElementById('weekLabel').textContent='Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+ document.querySelector('header .sub')&&(document.querySelector('header .sub').textContent='Netto • Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}));
+ const box=document.getElementById('days');box.innerHTML=DAYS.map((d,i)=>{const dt=addDays(a,i);return '<button class="day '+(i===currentDay?'active':'')+'" onclick="selectDay('+i+')">'+d[1]+'<small>'+dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})+'</small></button>'}).join('');
+}
+function selectDay(i){currentDay=i;renderWeekHeader();renderReader();playUISound()}
 
-function displayNamesForWeek(){return importedWeekNames()[weekKeyForDate(days[0].dateObj)]||names}
-function saveWeekNames(key,list){const x=importedWeekNames();x[key]=list;localStorage.setItem('nettoPlanningWeekNames',JSON.stringify(x))}
-function showPlanningToast(msg){let t=document.getElementById('planningToast');if(!t){t=document.createElement('div');t.id='planningToast';t.className='planningToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window._planningToast);window._planningToast=setTimeout(()=>t.classList.remove('show'),2600)}
+function renderReader(){
+ const dt=addDays(currentWeekStart,currentDay),day=modelDay();
+ document.getElementById('dateTitle').textContent=DAYS[currentDay][1]+' '+frDate(dt);
+ const meta=document.getElementById('readerMeta'),badge=document.getElementById('sourceBadge'),empty=document.getElementById('emptyState'),viewport=document.getElementById('sheetViewport');
+ if(!model||!day){meta.textContent='Aucun fichier Excel pour cette semaine.';badge.classList.add('hidden');empty.classList.remove('hidden');viewport.classList.add('hidden');document.getElementById('editPlanningBtn').disabled=true;return}
+ document.getElementById('editPlanningBtn').disabled=false;empty.classList.add('hidden');viewport.classList.remove('hidden');
+ meta.textContent=(model.weekLabel?model.weekLabel+' • ':'')+'Planning issu du fichier Excel • '+fmtTime(model.startTime)+' → '+fmtTime(model.endTime);
+ badge.textContent=model.sourceFile||'Excel';badge.classList.toggle('hidden',!model.sourceFile);
+ const ss=slots(),employees=model.employees||[],rows=day.cells||[];
+ let h='<table id="xlsTable" class="xlsTable '+(editMode?'editing':'')+'"><colgroup><col class="nameCol">'+ss.map(()=>'<col class="slotCol">').join('')+'<col class="totalCol"></colgroup><thead><tr><th class="nameHead">Employé</th>';
+ ss.forEach((t,i)=>{const major=i%2===0,label=major?(Number.isInteger(t)?String(Math.floor(t)):fmtTime(t)):'',cls=(i%4===0?'hourStart ':'')+(i%2===0?'halfStart':'blankQuarter');h+='<th class="timeHead '+cls+'" title="'+fmtTime(t)+'–'+fmtTime(t+.25)+'">'+label+'</th>'});
+ h+='<th class="totalHead">Total</th></tr></thead><tbody>';
+ employees.forEach((emp,ri)=>{const row=rows[ri]||Array(ss.length).fill(null);h+='<tr><th class="nameCell" title="Ligne Excel '+(emp.excelRow||ri+4)+'">'+esc(emp.name)+'</th>';ss.forEach((t,si)=>{const v=row[si]||null,cls=(si%4===0?'hourStart ':'')+(si%2===0?'halfStart ':'')+(editMode?'editable ':'');h+='<td class="slot '+cls+'" data-row="'+ri+'" data-slot="'+si+'" title="'+esc(emp.name)+' • '+fmtTime(t)+'–'+fmtTime(t+.25)+'" style="'+(v?'background:'+COLOR[v]+';':'')+'"></td>'});h+='<td class="totalCell" data-total-row="'+ri+'">'+String(totalForRow(row)).replace('.',',')+' h</td></tr>'});
+ h+='</tbody></table>';document.getElementById('sheetMount').innerHTML=h;if(editMode)bindEditing();
+}
+function renderAll(){renderWeekHeader();renderReader()}
 
-async function saveSharedPlanningWeek(start,opts={}){
- if(!db||!window.planningCanEdit)return;
- const ws=startOfWeek(start),weekKey=isoDate(ws),data={};for(let i=0;i<7;i++){const k=isoDate(addDays(ws,i));data[k]=all[k]||{}}
- const localMeta=importedPlanningMeta(),firstKey=isoDate(ws),m=localMeta[firstKey]||{},order=importedWeekNames()[weekKey]||displayNamesForWeek();
- const payload={week_start:weekKey,data,employee_order:order,week_label:opts.weekLabel??m.weekLabel??null,source_file:opts.sourceFile??m.source??null,imported:opts.imported??!!m.imported,updated_at:new Date().toISOString(),updated_by:window.planningUser?.id||null};
- if(payload.imported&&!m.imported_at)payload.imported_at=new Date().toISOString();
- const {error}=await db.from('planning_weeks').upsert(payload,{onConflict:'week_start'});if(error)console.warn('Sauvegarde planning partagé:',error)
+async function loadWeek(start=currentWeekStart){
+ currentWeekStart=startOfWeek(start);const key=isoDate(currentWeekStart);setSaveState('Chargement…');
+ const {data,error}=await db.from('planning_weeks').select('data,week_label,source_file,imported,updated_at').eq('week_start',key).maybeSingle();
+ if(error){console.warn(error);model=null;setSaveState('Lecture seule');renderAll();return}
+ model=data?.data?.version===3?data.data:null;
+ if(model){model.weekLabel=data.week_label||model.weekLabel||'';model.sourceFile=data.source_file||model.sourceFile||''}
+ setSaveState('Lecture seule');renderAll()
 }
-async function loadSharedPlanningWeek(start,rerender=true){
- if(!db)return false;const ws=startOfWeek(start),weekKey=isoDate(ws),{data,error}=await db.from('planning_weeks').select('week_start,data,employee_order,week_label,source_file,imported,imported_at,updated_at').eq('week_start',weekKey).maybeSingle();
- if(error){console.warn('Lecture planning partagé:',error);return false}if(!data)return false;
- const meta=importedPlanningMeta(),amps=getPlanningAmplitude(),weekData=data.data||{};
- for(let i=0;i<7;i++){const k=isoDate(addDays(ws,i));all[k]=weekData[k]||{};amps[k]=amps[k]||{min:6,max:20.5};meta[k]={...(meta[k]||{}),imported:!!data.imported,source:data.source_file||'',weekLabel:data.week_label||'',caption:data.imported?((data.week_label?data.week_label+' • ':'')+'Planning partagé'+(data.source_file?' • '+data.source_file:'')+' • 6:00 → 20:30'):(meta[k]?.caption||'')}}
- if(Array.isArray(data.employee_order)&&data.employee_order.length)saveWeekNames(weekKey,data.employee_order);savePlanningMeta(meta);localStorage.setItem('nettoPlanningAmplitude',JSON.stringify(amps));localStorage.setItem('nettoPlanningV2',JSON.stringify(all));buildWeek(ws);if(rerender)render();return true
+async function saveWeek(){
+ if(!canEdit||!model)return;setSaveState('Enregistrement…');model.updatedAt=new Date().toISOString();
+ const payload={week_start:isoDate(currentWeekStart),data:model,employee_order:(model.employees||[]).map(x=>x.name),week_label:model.weekLabel||null,source_file:model.sourceFile||null,imported:true,imported_at:model.importedAt||new Date().toISOString(),updated_at:new Date().toISOString(),updated_by:currentUser?.id||null};
+ const {error}=await db.from('planning_weeks').upsert(payload,{onConflict:'week_start'});setSaveState(error?'Erreur':'✓ Enregistré');if(error)console.warn(error);else setTimeout(()=>setSaveState(editMode?'Mode modification':'Lecture seule'),850)
 }
-function syncCurrentWeekShared(){saveSharedPlanningWeek(currentWeekStart).catch(e=>console.warn('Synchronisation planning:',e))}
 
-function employeeRanges(dayKey,name){
- const row=all[dayKey]?.[name]||{};if(Array.isArray(row.__exact)&&row.__exact.length)return row.__exact;
- const out=[];let start=null,last=null,color=null;
- slots().forEach(t=>{const v=row[String(t)]||null;if(v!==color){if(color&&start!==null)out.push({a:start,b:t,c:color});start=v?t:null;color=v}last=t});
- if(color&&start!==null)out.push({a:start,b:20.5,c:color});
- return out;
-}
-function renderMobileCards(d){
- const box=document.getElementById('mobilePlanningCards');if(!box)return;
- const labels={g:'Matin',b:'Après-midi',r:'Indisponible',y:'Journée jaune',o:'Journée orange'};
- box.innerHTML=displayNamesForWeek().map(n=>{
-  const ranges=employeeRanges(d.k,n);
-  const body=ranges.length?ranges.map(x=>'<span class="shiftChip shift-'+x.c+'"><i></i><b>'+fmt(x.a)+'–'+fmt(x.b)+'</b><small>'+labels[x.c]+'</small></span>').join(''):'<span class="offChip">Aucun horaire</span>';
-  return '<div class="mobileEmployee"><strong>'+n+'</strong><div class="mobileShifts">'+body+'</div></div>';
- }).join('');
-}
-function render(){renderDays();updateWeekLabel();const d=days[current],dateTitle=document.getElementById('dateTitle'),grid=document.getElementById('grid');dateTitle.textContent=d.label+' '+d.date;const amp=getPlanningAmplitude()[d.k];const hint=document.getElementById('planningHint');if(hint&&!editMode)hint.textContent=importedDayCaption(d.k)||('Planning en lecture seule • amplitude '+(amp?fmt(amp.min)+' → '+fmt(amp.max):'6:00 → 20:30')+'.');renderMobileCards(d);document.body.classList.toggle('planningEditing',editMode);let h='<div class="name headName">Employé</div>'+slots().map((t,i)=>{const major=i%2===0,label=major?(Number.isInteger(t)?String(Math.floor(t)):fmt(t)):'';return '<div class="time '+(i%4===0?'hour':(major?'half':'quarter'))+'" title="'+fmt(t)+'">'+label+'</div>'}).join('')+'<div class="time totalHead">Total</div>';displayNamesForWeek().forEach(n=>{h+='<div class="name">'+escapeLog(n)+'</div>';let count=0;slots().forEach(t=>{const val=all[d.k]?.[n]?.[String(t)];if(val==='g'||val==='b')count++;h+='<div class="cell '+(val?'on ':'')+(Number.isInteger(t)?'hourStart ':'')+(t%1===.5?'halfStart ':'')+(editMode?'editable':'')+'" style="'+(val?'--c:'+colors[val]:'')+'" data-n="'+escapeLog(n)+'" data-t="'+t+'"></div>'});h+='<div class="total">'+(count*.25).toFixed(2).replace(/([,.]00)$/,'').replace('.',',')+' h</div>'});grid.innerHTML=h;if(editMode){bindPlanningPaint(grid)}}
-function setPlanningView(v){planningView=v==='year'?'year':'week';if(planningView==='year'&&editMode)toggleEditMode();document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else render();playUISound('soft')}
-async function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);buildWeek(currentWeekStart);current=0;currentYear=currentWeekStart.getFullYear();render();await loadSharedPlanningWeek(currentWeekStart,true);playUISound('soft')}
-async function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);buildWeek(currentWeekStart);current=(now.getDay()+6)%7;currentYear=now.getFullYear();render();await loadSharedPlanningWeek(currentWeekStart,true);playUISound('soft')}
-function changeYear(delta){currentYear+=delta;renderYear();playUISound('soft')}
-function dayHasData(key){const d=all[key];if(!d)return false;return Object.values(d).some(v=>v&&Object.keys(v).length)}
-async function openDateFromYear(key){const d=parseISO(key);currentWeekStart=startOfWeek(d);buildWeek(currentWeekStart);current=Math.max(0,Math.min(6,(d.getDay()+6)%7));setPlanningView('week');await loadSharedPlanningWeek(currentWeekStart,true)}
-function renderYear(){document.getElementById('yearTitle').textContent=currentYear;const months=document.getElementById('yearGrid'),todayKey=isoDate(new Date());let html='';for(let m=0;m<12;m++){const first=new Date(currentYear,m,1),last=new Date(currentYear,m+1,0),offset=(first.getDay()+6)%7;html+='<section class="monthCard"><h3>'+first.toLocaleDateString('fr-FR',{month:'long'}).replace(/^./,x=>x.toUpperCase())+'</h3><div class="monthWeekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="monthDays">'+Array.from({length:offset},()=>'<span></span>').join('');for(let d=1;d<=last.getDate();d++){const dt=new Date(currentYear,m,d),key=isoDate(dt),has=dayHasData(key),isToday=key===todayKey;html+='<button class="yearDay '+(has?'hasData ':'')+(isToday?'today':'')+'" onclick="openDateFromYear(\''+key+'\')">'+d+(has?'<i></i>':'')+'</button>'}html+='</div></section>'}months.innerHTML=html}
+function excelDrag(e,on){e.preventDefault();if(!canEdit)return;document.querySelector('.excelDrop')?.classList.toggle('drag',!!on)}
+function excelDropFile(e){e.preventDefault();excelDrag(e,false);const f=e.dataTransfer?.files?.[0];if(f)importPlanningFile(f)}
+function cellDate(v){if(v instanceof Date&&!isNaN(v))return new Date(v.getFullYear(),v.getMonth(),v.getDate());if(typeof v==='number'&&window.XLSX){const x=XLSX.SSF.parse_date_code(v);if(x)return new Date(x.y,x.m-1,x.d)}const m=String(v||'').match(/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return new Date(y,+m[2]-1,+m[1])}return null}
+function findSheet(wb,key){return wb.SheetNames.find(x=>norm(x)===norm(key))}
 
-let planningPaint={active:false,pointerId:null,rowName:null,cells:new Set(),changed:[]};
-function paintCell(el){
- if(!editMode||!el?.classList.contains('cell'))return;
- const d=days[current],n=el.dataset.n,t=el.dataset.t;if(planningPaint.active&&planningPaint.rowName&&n!==planningPaint.rowName)return;const key=n+'|'+t;if(planningPaint.cells.has(key))return;
- planningPaint.cells.add(key);all[d.k][n]??={};const before=all[d.k][n][t]||null;
- if(paintColor==='erase')delete all[d.k][n][t];else all[d.k][n][t]=paintColor;
- const after=all[d.k][n][t]||null;if(before===after)return;
- planningPaint.changed.push({n,t});el.classList.toggle('on',!!after);el.style.setProperty('--c',after?colors[after]:'');playUISound('soft')
-}
-function planningPaintEnd(){
- if(!planningPaint.active)return;planningPaint.active=false;
- if(planningPaint.changed.length){
-   save();const d=days[current],first=planningPaint.changed[0],last=planningPaint.changed[planningPaint.changed.length-1];
-   const detail=d.date+' · '+first.n+(first.n===last.n?' · '+fmt(+first.t)+(first.t!==last.t?'–'+fmt(+last.t+.25):''):' · '+planningPaint.changed.length+' cases');
-   addPlanningLog('modify',detail);syncCurrentWeekShared();render()
- }
- planningPaint.cells.clear();planningPaint.changed=[];planningPaint.rowName=null
-}
-function bindPlanningPaint(grid){
- grid.querySelectorAll('.cell').forEach(el=>{
-  el.onpointerdown=e=>{if(!editMode||e.button>0)return;e.preventDefault();planningPaint.active=true;planningPaint.pointerId=e.pointerId;planningPaint.rowName=el.dataset.n;planningPaint.cells.clear();planningPaint.changed=[];try{grid.setPointerCapture(e.pointerId)}catch(_){}paintCell(el)};
- });
- grid.onpointermove=e=>{if(!planningPaint.active||e.pointerId!==planningPaint.pointerId)return;e.preventDefault();const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('.cell');if(hit&&grid.contains(hit))paintCell(hit)};
- grid.onpointerup=e=>{if(e.pointerId===planningPaint.pointerId)planningPaintEnd()};
- grid.onpointercancel=planningPaintEnd;
- grid.onlostpointercapture=planningPaintEnd;
-}
-function apply(el){if(!editMode)return;planningPaint.active=true;planningPaint.cells.clear();planningPaint.changed=[];paintCell(el);planningPaintEnd()}
-function setPaintColor(color){paintColor=color;document.querySelectorAll('.paintChoice').forEach(b=>b.classList.toggle('active',b.dataset.color===color));playUISound('soft')}
+function u16(d,o){return d[o]|(d[o+1]<<8)}function u32(d,o){return (d[o]|(d[o+1]<<8)|(d[o+2]<<16)|(d[o+3]<<24))>>>0}
+function decodeBytes(d,unicode){if(unicode){let s='';for(let i=0;i+1<d.length;i+=2)s+=String.fromCharCode(u16(d,i));return s}try{return new TextDecoder('windows-1252').decode(d)}catch(e){let s='';for(const x of d)s+=String.fromCharCode(x);return s}}
+function oleWorkbookStream(ab){const d=new Uint8Array(ab),magic=[208,207,17,224,161,177,26,225];if(d.length<512||magic.some((v,i)=>d[i]!==v))throw new Error('Le fichier .xls n’est pas un classeur Excel compatible.');const ss=1<<u16(d,30),nf=u32(d,44),fd=u32(d,48),FREE=0xffffffff,END=0xfffffffe;let fatSecs=[];for(let i=0;i<109;i++){const s=u32(d,76+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}let dif=u32(d,68),nd=u32(d,72);for(let z=0;z<nd&&dif!==FREE&&dif!==END;z++){const off=(dif+1)*ss,n=ss/4-1;for(let i=0;i<n;i++){const s=u32(d,off+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}dif=u32(d,off+n*4)}fatSecs=fatSecs.slice(0,nf);const fat=[];for(const s of fatSecs){const off=(s+1)*ss;for(let i=0;i<ss/4;i++)fat.push(u32(d,off+i*4))}function chain(st){const a=[],seen=new Set();let s=st;while(s!==FREE&&s!==END&&s<fat.length&&!seen.has(s)){seen.add(s);a.push(s);s=fat[s]}return a}function read(st,size){const ch=chain(st),out=new Uint8Array(ch.length*ss);let p=0;for(const s of ch){out.set(d.subarray((s+1)*ss,(s+2)*ss),p);p+=ss}return size==null?out:out.subarray(0,size)}const dir=read(fd),entries=[];for(let p=0;p+128<=dir.length;p+=128){const nl=u16(dir,p+64),type=dir[p+66];if(nl<2)continue;entries.push({name:decodeBytes(dir.subarray(p,p+nl-2),true),type,start:u32(dir,p+116),size:u32(dir,p+120)})}const e=entries.find(x=>x.type===2&&(x.name==='Workbook'||x.name==='Book'));if(!e)throw new Error('Flux Workbook introuvable.');return read(e.start,e.size)}
+function records(d,start=0,end=d.length){const out=[];for(let p=start;p+4<=end;){const id=u16(d,p),len=u16(d,p+2),q=p+4;if(q+len>end)break;out.push({id,rec:d.subarray(q,q+len)});p=q+len;if(id===10&&start>0)break}return out}
+function legacyStyleReader(ab){try{const wb=oleWorkbookStream(ab),g=records(wb),sheets=[],xfs=[],palette=[];for(const x of g){if(x.id===133){const off=u32(x.rec,0),n=x.rec[6],uni=x.rec[7]&1,name=decodeBytes(x.rec.subarray(8,8+n*(uni?2:1)),!!uni).trim();sheets.push({name,off})}else if(x.id===224)xfs.push(x.rec);else if(x.id===146){const n=u16(x.rec,0);for(let i=0;i<n;i++)palette.push([x.rec[2+i*4],x.rec[3+i*4],x.rec[4+i*4]])}}const maps={};for(let si=0;si<sheets.length;si++){const sh=sheets[si],end=sheets[si+1]?.off||wb.length,map=new Map();for(const x of records(wb,sh.off,end)){const q=x.rec;if([253,515,638,6,513,516,517].includes(x.id)&&q.length>=6)map.set(u16(q,0)+','+u16(q,2),u16(q,4));else if(x.id===189){const rr=u16(q,0),fc=u16(q,2),lc=u16(q,q.length-2);for(let cc=fc,p=4;cc<=lc;cc++,p+=6)map.set(rr+','+cc,u16(q,p))}else if(x.id===190){const rr=u16(q,0),fc=u16(q,2),lc=u16(q,q.length-2);for(let cc=fc,p=4;cc<=lc;cc++,p+=2)map.set(rr+','+cc,u16(q,p))}}maps[norm(sh.name)]=map}function color(sheet,r,c){const xf=maps[norm(sheet)]?.get(r+','+c),rec=xfs[xf];if(!rec)return null;const idx=u16(rec,18)&127,rgb=idx>=8&&idx<8+palette.length?palette[idx-8]:null;if(!rgb)return null;const [R,G,B]=rgb;if(R>245&&G>245&&B>245)return'w';if(R>210&&G<90&&B<90)return'r';if(G>130&&R<120&&B<130)return'g';if(B>150&&G>100&&R<130)return'b';if(R>235&&G>220&&B<70)return'y';if(R>190&&G>75&&G<220&&B<120)return'o';return null}return{color}}catch(e){console.warn('Styles XLS:',e);return null}}
+function modernCellColor(cell){const fg=cell?.s?.fill?.fgColor||cell?.s?.fgColor||{},rgb=String(fg.rgb||fg.argb||'').replace(/^FF/,'').toUpperCase();if(/1FB714|00B050|49A900|70AD47/.test(rgb))return'g';if(/00ABEA|00B0F0|1594DF|5B9BD5/.test(rgb))return'b';if(/DD0806|F0180B|FF0000|C00000/.test(rgb))return'r';if(/FFFF00|FFF200|F2EF00/.test(rgb))return'y';if(/EDA900|FFC000|FF9900|F5A800/.test(rgb))return'o';if(/FFFFFF/.test(rgb))return'w';return null}
 
-
-async function addPlanningLog(action,details){
- try{if(!db||!window.planningUser)return;await db.from('planning_logs').insert({user_id:window.planningUser.id,display_name:window.planningUser.name,action,details:details||null});await loadPlanningLogs()}catch(e){console.warn('Log planning:',e)}
-}
-async function loadPlanningLogs(){
- const box=document.getElementById('planningLogsList');if(!db||!box)return;
- const {data,error}=await db.from('planning_logs').select('id,display_name,action,details,created_at').order('created_at',{ascending:false}).limit(100);
- if(error){box.innerHTML='<span class="logsEmpty">Historique indisponible.</span>';return}
- if(!data?.length){box.innerHTML='<span class="logsEmpty">Aucune activité enregistrée.</span>';return}
- box.innerHTML=data.map(x=>{const d=new Date(x.created_at),when=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return '<div class="planningLog"><span class="logIcon">'+(x.action==='import'?'▦':'✎')+'</span><div><strong>'+escapeLog(x.display_name)+'</strong><span>'+(x.action==='import'?'a importé un planning':'a modifié le planning')+'</span><small>'+when+(x.details?' · '+escapeLog(x.details):'')+'</small></div></div>'}).join('')
-}
-function escapeLog(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-async function clearPlanningLogs(){
- if(window.currentRole!=='admin'||!db)return;if(!confirm('Effacer tout l’historique du planning ?'))return;
- const {error}=await db.from('planning_logs').delete().gte('id',0);if(error){alert('Impossible d’effacer les logs.');return}await loadPlanningLogs();playUISound('tick')
-}
-function excelDrag(e,on){e.preventDefault();if(!window.planningCanEdit)return;document.querySelector('.excelDrop')?.classList.toggle('drag',!!on)}
-function excelDropFile(e){e.preventDefault();excelDrag(e,false);if(!window.planningCanEdit)return;const f=e.dataTransfer?.files?.[0];if(f)importPlanningFile(f)}
-
-function cleanExcelText(v){return String(v??'').replace(/\s+/g,' ').trim()}
-function normExcel(v){return cleanExcelText(v).toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-function excelDateValue(v,baseYear){
- if(v instanceof Date&&!isNaN(v))return new Date(v.getFullYear(),v.getMonth(),v.getDate());
- if(typeof v==='number'&&v>30000){const ms=Date.UTC(1899,11,30)+Math.round(v*86400000),x=new Date(ms);return new Date(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate())}
- const s=cleanExcelText(v),m=s.match(/\b(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2,4}))?\b/);
- if(m){let y=m[3]?+m[3]:baseYear;if(y<100)y+=2000;return new Date(y,+m[2]-1,+m[1])}return null
-}
-function biffU16(d,o){return d[o]|(d[o+1]<<8)}
-function biffU32(d,o){return (d[o]|(d[o+1]<<8)|(d[o+2]<<16)|(d[o+3]<<24))>>>0}
-function biffF64(d,o){return new DataView(d.buffer,d.byteOffset+o,8).getFloat64(0,true)}
-function biffDecodeBytes(d,unicode){
- if(unicode){let s='';for(let i=0;i+1<d.length;i+=2)s+=String.fromCharCode(biffU16(d,i));return s}
- try{return new TextDecoder('windows-1252').decode(d)}catch(e){let s='';for(const x of d)s+=String.fromCharCode(x);return s}
-}
-function biffOleWorkbookStream(ab){
- const d=new Uint8Array(ab),magic=[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1];
- if(d.length<512||magic.some((v,i)=>d[i]!==v))throw new Error('Ce fichier .xls n’est pas au format Excel attendu.');
- const secSize=1<<biffU16(d,0x1e),numFat=biffU32(d,0x2c),firstDir=biffU32(d,0x30),FREE=0xffffffff,END=0xfffffffe;
- let fatSecs=[];for(let i=0;i<109;i++){const s=biffU32(d,0x4c+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}
- let dif=biffU32(d,0x44),nDif=biffU32(d,0x48);
- for(let z=0;z<nDif&&dif!==FREE&&dif!==END;z++){const off=(dif+1)*secSize,n=secSize/4-1;for(let i=0;i<n;i++){const s=biffU32(d,off+i*4);if(s!==FREE&&s!==END)fatSecs.push(s)}dif=biffU32(d,off+n*4)}
- fatSecs=fatSecs.slice(0,numFat);const fat=[];
- for(const s of fatSecs){const off=(s+1)*secSize;for(let i=0;i<secSize/4;i++)fat.push(biffU32(d,off+i*4))}
- function chain(start){const a=[],seen=new Set();let s=start;while(s!==FREE&&s!==END&&s<fat.length&&!seen.has(s)){seen.add(s);a.push(s);s=fat[s]}return a}
- function readChain(start,size){const ch=chain(start),out=new Uint8Array(ch.length*secSize);let p=0;for(const s of ch){out.set(d.subarray((s+1)*secSize,(s+2)*secSize),p);p+=secSize}return size==null?out:out.subarray(0,size)}
- const dir=readChain(firstDir),ents=[];
- for(let p=0;p+128<=dir.length;p+=128){const nl=biffU16(dir,p+64),type=dir[p+66];if(nl<2)continue;const name=biffDecodeBytes(dir.subarray(p,p+nl-2),true);ents.push({name,type,start:biffU32(dir,p+116),size:biffU32(dir,p+120)})}
- const e=ents.find(x=>x.type===2&&(x.name==='Workbook'||x.name==='Book'));if(!e)throw new Error('Le classeur Excel est illisible (flux Workbook absent).');
- return readChain(e.start,e.size)
-}
-function biffRecords(d,start=0,end=d.length){
- const out=[];for(let p=start;p+4<=end;){const id=biffU16(d,p),len=biffU16(d,p+2),q=p+4;if(q+len>end)break;out.push({p,id,len,rec:d.subarray(q,q+len)});p=q+len;if(id===0x000a&&start>0)break}return out
-}
-function biffParseSst(rec){
- let p=8;const unique=biffU32(rec,4),out=[];
- for(let i=0;i<unique;i++){const n=biffU16(rec,p);p+=2;const opt=rec[p++],uni=opt&1,ext=opt&4,rich=opt&8;let runs=0,extLen=0;if(rich){runs=biffU16(rec,p);p+=2}if(ext){extLen=biffU32(rec,p);p+=4}const nb=n*(uni?2:1);out.push(biffDecodeBytes(rec.subarray(p,p+nb),!!uni));p+=nb+runs*4+extLen}
- return out
-}
-function biffParseUnicode(rec){
- let p=0,n=biffU16(rec,p);p+=2;const opt=rec[p++],uni=opt&1,ext=opt&4,rich=opt&8;let runs=0,extLen=0;if(rich){runs=biffU16(rec,p);p+=2}if(ext){extLen=biffU32(rec,p);p+=4}const nb=n*(uni?2:1);return biffDecodeBytes(rec.subarray(p,p+nb),!!uni)
-}
-function biffDecodeRk(v){
- let n;if(v&2)n=(v|0)>>2;else{const b=new ArrayBuffer(8),dv=new DataView(b);dv.setUint32(0,0,true);dv.setUint32(4,v&0xfffffffc,true);n=dv.getFloat64(0,true)}
- return v&1?n/100:n
-}
-function biffExcelDate(serial){const ms=Date.UTC(1899,11,30)+Math.round(serial*86400000),d=new Date(ms);return new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())}
-function biffStyleColor(xf,xfs,palette){
- const rec=xfs[xf];if(!rec||rec.length<20)return null;const idx=biffU16(rec,18)&0x7f,rgb=(idx>=8&&idx<8+palette.length)?palette[idx-8]:null;if(!rgb)return null;
- const [r,g,b]=rgb;
- if(r>230&&g>225&&b<70)return'y';
- if(r>185&&g<90&&b<90)return'r';
- if(g>115&&r<130&&b<120)return'g';
- if(b>145&&g>85&&r<120)return'b';
- if(r>195&&g>=75&&g<225&&b<110)return'o';
- return null
-}
-function parseNettoLegacyXls(ab){
- const wb=biffOleWorkbookStream(ab),globals=biffRecords(wb),sheets=[],xfs=[],palette=[];let sst=[];
- for(const x of globals){
-  if(x.id===0x85){const off=biffU32(x.rec,0),n=x.rec[6],uni=x.rec[7]&1,name=biffDecodeBytes(x.rec.subarray(8,8+n*(uni?2:1)),!!uni).trim();sheets.push({name,off})}
-  else if(x.id===0xe0)xfs.push(x.rec);
-  else if(x.id===0x92){const n=biffU16(x.rec,0);for(let i=0;i<n;i++)palette.push([x.rec[2+i*4],x.rec[3+i*4],x.rec[4+i*4]])}
-  else if(x.id===0xfc)sst=biffParseSst(x.rec)
- }
- const cellsBySheet={};
- for(let si=0;si<sheets.length;si++){
-  const sh=sheets[si],end=si+1<sheets.length?sheets[si+1].off:wb.length,cells=new Map();let pending=null;
-  for(const x of biffRecords(wb,sh.off,end)){
-   const q=x.rec;
-   if(x.id===0xfd){const rr=biffU16(q,0),cc=biffU16(q,2),xf=biffU16(q,4),idx=biffU32(q,6);cells.set(rr+','+cc,{v:sst[idx]??'',xf})}
-   else if(x.id===0x203)cells.set(biffU16(q,0)+','+biffU16(q,2),{v:biffF64(q,6),xf:biffU16(q,4)});
-   else if(x.id===0x27e)cells.set(biffU16(q,0)+','+biffU16(q,2),{v:biffDecodeRk(biffU32(q,6)),xf:biffU16(q,4)});
-   else if(x.id===0xbd){const rr=biffU16(q,0),fc=biffU16(q,2),lc=biffU16(q,q.length-2);let p=4;for(let cc=fc;cc<=lc;cc++,p+=6)cells.set(rr+','+cc,{v:biffDecodeRk(biffU32(q,p+2)),xf:biffU16(q,p)})}
-   else if(x.id===0x6){const rr=biffU16(q,0),cc=biffU16(q,2),xf=biffU16(q,4);let v=null;if(q[12]===0xff&&q[13]===0xff){if(q[6]===0)pending=rr+','+cc}else v=biffF64(q,6);cells.set(rr+','+cc,{v,xf})}
-   else if(x.id===0x207&&pending){const z=cells.get(pending);if(z)z.v=biffParseUnicode(q);pending=null}
-  }
-  cellsBySheet[sh.name]=cells
- }
- const daily=['LUNDI','MARDI','MERCREDI','JEUDI','VENDREDI','SAMEDI','DIMANCHE'],mondayCells=cellsBySheet.LUNDI;
- if(!mondayCells)throw new Error('La feuille LUNDI est absente.');
- const dateVal=mondayCells.get('1,1')?.v;if(typeof dateVal!=='number')throw new Error('La date du lundi est introuvable dans le fichier.');
- const monday=biffExcelDate(dateVal),weekLabel=cleanExcelText(mondayCells.get('0,2')?.v||''),employees=[];
- // This is the exact template used by the provided files: rows 4→15 in Excel, names in column B.
- for(let rr=3;rr<=14;rr++){const name=cleanExcelText(mondayCells.get(rr+',1')?.v||'');if(name&&name.toUpperCase()!=='TOTAL')employees.push({row:rr,name})}
- if(!employees.length)throw new Error('Aucun employé reconnu dans la colonne des noms.');
- // The real template has TOTAL in column BI (index 60): 58 quarter-hour cells C:BH = 06:00→20:30.
- let totalCol=60;for(let cc=2;cc<80;cc++){if(normExcel(mondayCells.get('1,'+cc)?.v)==='total'){totalCol=cc;break}}
- const startCol=2,slotCount=totalCol-startCol,startTime=6,endTime=startTime+slotCount*.25;
- if(slotCount<40||slotCount>80)throw new Error('La grille horaire du fichier ne correspond pas au modèle de planning Netto.');
- const days={},bounds={},keys=[];let shifts=0;
- for(let di=0;di<daily.length;di++){
-  const cells=cellsBySheet[daily[di]];if(!cells)throw new Error('La feuille '+daily[di]+' est absente.');
-  const key=isoDate(addDays(monday,di));keys.push(key);days[key]={};bounds[key]={min:startTime,max:endTime};
-  for(const e of employees){
-   const row={};let previous=null;
-   for(let cc=startCol;cc<totalCol;cc++){
-    const z=cells.get(e.row+','+cc),occupied=!!(z&&z.v!==null&&z.v!==''&&z.v!==0&&z.v!==false);
-    const color=occupied?biffStyleColor(z.xf,xfs,palette):null,t=startTime+(cc-startCol)*.25;
-    if(color){row[String(Math.round(t*4)/4)]=color;if(color!==previous)shifts++}
-    previous=color
-   }
-   days[key][e.name]=row
-  }
- }
- return{monday,weekLabel,employees:employees.map(x=>x.name),days,bounds,startTime,endTime,slotCount,shifts,source:'xls-biff8'}
-}
-function sheetJsPlanningColor(cell){
- if(!cell)return null;const s=cell.s||{},fill=s.fill||s,fg=fill.fgColor||s.fgColor||{},rgb=String(fg.rgb||fg.argb||'').replace(/^FF/,'').toUpperCase(),idx=fg.indexed??fg.index;
- if([10].includes(idx))return'r';if([11].includes(idx))return'g';if([15].includes(idx))return'b';if([34].includes(idx))return'y';if([51,52,53].includes(idx))return'o';
- if(/DD0806|F0180B|FF0000|C00000/.test(rgb))return'r';
- if(/1FB714|00B050|49A900|70AD47|92D050/.test(rgb))return'g';
- if(/00ABEA|1594DF|5B9BD5|00B0F0|2196F3/.test(rgb))return'b';
- if(/FFFF00|FFF200|F2EF00|FCF305/.test(rgb))return'y';
- if(/EDA900|FFC000|F4B183|FF9900|F5A800|FFCC00|FF6600/.test(rgb))return'o';
- return null
-}
-function parseNettoModernWorkbook(ab){
- if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas encore chargé.');
- const wb=XLSX.read(ab,{type:'array',cellDates:true,cellStyles:true}),daily=['LUNDI','MARDI','MERCREDI','JEUDI','VENDREDI','SAMEDI','DIMANCHE'];
- const lookup={};for(const sn of wb.SheetNames)lookup[normExcel(sn).toUpperCase()]=sn;
- const mondayName=wb.SheetNames.find(x=>normExcel(x)==='lundi');if(!mondayName)throw new Error('La feuille LUNDI est absente.');
- const mondayWs=wb.Sheets[mondayName],mondayRows=XLSX.utils.sheet_to_json(mondayWs,{header:1,raw:true,defval:''}),monday=excelDateValue(mondayRows?.[1]?.[1],new Date().getFullYear());
- if(!monday)throw new Error('La date du lundi est introuvable.');
- const employees=[];for(let rr=3;rr<=14;rr++){const name=cleanExcelText(mondayRows?.[rr]?.[1]);if(name&&name.toUpperCase()!=='TOTAL')employees.push({row:rr,name})}
- let totalCol=60;for(let cc=2;cc<80;cc++)if(normExcel(mondayRows?.[1]?.[cc])==='total'){totalCol=cc;break}
- const startCol=2,slotCount=totalCol-startCol,startTime=6,endTime=startTime+slotCount*.25,days={},bounds={};let shifts=0;
- for(let di=0;di<daily.length;di++){
-  const sn=wb.SheetNames.find(x=>normExcel(x)===daily[di].toLocaleLowerCase('fr'));if(!sn)throw new Error('La feuille '+daily[di]+' est absente.');
-  const ws=wb.Sheets[sn],key=isoDate(addDays(monday,di));days[key]={};bounds[key]={min:startTime,max:endTime};
-  for(const e of employees){
-   const row={};let previous=null;
-   for(let cc=startCol;cc<totalCol;cc++){const cell=ws[XLSX.utils.encode_cell({r:e.row,c:cc})],occupied=!!(cell&&cell.v!==null&&cell.v!==''&&cell.v!==0&&cell.v!==false),color=occupied?sheetJsPlanningColor(cell):null,t=startTime+(cc-startCol)*.25;if(color){row[String(Math.round(t*4)/4)]=color;if(color!==previous)shifts++}previous=color}
-   days[key][e.name]=row
-  }
- }
- return{monday,weekLabel:cleanExcelText(mondayRows?.[0]?.[2]),employees:employees.map(x=>x.name),days,bounds,startTime,endTime,slotCount,shifts,source:'xlsx'}
-}
-async function applyPlanningImportModel(model,file,state){
- const weekStart=startOfWeek(model.monday),weekKey=isoDate(weekStart),weekKeys=Array.from({length:7},(_,i)=>isoDate(addDays(weekStart,i)));
- const occupied=weekKeys.some(k=>{const day=all[k];return day&&Object.values(day).some(row=>row&&Object.keys(row).some(t=>!t.startsWith('__')&&row[t]))});
- if(occupied&&!confirm('Êtes-vous sûr de remplacer le planning actuel de la semaine du '+weekStart.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' ?\n\nLe fichier Excel aura la priorité absolue et remplacera entièrement les 7 jours.')){state.textContent='Import annulé.';state.className='excelImportState';return false}
- weekKeys.forEach(k=>{all[k]={}});
- for(const k of weekKeys)all[k]=model.days[k]||{};
- saveWeekNames(weekKey,model.employees);
- const meta=importedPlanningMeta(),amps=getPlanningAmplitude();
- weekKeys.forEach((k,i)=>{
-  const dt=addDays(weekStart,i);amps[k]=model.bounds[k]||{min:model.startTime,max:model.endTime};
-  meta[k]={imported:true,source:file.name,weekLabel:model.weekLabel||'',caption:(model.weekLabel?model.weekLabel+' • ':'')+'Planning importé depuis '+file.name+' • '+fmt(model.startTime)+' → '+fmt(model.endTime)}
- });
- savePlanningMeta(meta);localStorage.setItem('nettoPlanningAmplitude',JSON.stringify(amps));save();
- await saveSharedPlanningWeek(weekStart,{sourceFile:file.name,weekLabel:model.weekLabel||'',imported:true});
- await addPlanningLog('import',file.name+' · '+(model.weekLabel||'semaine')+' · '+model.employees.length+' employés · '+model.shifts+' plages');
- currentWeekStart=weekStart;currentYear=weekStart.getFullYear();buildWeek(currentWeekStart);current=0;planningView='week';setPlanningView('week');render();
- state.textContent='✓ Planning importé fidèlement · '+model.employees.length+' employés · '+fmt(model.startTime)+' → '+fmt(model.endTime)+'.';state.className='excelImportState success';showPlanningToast('✓ Planning importé');playUISound('tick');return true
+async function readPlanningFile(file){
+ if(!window.XLSX)throw new Error('Le lecteur Excel n’est pas chargé.');const ab=await file.arrayBuffer(),wb=XLSX.read(ab,{type:'array',cellDates:true,cellStyles:true});
+ const mondayName=findSheet(wb,'LUNDI');if(!mondayName)throw new Error('Feuille LUNDI introuvable.');const mondayWs=wb.Sheets[mondayName],mondayDate=cellDate(mondayWs.B2?.v);if(!mondayDate)throw new Error('Date du lundi introuvable en B2.');
+ const weekLabel=String(mondayWs.C1?.v||'').trim(),employees=[];for(let r=3;r<=14;r++){const cell=mondayWs['B'+(r+1)],name=String(cell?.v??'').trim();if(name&&name.toUpperCase()!=='TOTAL')employees.push({excelRow:r+1,rowIndex:r,name})}
+ if(!employees.length)throw new Error('Aucun employé trouvé dans B4:B15.');const legacy=/\.xls$/i.test(file.name)&&!/\.xlsx$/i.test(file.name)?legacyStyleReader(ab):null;
+ const days={};for(let di=0;di<7;di++){const [sheetKey,label]=DAYS[di],sheetName=findSheet(wb,sheetKey);if(!sheetName)throw new Error('Feuille '+sheetKey+' introuvable.');const ws=wb.Sheets[sheetName],key=isoDate(addDays(mondayDate,di)),matrix=[];for(const emp of employees){const row=[];for(let si=0;si<58;si++){const c=2+si,addr=XLSX.utils.encode_cell({r:emp.rowIndex,c}),cell=ws[addr],occupied=!!(cell&&cell.v!==null&&cell.v!==''&&cell.v!==0&&cell.v!==false);let color=null;if(occupied){color=legacy?.color(sheetName,emp.rowIndex,c)||modernCellColor(cell)||'w'}row.push(color)}matrix.push(row)}days[key]={sheet:sheetName.trim(),label,date:key,cells:matrix}}
+ return{version:3,reader:'netto-xls-direct',weekStart:isoDate(mondayDate),weekLabel,sourceFile:file.name,importedAt:new Date().toISOString(),startTime:6,endTime:20.5,slotMinutes:15,slotCount:58,employees,days}
 }
 async function importPlanningFile(file){
- if(!window.planningCanEdit||!file)return;
- const state=document.getElementById('excelImportState');state.textContent='Lecture exacte du fichier Excel…';state.className='excelImportState loading';
- try{
-  const ab=await file.arrayBuffer(),legacy=/\.xls$/i.test(file.name)&&!/\.xlsx$/i.test(file.name),model=legacy?parseNettoLegacyXls(ab):parseNettoModernWorkbook(ab);
-  await applyPlanningImportModel(model,file,state)
- }catch(err){console.error(err);state.textContent='⚠ '+(err?.message||'Import impossible.');state.className='excelImportState error'}
- finally{const input=document.getElementById('excelFile');if(input)input.value=''}
-}
+ if(!canEdit||!file)return;const state=document.getElementById('importState');state.className='importState';state.textContent='Lecture du fichier Excel…';
+ try{const next=await readPlanningFile(file),target=parseISO(next.weekStart),key=next.weekStart,{data:existing,error:checkErr}=await db.from('planning_weeks').select('week_start').eq('week_start',key).maybeSingle();if(checkErr)throw checkErr;if(existing&&!confirm('Êtes-vous sûr de remplacer le planning actuel de la semaine du '+frDate(target)+' ?\n\nLe fichier Excel remplacera entièrement la semaine.')){state.textContent='Import annulé.';return}currentWeekStart=target;currentDay=0;model=next;await saveWeek();await addPlanningLog('import',file.name+' · '+next.weekLabel+' · '+next.employees.length+' employés · lecteur XLS direct');state.className='importState ok';state.textContent='✓ Planning importé depuis '+file.name;renderAll();showToast('✓ Planning importé')}catch(e){console.error(e);state.className='importState err';state.textContent='⚠ '+(e?.message||'Import impossible.')}finally{document.getElementById('excelFile').value=''}}
+function setPaintColor(c){paintColor=c;document.querySelectorAll('.paintChoice').forEach(b=>b.classList.toggle('active',b.dataset.color===c))}
+function toggleEditMode(){if(!canEdit||!model)return;editMode=!editMode;document.getElementById('editTools').classList.toggle('hidden',!editMode);const b=document.getElementById('editPlanningBtn');b.textContent=editMode?'✓ Terminer':'✎ Modifier le planning';b.classList.toggle('editing',editMode);setSaveState(editMode?'Mode modification':'Lecture seule');renderReader()}
+function paintCell(td){if(!editMode||!model)return;const row=+td.dataset.row,slot=+td.dataset.slot;if(drag.row!==null&&row!==drag.row)return;const key=row+'|'+slot;if(drag.changed.has(key))return;drag.changed.add(key);const d=modelDay(),value=paintColor==='erase'?null:paintColor;d.cells[row][slot]=value;td.style.background=value?COLOR[value]:'';drag.first=drag.first||{row,slot};drag.last={row,slot}}
+function bindEditing(){const table=document.getElementById('xlsTable');if(!table)return;table.onpointerdown=e=>{const td=e.target.closest('.slot.editable');if(!td||e.button>0)return;e.preventDefault();drag={active:true,row:+td.dataset.row,pointerId:e.pointerId,changed:new Set(),first:null,last:null};try{table.setPointerCapture(e.pointerId)}catch(_){}paintCell(td)};table.onpointermove=e=>{if(!drag.active||e.pointerId!==drag.pointerId)return;e.preventDefault();const td=document.elementFromPoint(e.clientX,e.clientY)?.closest('.slot.editable');if(td&&table.contains(td))paintCell(td)};const end=async e=>{if(!drag.active)return;drag.active=false;if(drag.changed.size){const emp=model.employees[drag.row]?.name||'',a=drag.first?.slot??0,b=drag.last?.slot??a,start=model.startTime+Math.min(a,b)*.25,endT=model.startTime+(Math.max(a,b)+1)*.25;await saveWeek();await addPlanningLog('modify',DAYS[currentDay][1]+' · '+emp+' · '+fmtTime(start)+'–'+fmtTime(endT));renderReader()}drag.row=null;drag.changed.clear()};table.onpointerup=end;table.onpointercancel=end;table.onlostpointercapture=end}
+async function resetDay(){if(!canEdit||!editMode||!model)return;if(!confirm('Effacer entièrement '+DAYS[currentDay][1]+' '+frDate(addDays(currentWeekStart,currentDay))+' ?'))return;const d=modelDay();d.cells=d.cells.map(r=>r.map(()=>null));await saveWeek();await addPlanningLog('modify','RAZ du jour · '+DAYS[currentDay][1]+' '+frDate(addDays(currentWeekStart,currentDay)));renderReader();showToast('Planning du jour effacé')}
+async function resetWeek(){if(!canEdit||!editMode)return;if(!confirm('Effacer entièrement le planning de la semaine du '+frDate(currentWeekStart)+' ?'))return;const key=isoDate(currentWeekStart),{error}=await db.from('planning_weeks').delete().eq('week_start',key);if(error){alert('Impossible d’effacer la semaine.');return}await addPlanningLog('modify','RAZ de la semaine · '+frDate(currentWeekStart));model=null;editMode=false;document.getElementById('editTools').classList.add('hidden');document.getElementById('editPlanningBtn').textContent='✎ Modifier le planning';renderAll();showToast('Planning de la semaine effacé')}
 
-function getPlanningAmplitude(){try{return JSON.parse(localStorage.getItem('nettoPlanningAmplitude')||'{}')||{}}catch(e){return{}}}
-function toggleEditMode(){if(!window.planningCanEdit)return;editMode=!editMode;const tools=document.getElementById('editTools'),btn=document.getElementById('editPlanningBtn'),hint=document.getElementById('planningHint'),state=document.getElementById('saveState');tools.classList.toggle('hidden',!editMode);btn.textContent=editMode?'✓ Terminer':'✎ Modifier le planning';btn.classList.toggle('editing',editMode);hint.textContent=editMode?'Mode modification actif • clique sur une case pour la modifier. Amplitude 6:00 → 20:30.':'Planning en lecture seule • amplitude 6:00 → 20:30.';state.textContent=editMode?'Mode modification':'Lecture seule';render();playUISound(editMode?'soft':'tick')}
-function resetDay(){if(!window.planningCanEdit||!editMode)return;if(!confirm('Effacer entièrement le planning du '+days[current].date+' ?'))return;all[days[current].k]={};save();addPlanningLog('modify','RAZ du jour · '+days[current].date);syncCurrentWeekShared();render();showPlanningToast('Planning du jour effacé')}
-function resetWeek(){if(!window.planningCanEdit||!editMode)return;const a=days[0].dateObj,b=days[6].dateObj;if(!confirm('Effacer entièrement le planning de la semaine du '+frDate(a)+' au '+frDate(b)+' ?'))return;days.forEach(d=>all[d.k]={});save();addPlanningLog('modify','RAZ de la semaine · '+frDate(a)+' au '+frDate(b));syncCurrentWeekShared();render();showPlanningToast('Planning de la semaine effacé')}
-setPlanningView('week');
-async function waitForSupabase(ms=8000){const start=Date.now();while(Date.now()-start<ms){if(window.supabase?.createClient)return window.supabase;await new Promise(r=>setTimeout(r,120))}throw new Error('Supabase indisponible')}
-async function auth(){window.planningCanEdit=false;try{const sb=await waitForSupabase();db=db||sb.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session)return;const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();window.planningCanEdit=p?.role==='admin'||p?.role==='responsable';window.currentRole=p?.role;window.planningUser={id:session.user.id,name:p?.display_name||session.user.email||'Utilisateur'};document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.toggle('hidden',window.currentRole!=='admin'));await loadSharedSiteConfig();const btn=document.getElementById('editPlanningBtn');if(btn)btn.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('excelImport')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('planningLogs')?.classList.toggle('hidden',!window.planningCanEdit);document.getElementById('clearPlanningLogs')?.classList.toggle('hidden',window.currentRole!=='admin');await loadSharedPlanningWeek(currentWeekStart,true);if(window.planningCanEdit)loadPlanningLogs()}catch(e){console.warn('Vérification session:',e)}}auth();
+async function addPlanningLog(action,details){try{if(!db||!currentUser)return;await db.from('planning_logs').insert({user_id:currentUser.id,display_name:currentUser.name,action,details});if(canEdit)loadPlanningLogs()}catch(e){console.warn(e)}}
+async function loadPlanningLogs(){const box=document.getElementById('planningLogsList');if(!box)return;const {data,error}=await db.from('planning_logs').select('display_name,action,details,created_at').order('created_at',{ascending:false}).limit(100);if(error){box.innerHTML='<span class="logsEmpty">Historique indisponible.</span>';return}box.innerHTML=data?.length?data.map(x=>{const d=new Date(x.created_at);return '<div class="planningLog"><span class="logIcon">'+(x.action==='import'?'▦':'✎')+'</span><div><strong>'+esc(x.display_name)+'</strong><span>'+(x.action==='import'?'a importé un planning':'a modifié le planning')+'</span><small>'+d.toLocaleDateString('fr-FR')+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+(x.details?' · '+esc(x.details):'')+'</small></div></div>'}).join(''):'<span class="logsEmpty">Aucune activité enregistrée.</span>'}
+async function clearPlanningLogs(){if(role!=='admin'||!confirm('Effacer tout l’historique du planning ?'))return;const {error}=await db.from('planning_logs').delete().gte('id',0);if(error)alert('Impossible d’effacer les logs.');else loadPlanningLogs()}
 
-function toggleNMenu(e){e?.stopPropagation();const m=document.getElementById('nMenu');if(!m)return;const opening=m.classList.contains('hidden');m.classList.toggle('hidden');document.body.classList.toggle('mobileNavOpen',opening&&innerWidth<=700)}
-function closeNMenu(){document.getElementById('nMenu')?.classList.add('hidden');document.body.classList.remove('mobileNavOpen')}
+async function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);currentDay=0;await loadWeek(currentWeekStart);playUISound()}
+async function goCurrentWeek(){const now=new Date();currentWeekStart=startOfWeek(now);currentDay=Math.max(0,Math.min(6,(now.getDay()+6)%7));await loadWeek(currentWeekStart)}
+function setPlanningView(v){planningView=v==='year'?'year':'week';document.getElementById('weekView').classList.toggle('hidden',planningView!=='week');document.getElementById('yearView').classList.toggle('hidden',planningView!=='year');document.getElementById('weekViewBtn').classList.toggle('active',planningView==='week');document.getElementById('yearViewBtn').classList.toggle('active',planningView==='year');document.querySelector('.weekNav').classList.toggle('hidden',planningView!=='week');if(planningView==='year')renderYear();else renderAll()}
+async function changeYear(n){currentYear+=n;await renderYear()}
+async function renderYear(){document.getElementById('yearTitle').textContent=currentYear;const a=currentYear+'-01-01',b=currentYear+'-12-31',{data}=await db.from('planning_weeks').select('week_start').gte('week_start',a).lte('week_start',b),weeks=new Set((data||[]).map(x=>x.week_start));let html='';for(let m=0;m<12;m++){const first=new Date(currentYear,m,1),last=new Date(currentYear,m+1,0),offset=(first.getDay()+6)%7;html+='<section class="monthCard"><h3>'+first.toLocaleDateString('fr-FR',{month:'long'})+'</h3><div class="monthWeekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="monthDays">'+Array.from({length:offset},()=>'<span></span>').join('');for(let d=1;d<=last.getDate();d++){const dt=new Date(currentYear,m,d),wk=isoDate(startOfWeek(dt)),has=weeks.has(wk),today=isoDate(dt)===isoDate(new Date());html+='<button class="yearDay '+(has?'hasData ':'')+(today?'today':'')+'" onclick="openYearDate(\''+isoDate(dt)+'\')">'+d+(has?'<i></i>':'')+'</button>'}html+='</div></section>'}document.getElementById('yearGrid').innerHTML=html}
+async function openYearDate(k){const d=parseISO(k);currentWeekStart=startOfWeek(d);currentDay=(d.getDay()+6)%7;setPlanningView('week');await loadWeek(currentWeekStart)}
+
+async function waitForSupabase(ms=8000){const s=Date.now();while(Date.now()-s<ms){if(window.supabase?.createClient)return;await new Promise(r=>setTimeout(r,100))}throw new Error('Supabase indisponible')}
+async function init(){await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';canEdit=role==='admin'||role==='responsable';currentUser={id:session.user.id,name:p?.display_name||session.user.email||'Utilisateur'};document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.toggle('hidden',role!=='admin'));document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);document.getElementById('planningLogs').classList.toggle('hidden',!canEdit);document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');if(canEdit)loadPlanningLogs();await loadWeek(currentWeekStart)}
+init().catch(e=>{console.error(e);document.getElementById('readerMeta').textContent='Erreur de chargement du planning.'});
+
+function toggleNMenu(e){e?.stopPropagation();document.getElementById('nMenu')?.classList.toggle('hidden')}
+function closeNMenu(){document.getElementById('nMenu')?.classList.add('hidden')}
 document.addEventListener('click',e=>{if(!e.target.closest('.nMenuWrap'))closeNMenu()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNMenu()});
-async function menuLogout(){closeNMenu();try{const _db=db||((window.supabase?.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null);if(_db)await _db.auth.signOut()}catch(e){}location.href='index.html'}
-
-async function loadSharedSiteConfig(){
- try{
-  if(!db)return null;
-  const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();
-  const cfg=data?.value;if(!cfg)return null;
-  applySharedSiteConfig(cfg);return cfg;
- }catch(e){console.warn('Réglages du site:',e);return null}
-}
-function setMenuEntry(urlKey,cfg){
- const n=cfg?.nav?.[urlKey];if(!n)return;
- const defaults={home:'home.html',stock:'index.html',planning:'planning.html',chat:'chat.html',test:'stock-test.html'};
- const old=defaults[urlKey];
- document.querySelectorAll('#nMenu button,#brandMenu button').forEach(b=>{
-  const oc=b.getAttribute('onclick')||'';
-  if(!oc.includes("'"+old+"'")&&!oc.includes('"'+old+'"'))return;
-  const icon=b.querySelector(':scope > span'),strong=b.querySelector('strong'),small=b.querySelector('small');
-  if(icon)icon.textContent=n.icon||icon.textContent;if(strong)strong.textContent=n.label||strong.textContent;if(small)small.textContent=n.subtitle||'';
-  const target=String(n.url||old).replace(/['"<>]/g,'');b.onclick=()=>location.href=target;
- });
-}
-function applySharedSiteConfig(cfg){
- ['home','stock','planning','chat','test'].forEach(k=>setMenuEntry(k,cfg));
- const pt=cfg?.pageTitles?.['planning'];
- if(pt){const t=document.querySelector('header .title');const s=document.querySelector('header .subtitle,header .sub');if(t&&pt.title)t.textContent=pt.title;if(s&&pt.subtitle)s.textContent=pt.subtitle}
- const settings=document.querySelectorAll('.settingsLink');settings.forEach(x=>x.classList.toggle('hidden',!(window.currentRole==='admin'||window.planningCanEdit||profile?.role==='admin')));
-}
-
-
+async function menuLogout(){try{await db?.auth.signOut()}catch(e){}location.href='index.html'}
 function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
-function applyTheme(theme){theme=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=theme;try{localStorage.setItem('nettoTheme',theme)}catch(e){}document.querySelectorAll('.themeIcon').forEach(x=>x.textContent=theme==='dark'?'☀':'☾');document.querySelectorAll('.themeLabel').forEach(x=>x.textContent=theme==='dark'?'Mode clair':'Mode sombre');document.querySelectorAll('.themeSub').forEach(x=>x.textContent=theme==='dark'?'Revenir au thème clair':'Passer au thème sombre');const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=theme==='dark'?'#111214':'#f4f4f6'}
+function applyTheme(t){t=t==='dark'?'dark':'light';document.documentElement.dataset.theme=t;try{localStorage.setItem('nettoTheme',t)}catch(e){}document.querySelectorAll('.themeIcon').forEach(x=>x.textContent=t==='dark'?'☀':'☾');document.querySelectorAll('.themeLabel').forEach(x=>x.textContent=t==='dark'?'Mode clair':'Mode sombre')}
 function toggleTheme(e){e?.stopPropagation();applyTheme(currentTheme()==='dark'?'light':'dark')}
 document.addEventListener('DOMContentLoaded',()=>applyTheme(currentTheme()));
 </script><script>
