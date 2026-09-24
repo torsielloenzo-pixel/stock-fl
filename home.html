@@ -292,6 +292,14 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
   }
   body.mobileNavOpen #nMenu:before{display:none!important}
 }
+
+/* Correctif empilement menu utilisateur desktop */
+header{position:relative;z-index:1000!important;overflow:visible!important}
+.top{position:relative;z-index:1001!important;overflow:visible!important}
+.userMenuWrap{position:relative;z-index:1100!important}
+.userMenu{z-index:1200!important}
+main{position:relative;z-index:1}
+.hello,.pages,.pageCard{z-index:auto}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
