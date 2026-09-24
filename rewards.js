@@ -7,7 +7,7 @@ let db,user,admin=false,tab='shop',category='',filter='active',catalog=[],missio
 const date=s=>s?new Date(s).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}):'Sans échéance';
 const name=id=>people.find(x=>x.id===id)?.display_name||'Administrateur';
 const action=(a,id,label,primary=false,disabled=false)=>`<button data-action="${a}" data-id="${esc(id)}" class="${primary?'primary':''}" ${disabled?'disabled':''}>${esc(label)}</button>`;
-function message(t,error=false){$('message').textContent=t;$('message').className=error?'error':'success'}
+function message(t,error=false){$('message').textContent=t;$('message').className=error?'error':'success';window.NettoSounds?.play?.(error?'error':'success')}
 function check(r){if(r.error)throw r.error;return r.data||[]}
 async function load(){
  const requests=[db.from('reward_catalog').select('*').order('price'),db.from('reward_equipment').select('*')];
