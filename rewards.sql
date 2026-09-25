@@ -1,5 +1,15 @@
 -- Missions pilote : opérations réservées aux administrateurs.
 -- Les employés voient uniquement le catalogue et les décorations équipées.
+create schema if not exists private;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated;
+create or replace function private.has_role(allowed_roles text[]) returns boolean
+language sql stable security definer set search_path='' as $
+  select exists(select 1 from public.profiles where id=(select auth.uid()) and role=any(allowed_roles));
+$;
+revoke all on function private.has_role(text[]) from public, anon;
+grant execute on function private.has_role(text[]) to authenticated;
+
 create table public.reward_catalog (
  id uuid primary key default gen_random_uuid(), name text not null check(length(name) between 1 and 70),
  kind text not null check(kind in ('avatar','frame','accessory','title','theme')),
@@ -36,22 +46,33 @@ create table public.reward_ledger (
 create index reward_ledger_user_date on public.reward_ledger(user_id,created_at desc);
 create index reward_equipment_item on public.reward_equipment(item_id,kind);
 create index reward_inventory_item on public.reward_inventory(item_id);
-do $$ declare t text; begin
- foreach t in array array['reward_catalog','reward_missions','reward_wallets','reward_inventory','reward_equipment','reward_ledger'] loop
+do $ declare t text; begin
+ foreach t in array array['reward_missions','reward_wallets','reward_inventory','reward_ledger'] loop
  execute format('alter table public.%I enable row level security',t);
  execute format('revoke all on public.%I from anon, authenticated',t);
  execute format('grant select,insert,update,delete on public.%I to authenticated',t);
- execute format('create policy admin_access on public.%I for all to authenticated using ((select public.has_role(array[''admin'']))) with check ((select public.has_role(array[''admin''])))',t);
+ execute format('create policy admin_access on public.%I for all to authenticated using ((select private.has_role(array[''admin'']))) with check ((select private.has_role(array[''admin''])))',t);
  end loop;
-end $$;
-create policy catalog_preview on public.reward_catalog for select to authenticated using ((select public.has_role(array['admin','responsable','employe','lecture'])));
-create policy equipment_preview on public.reward_equipment for select to authenticated using ((select public.has_role(array['admin','responsable','employe','lecture'])));
+ foreach t in array array['reward_catalog','reward_equipment'] loop
+ execute format('alter table public.%I enable row level security',t);
+ execute format('revoke all on public.%I from anon, authenticated',t);
+ execute format('grant select,insert,update,delete on public.%I to authenticated',t);
+ end loop;
+end $;
+create policy catalog_preview on public.reward_catalog for select to authenticated using ((select private.has_role(array['admin','responsable','employe','lecture'])));
+create policy reward_catalog_admin_insert on public.reward_catalog for insert to authenticated with check ((select private.has_role(array['admin'])));
+create policy reward_catalog_admin_update on public.reward_catalog for update to authenticated using ((select private.has_role(array['admin']))) with check ((select private.has_role(array['admin'])));
+create policy reward_catalog_admin_delete on public.reward_catalog for delete to authenticated using ((select private.has_role(array['admin'])));
+create policy equipment_preview on public.reward_equipment for select to authenticated using ((select private.has_role(array['admin','responsable','employe','lecture'])));
+create policy reward_equipment_admin_insert on public.reward_equipment for insert to authenticated with check ((select private.has_role(array['admin'])));
+create policy reward_equipment_admin_update on public.reward_equipment for update to authenticated using ((select private.has_role(array['admin']))) with check ((select private.has_role(array['admin'])));
+create policy reward_equipment_admin_delete on public.reward_equipment for delete to authenticated using ((select private.has_role(array['admin'])));
 
 create function public.reward_mission_action(p_id uuid,p_action text,p_note text default '') returns void
 language plpgsql security invoker set search_path='' as $$
 declare m public.reward_missions; u uuid:=auth.uid();
 begin
- if u is null or not public.has_role(array['admin']) then raise exception 'Accès réservé à l’administrateur'; end if;
+ if u is null or not private.has_role(array['admin']) then raise exception 'Accès réservé à l’administrateur'; end if;
  -- Sérialise les réservations d’un même compte, même sur deux onglets.
  perform pg_advisory_xact_lock(hashtextextended(u::text,0));
  update public.reward_missions set status='open',assigned_to=null,reserved_until=null where status='reserved' and reserved_until<=now();
@@ -87,7 +108,7 @@ end $$;
 create function public.reward_buy(p_item uuid) returns void language plpgsql security invoker set search_path='' as $$
 declare c public.reward_catalog; u uuid:=auth.uid();
 begin
- if u is null or not public.has_role(array['admin']) then raise exception 'Boutique réservée à l’administrateur'; end if;
+ if u is null or not private.has_role(array['admin']) then raise exception 'Boutique réservée à l’administrateur'; end if;
  select * into c from public.reward_catalog where id=p_item and active for share;
  if not found then raise exception 'Objet indisponible'; end if;
  insert into public.reward_inventory(user_id,item_id) values(u,p_item) on conflict(user_id,item_id) do nothing;
@@ -95,7 +116,7 @@ end $$;
 create function public.reward_equip(p_kind text,p_item uuid default null) returns void language plpgsql security invoker set search_path='' as $$
 declare u uuid:=auth.uid(); c public.reward_catalog;
 begin
- if u is null or not public.has_role(array['admin']) then raise exception 'Personnalisation réservée à l’administrateur'; end if;
+ if u is null or not private.has_role(array['admin']) then raise exception 'Personnalisation réservée à l’administrateur'; end if;
  if p_kind not in ('avatar','frame','accessory','title','theme') then raise exception 'Catégorie inconnue'; end if;
  if p_item is null then delete from public.reward_equipment where user_id=u and kind=p_kind; return; end if;
  select * into c from public.reward_catalog where id=p_item and kind=p_kind and active for share;
