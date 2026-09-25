@@ -3,7 +3,7 @@
 const URL='https://gioxrpaiwogqqtakjpnv.supabase.co';
 const KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const ROLE={admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'};
-const NAV_MODULES=Object.freeze([
+const BASE_MODULES=Object.freeze([
  {id:'home',label:'Accueil',subtitle:'Retour au portail',url:'home.html',icon:'⌂',roles:null,home:false,userMenu:true,defaultUser:true},
  {id:'profile',label:'Mon profil',homeLabel:'Mon profil',subtitle:'Profil et notifications',url:'profile.html',icon:'☺',roles:null,home:true,userMenu:true,defaultHome:false,defaultUser:true,kicker:'MON COMPTE',description:'Gérer ta photo, ton statut, ton apparence et la sécurité de ton compte.',action:'Ouvrir mon profil',cardClass:'profileCard'},
  {id:'stock',label:'Stock F&L',homeLabel:'Stock F&L',subtitle:'Gestion du stock',url:'index.html',homeUrl:'index.html?mode=stock',asset:'assets/logo-stock.svg',roles:null,home:true,userMenu:true,defaultHome:true,defaultUser:true,kicker:'OPÉRATIONS',description:'Contrôler les quantités, préparer les commandes et administrer le référentiel produits depuis un espace optimisé terrain.',action:'Ouvrir le stock',cardClass:'stock'},
@@ -14,18 +14,90 @@ const NAV_MODULES=Object.freeze([
  {id:'bakery',label:'Boulangerie',homeLabel:'Boulangerie',subtitle:'Stock • Consulter • Gestion',url:'bakery.html',asset:'assets/logo-boulangerie.svg',roles:['admin'],home:true,userMenu:true,defaultHome:true,defaultUser:true,kicker:'ADMINISTRATION',description:'Gérer le stock, consulter les articles et administrer les catégories propres à la famille Boulangerie.',action:'Ouvrir la Boulangerie',cardClass:'bakeryCard'},
  {id:'test',label:'Vue test',homeLabel:'Vue stock groupée',subtitle:'Stock groupé par familles',url:'stock-test.html',icon:'◫',roles:['admin'],home:true,userMenu:true,defaultHome:false,defaultUser:false,kicker:'ANALYSE',description:'Afficher le stock dans une vue groupée avancée par catégories et familles.',action:'Ouvrir la vue groupée',cardClass:'testCard'},
  {id:'accounts',label:'Gestion des comptes',homeLabel:'Gestion des comptes',subtitle:'Utilisateurs, accès et journal',url:'accounts.html',icon:'♙',roles:['admin'],home:true,userMenu:true,defaultHome:false,defaultUser:false,kicker:'ADMINISTRATION',description:'Gérer les utilisateurs, leurs rôles, les demandes de mot de passe et le journal d’activité.',action:'Gérer les comptes',cardClass:'accountsCard'},
+ {id:'portal_admin',label:'Éditeur du portail',homeLabel:'Éditeur du portail',subtitle:'Menus, couleurs et contenu',url:'admin-portal.html',icon:'✦',roles:['admin'],home:true,userMenu:true,defaultHome:false,defaultUser:true,kicker:'ADMINISTRATION',description:'Créer les menus, personnaliser leur apparence, leurs accès et leur contenu depuis une interface unique.',action:'Configurer le portail',cardClass:'portalAdminCard'},
  {id:'settings',label:'Personnalisation',homeLabel:'Personnalisation',subtitle:'Mon accueil et mes raccourcis',url:'settings.html',icon:'⚙',roles:null,home:true,userMenu:false,defaultHome:false,kicker:'PRÉFÉRENCES',description:'Choisir les outils visibles sur ton accueil et dans ta barre utilisateur selon tes droits.',action:'Personnaliser mon portail',cardClass:'settingsCard'}
 ]);
+let NAV_MODULES=[...BASE_MODULES];
 const ALL_ROLES=Object.freeze(['admin','responsable','employe','lecture']);
+function cleanColor(v,fallback=''){const s=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(s)?s:fallback}
+function customModules(config){
+ const list=Array.isArray(config?.customMenus)?config.customMenus:[];
+ return list.filter(x=>x&&x.id&&x.enabled!==false).map((x,index)=>{
+  const id=String(x.id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,64);
+  return {
+   id,
+   custom:true,
+   label:String(x.label||'Menu personnalisé'),
+   homeLabel:String(x.label||'Menu personnalisé'),
+   subtitle:String(x.subtitle||x.description||'Menu personnalisé'),
+   description:String(x.description||''),
+   url:'custom-menu.html?id='+encodeURIComponent(id),
+   icon:String(x.icon||'◆').slice(0,8),
+   asset:String(x.image_url||''),
+   roles:null,
+   configuredRoles:Array.isArray(x.roles)?x.roles.filter(r=>ALL_ROLES.includes(r)):ALL_ROLES,
+   home:x.home!==false,
+   userMenu:x.user_menu===true,
+   defaultHome:x.default_home!==false,
+   defaultUser:x.default_user===true,
+   kicker:String(x.kicker||'ESPACE'),
+   action:String(x.action||'Ouvrir'),
+   cardClass:'portalThemeCard customPortalCard',
+   menuColor:cleanColor(x.color,'#ff2f1f'),
+   menuAccent:cleanColor(x.accent,'#ff8500'),
+   order:Number(x.order)||1000+index
+  }
+ })
+}
+function rebuildModules(config={}){
+ const pages=config?.pages&&typeof config.pages==='object'?config.pages:{};
+ const base=BASE_MODULES.map(m=>{
+  const p=pages[m.id]&&typeof pages[m.id]==='object'?pages[m.id]:{};
+  const overrideImage=String(p.image_url||'').trim();
+  return {...m,
+   label:String(p.nav_label||p.label||m.label),
+   homeLabel:String(p.label||m.homeLabel||m.label),
+   subtitle:String(p.subtitle||m.subtitle||''),
+   description:String(p.description||m.description||''),
+   url:String(p.url||m.url||''),
+   icon:String(p.icon||m.icon||'•'),
+   asset:overrideImage||m.asset,
+   home:typeof p.home==='boolean'?p.home:m.home,
+   userMenu:typeof p.user_menu==='boolean'?p.user_menu:m.userMenu,
+   defaultHome:typeof p.default_home==='boolean'?p.default_home:m.defaultHome,
+   defaultUser:typeof p.default_user==='boolean'?p.default_user:m.defaultUser,
+   kicker:String(p.kicker||m.kicker||'OUTIL'),
+   action:String(p.action||m.action||'Ouvrir'),
+   menuColor:cleanColor(p.color,''),
+   menuAccent:cleanColor(p.accent,''),
+   configuredRoles:Array.isArray(p.roles)?p.roles.filter(r=>ALL_ROLES.includes(r)):null
+  }
+ });
+ NAV_MODULES=[...base,...customModules(config)];
+ if(typeof api!=='undefined')api.modules=NAV_MODULES
+}
+function applyPortalTheme(config={}){
+ const t=config?.theme||{},root=document.documentElement;
+ const primary=cleanColor(t.primary,'#ff2f1f'),secondary=cleanColor(t.secondary,'#ff8500'),ink=cleanColor(t.ink,'#182235');
+ root.style.setProperty('--netto-red',primary);root.style.setProperty('--netto-red-2',primary);
+ root.style.setProperty('--netto-orange',secondary);root.style.setProperty('--netto-ink',ink);
+ root.style.setProperty('--red',primary);root.style.setProperty('--red2',primary);root.style.setProperty('--orange',secondary);
+ root.style.setProperty('--netto-gradient','linear-gradient(135deg,'+primary+' 0%,'+primary+' 44%,'+secondary+' 100%)')
+}
 function moduleMaxRoles(module){return Array.isArray(module?.roles)?module.roles.filter(r=>ALL_ROLES.includes(r)):ALL_ROLES}
 function configuredRoles(module,config=api?.siteConfig){
  if(!module)return[];
  if(module.id==='settings')return [...ALL_ROLES];
- const max=moduleMaxRoles(module),raw=config?.pages?.[module.id]?.roles;
+ const max=moduleMaxRoles(module),page=config?.pages?.[module.id],raw=Array.isArray(page?.roles)?page.roles:module.configuredRoles;
  if(!Array.isArray(raw))return [...max];
  return [...new Set(raw.filter(r=>max.includes(r)))];
 }
-function moduleAllowed(module,profileOrRole,config=api?.siteConfig){const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;return !!role&&configuredRoles(module,config).includes(role)}
+function moduleAllowed(module,profileOrRole,config=api?.siteConfig){
+ const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;
+ if(!role)return false;
+ if(module.id!=='settings'&&config?.pages?.[module.id]?.enabled===false)return false;
+ return configuredRoles(module,config).includes(role)
+}
 function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
@@ -182,9 +254,9 @@ async function rememberSiteBase(){
   await api.client.from('app_settings').upsert({key:'site_base_url',value:{url:base},updated_at:new Date().toISOString(),updated_by:api.session.user.id},{onConflict:'key'});
  }catch(e){console.warn('Enregistrement URL portail:',e)}
 }
-function pageArea(){const p=(location.pathname.split('/').pop()||'home.html').toLowerCase();const map={'home.html':'Accueil','index.html':'Stock F&L','planning.html':'Planning','chat.html':'Équipe','profile.html':'Mon profil','articles.html':'Fiches articles','bakery.html':'Boulangerie','settings.html':'Personnalisation du site','stock-test.html':'Vue stock groupée','rewards.html':'Défis & Boutique','accounts.html':'Gestion des comptes'};return map[p]||document.title||'Portail'}
+function pageArea(){const p=(location.pathname.split('/').pop()||'home.html').toLowerCase();const map={'home.html':'Accueil','index.html':'Stock F&L','planning.html':'Planning','chat.html':'Équipe','profile.html':'Mon profil','articles.html':'Fiches articles','bakery.html':'Boulangerie','settings.html':'Personnalisation du site','admin-portal.html':'Éditeur du portail','custom-menu.html':'Menu personnalisé','stock-test.html':'Vue stock groupée','rewards.html':'Défis & Boutique','accounts.html':'Gestion des comptes'};return map[p]||document.title||'Portail'}
 async function logPageView(){if(!api.client||!api.session)return;try{await api.client.rpc('audit_page_view',{p_area:pageArea(),p_path:(location.pathname||'')+(location.search||''),p_title:document.title||pageArea()})}catch(e){console.warn('Journal consultation:',e)}}
-async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,status_text,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
+async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,status_text,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
 async function init(){addStyle();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;await refresh();rememberSiteBase();addBackButton();logPageView();bindHomeMark();await loadNotifications();startNotificationsRealtime();startPresence();window.addEventListener('focus',loadNotifications);document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadNotifications()})}
 const rewardScript=document.createElement('script');rewardScript.src='reward-profile.js?v=2';rewardScript.defer=true;document.head.appendChild(rewardScript);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
