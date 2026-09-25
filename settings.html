@@ -2,324 +2,49 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#171717"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script><title>Netto — Personnalisation</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=16"></script>
-<style>
-:root{--red:#e30613;--red2:#b90710;--black:#171717;--line:#e2e2e5;--muted:#777;--bg:#f2f3f4}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef0f1,#fafafa 48%,#f0f1f2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input,textarea{font:inherit}
-header{position:sticky;top:0;z-index:20;background:#ffffffef;border-bottom:1px solid #ddd;padding:12px 16px;box-shadow:0 4px 18px #00000008}.top{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:40px;height:40px;border-radius:10px;background:#171717;color:#fff;display:grid;place-items:center;font-size:21px;font-weight:950;box-shadow:inset 0 -5px 0 var(--red),0 3px 10px #0002}.title{font-size:19px;font-weight:900}.sub{font-size:11px;color:#888}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:800;cursor:pointer}.light{background:#ececef;color:#333}.dark{background:#171717;color:#fff;box-shadow:inset 0 -3px 0 var(--red)}
-main{max-width:1180px;margin:auto;padding:26px 18px 70px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}.hero h1{margin:0;font-size:34px;letter-spacing:-1px}.hero p{margin:7px 0 0;color:#777;font-size:13px;max-width:650px}.saveState{font-size:11px;color:#888}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid #dedee2;border-radius:18px;padding:18px;box-shadow:0 7px 24px #00000008}.panel.wide{grid-column:1/-1}.panel h2{margin:0 0 4px;font-size:18px}.panel h2:after{content:"";display:block;width:30px;height:4px;border-radius:3px;background:var(--red);margin-top:7px}.panelIntro{font-size:11px;color:#888;margin:0 0 16px;line-height:1.4}.fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field.wide{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:#555}.field input,.field textarea{width:100%;border:1px solid #ddd;border-radius:10px;background:#fafafa;padding:10px 11px;outline:none}.field textarea{min-height:72px;resize:vertical}.field input:focus,.field textarea:focus{background:#fff;border-color:#e3061366;box-shadow:0 0 0 3px #e3061310}
-.item{border:1px solid #e8e8eb;border-radius:14px;padding:13px;margin:9px 0;background:#fafafa}.itemHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.itemHead strong{font-size:13px}.switch{display:flex;align-items:center;gap:6px;font-size:10px;color:#777}.switch input{width:18px;height:18px;accent-color:var(--red)}
-.itemFields{display:grid;grid-template-columns:100px 1fr 1fr 90px;gap:8px}.itemFields .desc{grid-column:2/4}.actions{position:sticky;bottom:14px;margin-top:18px;display:flex;justify-content:flex-end;gap:8px;padding:11px;background:#ffffffea;border:1px solid #ddd;border-radius:14px;backdrop-filter:blur(12px);box-shadow:0 10px 30px #0002}.danger{background:#fff0f1;color:#a30d15;border:1px solid #ffd5d8}
-.notice{padding:11px 13px;border-radius:12px;background:#f7f7f8;border:1px solid #e6e6e8;font-size:11px;color:#666;margin-bottom:15px}
-.hidden{display:none!important}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.itemFields{grid-template-columns:1fr 1fr}.itemFields .desc{grid-column:1/-1}.hero{align-items:flex-start;flex-direction:column}.actions{bottom:8px}}
-.nMenuWrap{position:relative}.nMenuBtn{border:0;padding:0;cursor:pointer}.nMenu{position:absolute;left:0;top:48px;width:255px;padding:8px;background:#fffffff7;border:1px solid #dedee2;border-radius:15px;box-shadow:0 16px 44px #0003;backdrop-filter:blur(16px);z-index:100}.nMenu.hidden{display:none!important}.nMenuTitle{padding:7px 10px 8px;color:#999;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.8px}.nMenu button{width:100%;display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center;text-align:left;padding:9px;border:0;border-radius:10px;background:transparent;cursor:pointer}.nMenu button:hover{background:#f4f4f5}.nMenu button>span{width:32px;height:32px;border-radius:9px;background:#f0f0f2;display:grid;place-items:center}.nMenu button strong{display:block;font-size:12px}.nMenu button small{display:block;font-size:10px;color:#888;margin-top:2px}.nMenu .logoutItem{margin-top:4px;border-top:1px solid #ececee;border-radius:0 0 9px 9px;color:#a30d15}.nMenu .logoutItem>span{background:#fff0f1;color:#b90710}
-/* Mode clair / sombre global */
-:root[data-theme="dark"]{color-scheme:dark}
-:root[data-theme="dark"] body{background:#111214!important;color:#f3f3f4!important}
-:root[data-theme="dark"] body:before{background:#e3061310!important}
-:root[data-theme="dark"] body:after{background:#ffffff05!important}
-:root[data-theme="dark"] header{background:#17181bea!important;border-color:#2d2e32!important;box-shadow:0 4px 18px #0005!important}
-:root[data-theme="dark"] header:after{background:linear-gradient(90deg,#e30613 0 43%,#f5f5f5 43% 49%,#17181b 49%)!important}
-:root[data-theme="dark"] .title,:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] strong{color:#f4f4f5}
-:root[data-theme="dark"] .sub,:root[data-theme="dark"] .subtitle,:root[data-theme="dark"] .small,:root[data-theme="dark"] .meta,:root[data-theme="dark"] .hint,:root[data-theme="dark"] .status,:root[data-theme="dark"] .saveState,:root[data-theme="dark"] .panelIntro,:root[data-theme="dark"] .hello p,:root[data-theme="dark"] .pageCard p{color:#a6a6ab!important}
-:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] dialog .modal,:root[data-theme="dark"] .tabPanel,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4}
-:root[data-theme="dark"] .pageCard:hover,:root[data-theme="dark"] .panel:hover{border-color:#44464d!important}
-:root[data-theme="dark"] .cardFoot,:root[data-theme="dark"] .chatHead,:root[data-theme="dark"] .composer,:root[data-theme="dark"] .row,:root[data-theme="dark"] .familySection{border-color:#303136!important}
-:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] .search,:root[data-theme="dark"] .searchBox input{background:#202126!important;color:#f4f4f5!important;border-color:#393a40!important}
-:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#777b82}
-:root[data-theme="dark"] .light,:root[data-theme="dark"] .logout,:root[data-theme="dark"] .back,:root[data-theme="dark"] .btn:not(.dark),:root[data-theme="dark"] .suggestTop,:root[data-theme="dark"] .categoryFilter:not(.active){background:#242529!important;color:#eee!important;border-color:#393a40!important}
-:root[data-theme="dark"] .nMenu,:root[data-theme="dark"] .brandMenu,:root[data-theme="dark"] .userMenu{background:#1c1d20f5!important;border-color:#38393e!important;box-shadow:0 18px 50px #0008!important;color:#f4f4f5}
-:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:#292a2f!important}
-:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#2b2c31!important;color:#f2f2f3}
-:root[data-theme="dark"] .nMenu small,:root[data-theme="dark"] .brandMenu small,:root[data-theme="dark"] .userMenu small{color:#9c9da3!important}
-:root[data-theme="dark"] .themeToggle{border-top:1px solid #33343a!important;margin-top:4px;border-radius:0!important}
-:root[data-theme="dark"] .userPill{background:#1b1c20!important;border-color:#36373c!important;color:#f4f4f5}
-:root[data-theme="dark"] .bubble,:root[data-theme="dark"] .member,:root[data-theme="dark"] .me,:root[data-theme="dark"] .item,:root[data-theme="dark"] .editTools,:root[data-theme="dark"] .orderConfigField,:root[data-theme="dark"] .attachPreview{background:#232429!important;border-color:#36373c!important;color:#f1f1f2}
-:root[data-theme="dark"] .mine .bubble{background:#2b1d20!important;border-color:#5a2b30!important}
-:root[data-theme="dark"] .attachment,:root[data-theme="dark"] .fileRow{background:#1d1e22!important;border-color:#35363b!important}
-:root[data-theme="dark"] .cell,:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{border-color:#36373c!important}
-:root[data-theme="dark"] .name,:root[data-theme="dark"] .time,:root[data-theme="dark"] .total{background:#1c1d20!important;color:#f2f2f3!important}
-:root[data-theme="dark"] .cell:not(.on){background:#202126!important}
-:root[data-theme="dark"] .variants,:root[data-theme="dark"] .catBody{background:#17181b!important}
-:root[data-theme="dark"] .counter{background:#242529!important;border-color:#393a40!important}
-:root[data-theme="dark"] .counter button{background:#303137!important;color:#f4f4f5!important}
-:root[data-theme="dark"] .suggestTabList,:root[data-theme="dark"] .suggestTabs{background:#1a1b1e!important;border-color:#33343a!important}
-:root[data-theme="dark"] .suggestRow{background:#1a1b1e!important;border-color:#303136!important;color:#f3f3f4!important}
-:root[data-theme="dark"] .suggestRow:hover{background:#232429!important}
-:root[data-theme="dark"] .loginWrap{background:#111214!important}
-:root[data-theme="dark"] .loginCard{background:#1b1c1f!important;color:#f4f4f5!important}
-:root[data-theme="dark"] .loginCard input{background:#232429!important;color:#fff!important;border-color:#393a40!important}
-:root[data-theme="dark"] .notice{background:#202126!important;border-color:#36373c!important;color:#aaa!important}
-:root[data-theme="dark"] .actions{background:#1a1b1eee!important;border-color:#36373c!important}
-:root[data-theme="dark"] .editTabs{background:#242529!important}
-:root[data-theme="dark"] .editTab.active{background:#34353a!important;color:#fff!important}
-
-/* DA Netto rouge-orangé inspirée du visuel fourni */
-:root{
-  --netto-red:#ff2f1f;
-  --netto-red-2:#ff151f;
-  --netto-orange:#ff8500;
-  --netto-orange-soft:#ff9f1a;
-  --netto-gradient:linear-gradient(135deg,#ff2f1f 0%,#ff151f 44%,#ff8500 100%);
-  --netto-gradient-soft:linear-gradient(135deg,#fff2ef 0%,#fff7ed 100%);
-  --netto-ink:#182235;
-  --netto-surface:#ffffff;
-  --netto-border:#e7e9ed;
-}
-body{background:
-  radial-gradient(circle at 0% 16%,#ff2f1f0a 0,transparent 26%),
-  radial-gradient(circle at 100% 88%,#ff85000b 0,transparent 28%),
-  linear-gradient(135deg,#f7f8fa 0%,#ffffff 48%,#f3f5f7 100%)!important}
-header{background:#ffffffef!important;border-bottom:1px solid #e8e9ec!important;box-shadow:0 5px 20px #1b23300b!important}
-header:after{background:var(--netto-gradient)!important;height:3px!important}
-.mark,.brandMark,.loginMark,.welcomeMark{
-  background:var(--netto-gradient)!important;
-  color:#fff!important;
-  box-shadow:0 6px 16px #ff3b1f2d!important;
-  border:0!important;
-}
-.manage,.primary,.dark,.send,.loginSubmit{
-  background:var(--netto-gradient)!important;
-  color:#fff!important;
-  box-shadow:0 7px 18px #ff3b1f28!important;
-  border:0!important;
-}
-.manage:hover,.primary:hover,.dark:hover,.send:hover,.loginSubmit:hover{filter:brightness(.98);transform:translateY(-1px)}
-.fab,.cartCount{background:var(--netto-gradient)!important}
-.suggestTopIcon{background:#fff1ed!important;color:#ff3b1f!important;box-shadow:none!important}
-.suggestTop:hover .suggestTopIcon{background:var(--netto-gradient)!important;color:#fff!important}
-.nMenuTitle,.brandMenuTitle{color:#f33a22!important}
-.nMenu button:hover,.brandMenu button:hover,.userMenu button:hover{background:linear-gradient(90deg,#fff1ef,#fff8ef)!important}
-.nMenu button>span,.brandMenu button>span,.userMenu button>span{
-  background:linear-gradient(135deg,#fff0ed,#fff7ec)!important;
-  color:#f43a20!important;
-}
-.themeToggle .themeIcon,.userThemeToggle .themeIcon{color:#ff6f00!important}
-.logoutItem,.brandLogout,.userLogout{color:#b81717!important}
-.logoutItem>span,.brandLogout>span,.userLogout>span{background:#fff0ef!important;color:#e3261a!important}
-input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
-  border-color:#ff6a3d88!important;
-  box-shadow:0 0 0 3px #ff5a2a16!important;
-}
-.modal h2:after,.subtitle:before{background:var(--netto-gradient)!important}
-.editTab.active{box-shadow:inset 0 -3px 0 #ff4b22,0 2px 6px #0000000b!important}
-.categoryFilter.active,.suggestTab.active{box-shadow:0 7px 18px #ff4c2024!important}
-.userAvatar,.avatar,.memberAvatar{
-  background:var(--netto-gradient)!important;
-  box-shadow:0 4px 12px #ff3b1f2a!important;
-}
-.pageCard,.panel,.side,.chat,.sheet,.modal,.category,.cat,.group,.tabPanel{
-  border-color:#e5e7eb!important;
-  box-shadow:0 10px 28px #1a22300b!important;
-}
-.pageCard:hover,.panel:hover{box-shadow:0 16px 38px #ff522012!important;border-color:#ffd3c7!important}
-.cardKicker,.eyebrow{color:#ed2d1d!important}
-.stock .arrow,.chatCard .arrow{background:var(--netto-gradient)!important;color:#fff!important}
-.stock .icon,.planning .icon,.chatCard .icon{
-  background:linear-gradient(135deg,#fff0ec,#fff7ed)!important;
-  color:#f43b20!important;
-  border:1px solid #ffd8ca!important;
-  box-shadow:none!important;
-}
-.stock .icon{background:var(--netto-gradient)!important;color:#fff!important;border:0!important}
-.cardFoot{background:linear-gradient(180deg,#fff,#fffaf7)!important}
-.pageCard.stock:after,.pageCard.planning:after,.pageCard.chatCard:after{background:var(--netto-gradient)!important}
-.day.active,.paintChoice.active{background:var(--netto-gradient)!important;color:#fff!important;border-color:transparent!important}
-.btn.activeEdit{background:var(--netto-gradient)!important;color:#fff!important}
-.adminReset,.danger{background:#fff3ef!important;border-color:#ffd8cc!important;color:#c62518!important}
-.live i,.onlineDot.on{background:#23ad55!important}
-.notice{border-left:4px solid #ff5f1f!important}
-.loginVisual{background:
-  linear-gradient(145deg,#14161a 0 56%,#201a18 100%)!important}
-.loginVisual:before{border-color:#ff352331!important}
-.loginVisual:after{border-color:#ff910022!important}
-.loginArt span{background:linear-gradient(145deg,#ffffff0d,#ff6f0014)!important}
-.loginHello{color:#f43a20!important}
-.loginSubmit{box-shadow:0 8px 20px #ff3a1f30!important}
-@media(hover:hover){
-  .pageCard:hover .icon{transform:translateY(-2px)}
-}
-:root[data-theme="dark"]{
-  --netto-surface:#1b1d22;
-  --netto-border:#30333a;
-  --netto-ink:#f4f5f7;
-}
-:root[data-theme="dark"] body{background:
-  radial-gradient(circle at 0% 16%,#ff3b1f12 0,transparent 28%),
-  radial-gradient(circle at 100% 88%,#ff850010 0,transparent 30%),
-  #111317!important}
-:root[data-theme="dark"] header{background:#17191df0!important;border-color:#2d3036!important}
-:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,:root[data-theme="dark"] .modal,:root[data-theme="dark"] .category,:root[data-theme="dark"] .cat,:root[data-theme="dark"] .group,:root[data-theme="dark"] .tabPanel{background:#1b1d22!important;border-color:#30333a!important;box-shadow:0 10px 28px #0005!important}
-:root[data-theme="dark"] .cardFoot{background:#1d2025!important}
-:root[data-theme="dark"] .stock .icon,:root[data-theme="dark"] .planning .icon,:root[data-theme="dark"] .chatCard .icon{background:linear-gradient(135deg,#4c241c,#39251a)!important;color:#ff9a55!important;border-color:#5a3023!important}
-:root[data-theme="dark"] .stock .icon{background:var(--netto-gradient)!important;color:#fff!important}
-:root[data-theme="dark"] .nMenu button:hover,:root[data-theme="dark"] .brandMenu button:hover,:root[data-theme="dark"] .userMenu button:hover{background:linear-gradient(90deg,#38211d,#2d241d)!important}
-:root[data-theme="dark"] .nMenu button>span,:root[data-theme="dark"] .brandMenu button>span,:root[data-theme="dark"] .userMenu button>span{background:#32231f!important;color:#ff8a55!important}
-
-/* settingsNettoAccent */
-.panel h2:after{background:var(--netto-gradient)!important}.item{border-left:3px solid #ff6a25!important}.actions{border-top:1px solid #ffd7c9!important}
-
-/* Logos personnalisés des outils */
-.toolLogoImg{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
-.navToolLogo{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;color:transparent!important;overflow:hidden}
-.navToolLogo.stock{background-image:url('assets/logo-stock.svg')!important}
-.navToolLogo.planning{background-image:url('assets/logo-planning.svg')!important}
-.navToolLogo.equipe{background-image:url('assets/logo-equipe.svg')!important}.navToolLogo.article{background-image:url('assets/logo-article.svg')!important}
-.pageCard .icon{overflow:hidden;padding:0!important}
-.pageCard .icon img{width:100%;height:100%;object-fit:cover;display:block}
-
-@media(max-width:700px){
-  .nMenu,.brandMenu,.userMenu{
-    position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:10px!important;
-    width:auto!important;max-width:none!important;max-height:min(74dvh,620px)!important;overflow-y:auto!important;
-    overscroll-behavior:contain;padding:10px!important;border-radius:20px!important;
-    box-shadow:0 22px 70px #00000045!important;backdrop-filter:blur(22px)!important;z-index:500!important
-  }
-  .nMenu:before,.brandMenu:before,.userMenu:before{content:"";display:block;width:42px;height:4px;border-radius:99px;background:#c9c9ce;margin:1px auto 8px}
-  .nMenuTitle,.brandMenuTitle{padding:5px 10px 9px!important;font-size:9px!important}
-  .nMenu button,.brandMenu button,.userMenu button{min-height:50px!important;padding:8px 9px!important;border-radius:12px!important;grid-template-columns:38px 1fr!important;gap:10px!important}
-  .nMenu button>span,.brandMenu button>span,.userMenu button>span{width:36px!important;height:36px!important;border-radius:10px!important}
-  .nMenu button strong,.brandMenu button strong,.userMenu button strong{font-size:12px!important}
-  .nMenu button small,.brandMenu button small,.userMenu button small{font-size:9.5px!important}
-  .logoutItem,.brandLogout,.userLogout{margin-top:6px!important;padding-top:9px!important}
-}
-
-/* Menu N mobile — overlay plein écran fiable sur iOS/PWA */
-.mobileNavBackdrop{display:none}
-@media(max-width:700px){
-  body.mobileNavOpen{overflow:hidden!important}
-  body.mobileNavOpen .mobileNavBackdrop{display:block!important;position:fixed!important;inset:0!important;background:rgba(17,24,39,.38)!important;backdrop-filter:blur(2px)!important;z-index:998!important}
-  body.mobileNavOpen #nMenu{
-    display:block!important;position:fixed!important;left:10px!important;right:10px!important;top:max(64px,calc(env(safe-area-inset-top) + 50px))!important;bottom:auto!important;
-    width:auto!important;max-width:none!important;max-height:calc(100dvh - max(82px,calc(env(safe-area-inset-top) + 68px)))!important;
-    overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;
-    padding:9px!important;border-radius:20px!important;z-index:999!important;
-    box-shadow:0 22px 70px rgba(0,0,0,.32)!important
-  }
-  body.mobileNavOpen #nMenu:before{display:none!important}
-}
-</style><link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="assets/app-icon.svg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Netto Outils">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#171717"><script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem('nettoTheme')||'light'}catch(_){}})();</script>
+<title>Netto — Personnalisation</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=18"></script>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/app-icon.svg">
 <link rel="stylesheet" href="design-v2.css?v=3"><link rel="stylesheet" href="design-v3.css?v=3"><link rel="stylesheet" href="design-v4.css?v=1">
-
-<style id="personalization-v2">
-.preferenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.prefItem{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #e5e7eb;border-radius:15px;padding:12px;background:#fafbfc;transition:.15s}.prefItem:hover{border-color:#ffd0c4;background:#fffaf8}.prefIcon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#fff0ed,#fff7ec);color:#ee4826;font-weight:900;font-size:18px;overflow:hidden}.prefIcon img{width:100%;height:100%;object-fit:cover}.prefInfo{min-width:0}.prefInfo strong{display:block;font-size:12px}.prefInfo span{display:block;margin-top:3px;color:#858990;font-size:9.5px;line-height:1.35}.prefSwitch{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:850;color:#737780}.prefSwitch input{width:20px;height:20px;accent-color:#ff4827}.panelTools{display:flex;gap:7px;flex-wrap:wrap;margin:-4px 0 13px}.miniBtn{border:1px solid #e1e4e8;background:#f5f6f8;color:#50545a;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:850;cursor:pointer}.roleLine{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}.roleBadge{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#fff0ec;color:#da3a1f;font-size:9px;font-weight:900}.rightsHint{font-size:9.5px;color:#8b8f96}.fixedNote{display:flex;gap:10px;align-items:flex-start;background:#f6f7f9;border:1px solid #e4e6ea;border-radius:12px;padding:11px 12px;margin-bottom:13px;font-size:10px;color:#686d74;line-height:1.45}.fixedNote b{color:#292d33}.sharedEditor .itemFields{grid-template-columns:minmax(0,1fr) 130px}.sharedEditor .itemFields .desc,.sharedEditor .itemFields .url{grid-column:1/-1}.sectionTag{font-size:8px;font-weight:900;letter-spacing:.8px;color:#f05a32;text-transform:uppercase;margin-bottom:5px}.saveState.ok{color:#188345}.saveState.err{color:#b52c20}
-.roleAccessBox{margin:2px 0 12px;padding:11px 12px;border:1px solid #e3e7eb;border-radius:13px;background:#f7f9fa}.roleAccessHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.roleAccessHead strong{font-size:10px}.roleAccessHead span{font-size:8.5px;color:#8a9098}.roleChoices{display:flex;gap:6px;flex-wrap:wrap}.roleChoice{position:relative;display:inline-flex;align-items:center;cursor:pointer}.roleChoice input{position:absolute;opacity:0;pointer-events:none}.roleChoice span{display:inline-flex;align-items:center;min-height:30px;padding:6px 9px;border:1px solid #dce1e6;border-radius:999px;background:#fff;color:#606872;font-size:8.5px;font-weight:850;transition:.15s}.roleChoice input:checked+span{background:linear-gradient(135deg,#fff0ec,#fff6ed);border-color:#f3bba8;color:#d94c2e;box-shadow:inset 0 0 0 1px #fff}.roleChoice:not(.locked):hover span{border-color:#efad96;transform:translateY(-1px)}.roleChoice.locked{cursor:not-allowed}.roleChoice.locked span{opacity:.48;background:#eef0f2}.roleChoice.locked input:checked+span{opacity:.86;background:#f4ebe7;color:#a45743;border-color:#dec6bc}.roleSummary{display:inline-flex;align-items:center;max-width:48%;padding:6px 9px;border-radius:999px;background:#fff0ec;color:#d44226;font-size:8px;font-weight:900;text-align:right}.roleLimitNote{margin-top:8px;color:#8b9199;font-size:8.5px;line-height:1.4}.roleLimitNote b{color:#666d75}.itemHead{align-items:flex-start}.sharedEditor .item{padding:15px}.sharedEditor .itemFields{margin-top:4px}
-:root[data-theme="dark"] .roleAccessBox{background:#23272a;border-color:#3a4045}:root[data-theme="dark"] .roleChoice span{background:#292e32;border-color:#41474c;color:#bbb4ad}:root[data-theme="dark"] .roleChoice input:checked+span{background:#392921;border-color:#634334;color:#e7a082}:root[data-theme="dark"] .roleChoice.locked span{background:#24282b;color:#88827d}:root[data-theme="dark"] .roleSummary{background:#392921;color:#e7a082}:root[data-theme="dark"] .roleAccessHead span,:root[data-theme="dark"] .roleLimitNote{color:#98918b}
-:root[data-theme="dark"] .prefItem,:root[data-theme="dark"] .fixedNote{background:#202226!important;border-color:#363a40!important}:root[data-theme="dark"] .prefItem:hover{background:#27292e!important;border-color:#654235!important}:root[data-theme="dark"] .prefIcon{background:#33241f!important;color:#ff9a72}:root[data-theme="dark"] .miniBtn{background:#25272c;color:#e6e2df;border-color:#3a3e44}:root[data-theme="dark"] .roleBadge{background:#39231e;color:#ff9a72}
-@media(max-width:720px){.preferenceGrid{grid-template-columns:1fr}.prefItem{grid-template-columns:42px minmax(0,1fr) auto;padding:10px}.prefIcon{width:40px;height:40px;border-radius:11px}.sharedEditor .itemFields{grid-template-columns:1fr}.sharedEditor .itemFields .desc,.sharedEditor .itemFields .url{grid-column:auto}.hero h1{font-size:29px}.actions{justify-content:stretch;flex-wrap:wrap}.actions .btn{flex:1;min-width:145px}}
-</style></head>
+<style>
+:root{--red:#ff2f1f;--orange:#ff8500;--grad:linear-gradient(135deg,#ff2f1f,#ff8500);--ink:#182235}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 0 16%,#ff2f1f0a,transparent 26%),linear-gradient(135deg,#f7f8fa,#fff 50%,#f3f5f7);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}button{font:inherit;cursor:pointer}.hidden{display:none!important}
+header{height:70px;display:flex;align-items:center;position:sticky;top:0;z-index:60;background:#ffffffef;border-bottom:1px solid #e5e7eb;box-shadow:0 5px 20px #00000008;backdrop-filter:blur(18px)}header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--netto-gradient,var(--grad))}.top{width:min(94vw,980px);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:40px;height:40px;border:0;border-radius:11px;background:var(--netto-gradient,var(--grad));color:#fff;display:grid;place-items:center;font-size:20px;font-weight:950}.title{font-size:18px;font-weight:900}.sub{font-size:10px;color:#888;margin-top:2px}
+main{width:min(92vw,820px);margin:auto;padding:44px 0 80px}.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:18px}.hero h1{font-size:33px;margin:0;letter-spacing:-.9px}.hero p{font-size:12px;color:#777;margin:6px 0 0;line-height:1.5}.roleBadge{display:inline-flex;padding:7px 10px;border-radius:999px;background:#fff3ee;color:#d33a1e;font-size:9px;font-weight:900;border:1px solid #ffd6ca}.panel{background:#fff;border:1px solid #e4e6e9;border-radius:20px;padding:19px;margin-bottom:14px;box-shadow:0 10px 30px #1822350b}.panelHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel h2{font-size:18px;margin:0}.panel p{font-size:10px;color:#86898f;margin:5px 0 0;line-height:1.45}.panelTools{display:flex;gap:6px;flex-wrap:wrap}.mini{border:0;border-radius:9px;padding:7px 9px;background:#f0f1f3;color:#333;font-size:9px;font-weight:850}.grid{display:grid;gap:8px;margin-top:14px}.item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #e5e7ea;border-radius:14px;padding:10px 11px;background:#fafbfc}.icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#fff0ec,#fff8ee);display:grid;place-items:center;overflow:hidden;font-size:18px;font-weight:900}.icon img{width:100%;height:100%;object-fit:cover}.info{min-width:0}.info strong{display:block;font-size:11px}.info span{display:block;font-size:9px;color:#85888e;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.toggle{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:850;color:#686b70}.toggle input{width:18px;height:18px;accent-color:#ff4b27}.fixed{padding:10px 12px;border-radius:12px;background:#fff7ee;border:1px solid #ffe0bd;font-size:9px;color:#76511d;margin-top:12px;line-height:1.45}.adminLink{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,#181b20,#2a211d);color:#fff;border:0}.adminLink p{color:#babdc3}.adminLink .open{border:0;border-radius:10px;padding:9px 11px;background:var(--netto-gradient,var(--grad));color:#fff;font-size:9px;font-weight:900;white-space:nowrap}.actions{position:sticky;bottom:12px;display:flex;justify-content:flex-end;gap:8px;padding:9px;background:#ffffffea;border:1px solid #e0e2e5;border-radius:14px;backdrop-filter:blur(16px);box-shadow:0 12px 34px #0002}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:850}.primary{background:var(--netto-gradient,var(--grad));color:#fff}.secondary{background:#f0f1f3}.danger{background:#fff1ef;color:#b72a1e;border:1px solid #ffd7cf}.saveState{font-size:9px;color:#85888e;align-self:center;margin-right:auto}.saveState.ok{color:#198047}.saveState.err{color:#b72a1e}.empty{padding:18px;text-align:center;color:#92959a;font-size:10px;border:1px dashed #d7dade;border-radius:13px}
+:root[data-theme="dark"] body{background:#111317;color:#f4f5f7}:root[data-theme="dark"] header{background:#17191df0;border-color:#2d3036}:root[data-theme="dark"] .panel{background:#1b1d22;border-color:#30333a}:root[data-theme="dark"] .item{background:#202227;border-color:#353840}:root[data-theme="dark"] .mini,:root[data-theme="dark"] .secondary{background:#25272c;color:#eee}:root[data-theme="dark"] .actions{background:#1a1c20e8;border-color:#35373d}:root[data-theme="dark"] .fixed{background:#302719;border-color:#554122;color:#e7c897}
+@media(max-width:620px){header{height:66px}.top{width:calc(100% - 22px)}main{width:calc(100% - 22px);padding-top:28px}.hero{align-items:flex-start;flex-direction:column}.hero h1{font-size:29px}.panel{padding:15px;border-radius:17px}.panelHead{display:grid}.item{grid-template-columns:38px minmax(0,1fr) auto}.icon{width:38px;height:38px}.info span{max-width:180px}.adminLink{align-items:flex-start;flex-direction:column}.actions{bottom:max(8px,env(safe-area-inset-bottom));flex-wrap:wrap}.saveState{width:100%;margin:0}.actions .btn{flex:1}}
+</style>
+</head>
 <body>
-<header><div class="top"><div class="brand"><button class="mark" onclick="location.href='home.html'" aria-label="Accueil">N</button><div><div class="title">Personnalisation</div><div class="sub">Ton portail, selon tes droits</div></div></div></div></header>
+<header><div class="top"><div class="brand"><button class="mark" onclick="location.href='home.html'">N</button><div><div class="title">Personnalisation</div><div class="sub">Mon affichage et mes raccourcis</div></div></div></div></header>
 <main>
- <div class="hero"><div><div class="sectionTag">PRÉFÉRENCES PERSONNELLES</div><h1>Personnalise ton espace</h1><p>Choisis les outils que tu veux retrouver sur l’accueil et dans ta barre utilisateur. Les choix sont enregistrés sur ton compte et restent limités aux accès accordés par ton rôle.</p><div class="roleLine"><span id="roleBadge" class="roleBadge">Chargement…</span><span id="rightsHint" class="rightsHint"></span></div></div><div id="saveState" class="saveState">Chargement…</div></div>
- <div class="notice"><strong>Principe :</strong> masquer un raccourci ne retire jamais un droit. À l’inverse, un outil auquel ton rôle n’a pas accès n’est jamais proposé ici et ne peut pas être réactivé par la personnalisation.</div>
- <div class="grid">
-  <section class="panel wide"><h2>Accueil /home</h2><p class="panelIntro">Active uniquement les cartes que tu veux voir sur ton tableau d’accueil.</p><div class="panelTools"><button class="miniBtn" onclick="setArea('home',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('home',false)">Tout masquer</button></div><div id="homeEditor" class="preferenceGrid"></div></section>
-  <section class="panel wide"><h2>Barre utilisateur</h2><p class="panelIntro">Choisis les raccourcis disponibles dans le menu qui s’ouvre depuis ton nom ou ta photo.</p><div class="fixedNote"><span>🔒</span><span><b>Toujours disponibles :</b> Mon profil, Personnalisation, apparence clair/sombre et Déconnexion. Ils restent accessibles pour éviter de verrouiller ton interface.</span></div><div class="panelTools"><button class="miniBtn" onclick="setArea('user_menu',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('user_menu',false)">Tout masquer</button></div><div id="userEditor" class="preferenceGrid"></div></section>
-  <section id="adminConfig" class="panel wide hidden"><h2>Configuration générale du portail</h2><p class="panelIntro">Réservé à l’administrateur. Configure le nom, la description, la destination, l’ordre et les rôles qui peuvent voir chaque module. La visibilité ne peut jamais dépasser les droits fonctionnels réellement prévus par la page.</p>
-   <div class="fields"><div class="field"><label>Nom du portail</label><input id="brandName"></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle"></div><div class="field"><label>Petit titre d’accueil</label><input id="homeEyebrow"></div><div class="field"><label>Introduction d’accueil</label><input id="homeIntro"></div></div>
-   <div id="sharedEditor" class="sharedEditor" style="margin-top:16px"></div>
-  </section>
- </div>
- <div class="actions"><button class="btn danger" onclick="resetPersonal()">Réinitialiser mon affichage</button><button id="saveBtn" class="btn dark" onclick="saveAll()">Enregistrer</button></div>
+<div class="hero"><div><h1>Mon portail</h1><p>Choisis uniquement ce que tu veux voir. Tes choix restent personnels et ne modifient pas l’interface des autres utilisateurs.</p></div><span id="roleBadge" class="roleBadge">Compte</span></div>
+<section id="adminShortcut" class="panel adminLink hidden"><div><h2>Éditeur du portail</h2><p>La configuration générale, les couleurs et la création de menus sont maintenant centralisées dans l’espace administrateur.</p></div><button class="open" onclick="location.href='admin-portal.html'">Ouvrir l’éditeur →</button></section>
+<section class="panel"><div class="panelHead"><div><h2>Accueil</h2><p>Choisis les espaces visibles sur ton écran d’accueil parmi ceux autorisés pour ton rôle.</p></div><div class="panelTools"><button class="mini" onclick="setArea('home',true)">Tout afficher</button><button class="mini" onclick="setArea('home',false)">Tout masquer</button></div></div><div id="homeEditor" class="grid"></div></section>
+<section class="panel"><div class="panelHead"><div><h2>Barre utilisateur</h2><p>Choisis les raccourcis disponibles lorsque tu ouvres le menu depuis ton nom ou ta photo.</p></div><div class="panelTools"><button class="mini" onclick="setArea('user_menu',true)">Tout afficher</button><button class="mini" onclick="setArea('user_menu',false)">Tout masquer</button></div></div><div class="fixed"><b>Toujours disponibles :</b> Mon profil, Personnalisation, changement de thème et Déconnexion.</div><div id="userEditor" class="grid"></div></section>
+<div class="actions"><span id="saveState" class="saveState">Chargement…</span><button class="btn danger" onclick="resetPersonal()">Réinitialiser</button><button id="saveBtn" class="btn primary" onclick="savePersonal()">Enregistrer</button></div>
 </main>
 <script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let session=null,profile=null,prefs={home:{},user_menu:{}},sharedConfig={};
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const ROLE_ORDER=['admin','responsable','employe','lecture'];
+let session=null,profile=null,prefs={home:{},user_menu:{}};
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const ROLE_LABEL={admin:'Administrateur',responsable:'Responsable',employe:'Employé',lecture:'Lecture seule'};
-const roleName=r=>ROLE_LABEL[r]||r||'Compte';
+function ensurePrefs(v){const p=v&&typeof v==='object'?JSON.parse(JSON.stringify(v)):{};p.home=p.home&&typeof p.home==='object'?p.home:{};p.user_menu=p.user_menu&&typeof p.user_menu==='object'?p.user_menu:{};return p}
+function waitUI(){return new Promise(resolve=>{let n=0;const t=setInterval(()=>{if(window.NettoProfileUI?.profile||n++>80){clearInterval(t);resolve()}},50)})}
 function modules(){return window.NettoProfileUI?.modules||[]}
-function maxRoles(m){return window.NettoProfileUI?.maxRoles?window.NettoProfileUI.maxRoles(m):(Array.isArray(m?.roles)?m.roles:ROLE_ORDER)}
-function configuredRoles(m){if(m?.id==='settings')return [...ROLE_ORDER];const p=sharedConfig?.pages?.[m?.id],max=maxRoles(m);if(!Array.isArray(p?.roles))return [...max];return [...new Set(p.roles.filter(r=>max.includes(r)))]}
-function canAccess(m){return window.NettoProfileUI?.canAccess?window.NettoProfileUI.canAccess(m,profile,sharedConfig):configuredRoles(m).includes(profile?.role)}
 function prefProfile(){return {...profile,ui_preferences:prefs}}
-function visibleValue(area,m){return window.NettoProfileUI?.isVisible?window.NettoProfileUI.isVisible(area,m,prefProfile(),sharedConfig):(prefs?.[area]?.[m.id]??(area==='home'?m.defaultHome!==false:m.defaultUser!==false))}
-function iconHtml(m){return m.asset?'<img src="'+esc(m.asset)+'" alt="">':esc(m.icon||'•')}
-function ensurePrefs(raw){const p=raw&&typeof raw==='object'&&!Array.isArray(raw)?structuredClone(raw):{};p.home=p.home&&typeof p.home==='object'&&!Array.isArray(p.home)?p.home:{};p.user_menu=p.user_menu&&typeof p.user_menu==='object'&&!Array.isArray(p.user_menu)?p.user_menu:{};return p}
-function renderArea(area,hostId){
- const host=$(hostId),available=modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu));
- if(!available.length){host.innerHTML='<div class="notice">Aucun outil supplémentaire disponible pour ce rôle.</div>';return}
- host.innerHTML=available.map(m=>'<label class="prefItem"><span class="prefIcon">'+iconHtml(m)+'</span><span class="prefInfo"><strong>'+esc(area==='home'?(m.homeLabel||m.label):m.label)+'</strong><span>'+esc(m.subtitle||m.description||'')+'</span></span><span class="prefSwitch"><input type="checkbox" data-area="'+area+'" data-module="'+esc(m.id)+'" '+(visibleValue(area,m)?'checked':'')+'> Visible</span></label>').join('');
- host.querySelectorAll('input[data-module]').forEach(input=>input.onchange=()=>{prefs[input.dataset.area][input.dataset.module]=input.checked;markDirty()});
-}
-function renderPreferences(){renderArea('home','homeEditor');renderArea('user_menu','userEditor');const h=modules().filter(m=>canAccess(m)&&m.home).length,u=modules().filter(m=>canAccess(m)&&m.userMenu).length;$('rightsHint').textContent=h+' outil'+(h>1?'s':'')+' disponible'+(h>1?'s':'')+' sur l’accueil · '+u+' raccourci'+(u>1?'s':'')+' configurable'+(u>1?'s':'')}
-function setArea(area,value){modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu)).forEach(m=>prefs[area][m.id]=value);renderPreferences();markDirty()}
-function markDirty(){saveState.textContent='Modifications non enregistrées';saveState.className='saveState'}
-function defaultSharedPage(m,index){return{label:m.homeLabel||m.label,description:m.description||'',url:m.url||'',order:index+1,roles:m.id==='settings'?[...ROLE_ORDER]:[...maxRoles(m)]}}
-function normalizeShared(cfg){
- const out=cfg&&typeof cfg==='object'&&!Array.isArray(cfg)?structuredClone(cfg):{};
- out.brand={name:out.brand?.name||'Netto',subtitle:out.brand?.subtitle||'Espace outils'};
- out.home={eyebrow:out.home?.eyebrow||'Espace de travail',intro:out.home?.intro||'Choisis l’espace que tu veux ouvrir.'};
- out.pages=out.pages&&typeof out.pages==='object'?out.pages:{};
- modules().filter(m=>m.home).forEach((m,i)=>{
-  const cur=out.pages[m.id]&&typeof out.pages[m.id]==='object'?out.pages[m.id]:{},max=maxRoles(m);
-  let roles=Array.isArray(cur.roles)?cur.roles.filter(r=>max.includes(r)):[...max];
-  if(m.id==='settings')roles=[...ROLE_ORDER];
-  out.pages[m.id]={...defaultSharedPage(m,i),...cur,roles:[...new Set(roles)]};
- });
- return out
-}
-function validPath(v){v=String(v||'').trim();return /^[a-zA-Z0-9_./-]+(?:\.html)?(?:[?#][^\s]*)?$/.test(v)&&!v.startsWith('//')&&!v.includes('..')}
-function roleSummary(m){const rows=configuredRoles(m);if(rows.length===ROLE_ORDER.length)return'Tous les rôles';if(!rows.length)return'Masqué pour tous';return rows.map(r=>ROLE_LABEL[r]||r).join(' · ')}
-function rolePicker(m){
- const selected=configuredRoles(m),max=maxRoles(m),mandatory=m.id==='settings';
- const choices=ROLE_ORDER.map(r=>{const permitted=max.includes(r),locked=mandatory||!permitted,checked=mandatory||selected.includes(r);return '<label class="roleChoice '+(locked?'locked':'')+'"><input type="checkbox" data-role-module="'+esc(m.id)+'" data-role="'+r+'" '+(checked?'checked':'')+' '+(locked?'disabled':'')+'><span>'+esc(ROLE_LABEL[r])+'</span></label>'}).join('');
- const limit=max.length<ROLE_ORDER.length?'<div class="roleLimitNote">🔒 Les rôles grisés ne disposent pas actuellement des <b>droits fonctionnels</b> nécessaires sur cette page.</div>':mandatory?'<div class="roleLimitNote">🔒 Personnalisation reste accessible à <b>tous les rôles</b> pour que chacun puisse gérer son interface.</div>':'';
- return '<div class="roleAccessBox"><div class="roleAccessHead"><strong>Visibilité par rôle</strong><span>Qui peut voir ce module dans le portail</span></div><div class="roleChoices">'+choices+'</div>'+limit+'</div>'
-}
-function syncRoles(moduleId){
- const m=modules().find(x=>x.id===moduleId);if(!m||m.id==='settings')return;
- const max=maxRoles(m),checked=[...document.querySelectorAll('[data-role-module="'+CSS.escape(moduleId)+'"]:checked')].map(x=>x.dataset.role).filter(r=>max.includes(r));
- sharedConfig.pages[moduleId].roles=[...new Set(checked)];
- const summary=document.querySelector('[data-role-summary="'+CSS.escape(moduleId)+'"]');if(summary)summary.textContent=roleSummary(m);
- renderPreferences();markDirty()
-}
-function renderAdminConfig(){
- if(profile?.role!=='admin')return;$('adminConfig').classList.remove('hidden');sharedConfig=normalizeShared(sharedConfig);brandName.value=sharedConfig.brand.name;brandSubtitle.value=sharedConfig.brand.subtitle;homeEyebrow.value=sharedConfig.home.eyebrow;homeIntro.value=sharedConfig.home.intro;
- $('sharedEditor').innerHTML=modules().filter(m=>m.home).map(m=>{const p=sharedConfig.pages[m.id];return '<div class="item"><div class="itemHead"><strong>'+esc(m.homeLabel||m.label)+'</strong><span class="roleSummary" data-role-summary="'+esc(m.id)+'">'+esc(roleSummary(m))+'</span></div>'+rolePicker(m)+'<div class="itemFields"><div class="field"><label>Nom</label><input data-shared="'+m.id+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-shared="'+m.id+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-shared="'+m.id+'" data-f="description" value="'+esc(p.description)+'"></div><div class="field url"><label>Destination</label><input data-shared="'+m.id+'" data-f="url" value="'+esc(p.url)+'"></div></div></div>'}).join('');
- document.querySelectorAll('[data-role-module]:not(:disabled)').forEach(el=>el.onchange=()=>syncRoles(el.dataset.roleModule));
- document.querySelectorAll('[data-shared]').forEach(el=>el.addEventListener('input',markDirty));
-}
-function collectShared(){
- if(profile?.role!=='admin')return;sharedConfig.brand.name=brandName.value.trim()||'Netto';sharedConfig.brand.subtitle=brandSubtitle.value.trim();sharedConfig.home.eyebrow=homeEyebrow.value.trim();sharedConfig.home.intro=homeIntro.value.trim();
- document.querySelectorAll('[data-shared]').forEach(el=>{const p=sharedConfig.pages[el.dataset.shared],f=el.dataset.f;p[f]=el.type==='number'?Math.max(1,Number(el.value)||1):el.value.trim()});
- modules().filter(m=>m.home).forEach(m=>{if(m.id==='settings'){sharedConfig.pages[m.id].roles=[...ROLE_ORDER];return}const max=maxRoles(m),checked=[...document.querySelectorAll('[data-role-module="'+CSS.escape(m.id)+'"]:checked')].map(x=>x.dataset.role).filter(r=>max.includes(r));sharedConfig.pages[m.id].roles=[...new Set(checked)]});
- for(const p of Object.values(sharedConfig.pages))if(p?.url&&!validPath(p.url))throw new Error('Destination invalide : '+p.url);
-}
-async function saveAll(){
- saveBtn.disabled=true;saveState.className='saveState';saveState.textContent='Enregistrement…';
- try{
-  collectShared();
-  const {error}=await db.from('profiles').update({ui_preferences:prefs}).eq('id',session.user.id);if(error)throw error;
-  if(profile.role==='admin'){const {error:se}=await db.from('app_settings').upsert({key:'site_config',value:sharedConfig,updated_by:session.user.id,updated_at:new Date().toISOString()},{onConflict:'key'});if(se)throw se}
-  profile.ui_preferences=structuredClone(prefs);saveState.className='saveState ok';saveState.textContent='✓ Personnalisation enregistrée';window.NettoSounds?.play?.('success');await window.NettoProfileUI?.refresh?.();
- }catch(e){console.error(e);saveState.className='saveState err';saveState.textContent='Erreur : '+(e?.message||'enregistrement impossible');window.NettoSounds?.play?.('error')}
- finally{saveBtn.disabled=false}
-}
-async function resetPersonal(){
- if(!confirm('Revenir à l’affichage par défaut prévu pour ton rôle ?'))return;prefs={home:{},user_menu:{}};renderPreferences();saveState.textContent='Réinitialisation…';
- const {error}=await db.from('profiles').update({ui_preferences:prefs}).eq('id',session.user.id);if(error){saveState.className='saveState err';saveState.textContent='Erreur : '+error.message;return}
- profile.ui_preferences=structuredClone(prefs);saveState.className='saveState ok';saveState.textContent='✓ Affichage par défaut restauré';window.NettoSounds?.play?.('success');await window.NettoProfileUI?.refresh?.();
-}
-async function boot(){
- const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');
- const {data:p,error}=await db.from('profiles').select('display_name,role,ui_preferences').eq('id',s.user.id).maybeSingle();if(error||!p)return location.replace('index.html');profile=p;window.currentRole=p.role;prefs=ensurePrefs(p.ui_preferences);
- $('roleBadge').textContent=roleName(p.role);
- const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();sharedConfig=data?.value||{};
- renderPreferences();renderAdminConfig();saveState.textContent='À jour';
-}
+function available(area){return modules().filter(m=>window.NettoProfileUI?.canAccess?.(m,profile,window.NettoProfileUI?.siteConfig)&&(area==='home'?m.home:m.userMenu))}
+function visible(area,m){const v=prefs?.[area]?.[m.id];if(typeof v==='boolean')return v;return area==='home'?m.defaultHome!==false:m.defaultUser!==false}
+function icon(m){return m.asset?'<img src="'+esc(m.asset)+'" alt="">':esc(m.icon||'•')}
+function renderArea(area,id){const host=$(id),list=available(area);if(!list.length){host.innerHTML='<div class="empty">Aucun espace configurable pour ce rôle.</div>';return}host.innerHTML=list.map(m=>'<label class="item"><span class="icon">'+icon(m)+'</span><span class="info"><strong>'+esc(area==='home'?(m.homeLabel||m.label):m.label)+'</strong><span>'+esc(m.subtitle||m.description||'')+'</span></span><span class="toggle"><input type="checkbox" data-area="'+area+'" data-id="'+esc(m.id)+'" '+(visible(area,m)?'checked':'')+'> Visible</span></label>').join('');host.querySelectorAll('input[data-id]').forEach(x=>x.onchange=()=>{prefs[x.dataset.area][x.dataset.id]=x.checked;markDirty()})}
+function render(){renderArea('home','homeEditor');renderArea('user_menu','userEditor')}
+function markDirty(){$('saveState').textContent='Modifications non enregistrées';$('saveState').className='saveState'}
+function setArea(area,value){available(area).forEach(m=>prefs[area][m.id]=value);render();markDirty()}
+async function savePersonal(){const b=$('saveBtn');b.disabled=true;$('saveState').textContent='Enregistrement…';const {error}=await db.from('profiles').update({ui_preferences:prefs}).eq('id',session.user.id);if(error){$('saveState').className='saveState err';$('saveState').textContent='Erreur : '+error.message;window.NettoSounds?.play?.('error')}else{profile.ui_preferences=JSON.parse(JSON.stringify(prefs));$('saveState').className='saveState ok';$('saveState').textContent='✓ Personnalisation enregistrée';window.NettoSounds?.play?.('success');await window.NettoProfileUI?.refresh?.()}b.disabled=false}
+async function resetPersonal(){if(!confirm('Revenir à l’affichage par défaut prévu pour ton rôle ?'))return;prefs={home:{},user_menu:{}};render();await savePersonal()}
+async function boot(){const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');const {data:p,error}=await db.from('profiles').select('display_name,role,ui_preferences').eq('id',s.user.id).maybeSingle();if(error||!p)return location.replace('index.html');profile=p;prefs=ensurePrefs(p.ui_preferences);$('roleBadge').textContent=ROLE_LABEL[p.role]||p.role;if(p.role==='admin')$('adminShortcut').classList.remove('hidden');await waitUI();render();$('saveState').textContent='À jour'}
 boot();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
