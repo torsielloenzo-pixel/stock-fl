@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171717">
 <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem('nettoTheme')||'light'}catch(_){}})();</script>
-<title>Netto — Éditeur du portail</title>
+<title>Nethor — Éditeur du portail</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="profile-ui.js?v=22"></script>
 <link rel="manifest" href="manifest.webmanifest">
@@ -45,7 +45,7 @@ main{width:min(95vw,1240px);margin:auto;padding:28px 0 90px}.hero{display:flex;j
 <section id="tab-general" class="section active">
  <div class="panel"><h2>Identité du portail</h2><p class="panelIntro">Ces informations sont partagées par tout le monde.</p>
   <div class="fields"><div class="field"><label>Nom du portail</label><input id="brandName" data-global></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle" data-global></div><div class="field"><label>Petit titre de l’accueil</label><input id="homeEyebrow" data-global></div><div class="field"><label>Texte d’introduction</label><input id="homeIntro" data-global></div></div>
-  <div class="preview"><div class="previewBrand"><div id="previewMark" class="previewMark">N</div><div><strong id="previewName">Netto</strong><small id="previewSubtitle">Espace outils</small></div></div></div>
+  <div class="preview"><div class="previewBrand"><div id="previewMark" class="previewMark">N</div><div><strong id="previewName">Nethor</strong><small id="previewSubtitle">Espace outils</small></div></div></div>
  </div>
  <div class="panel"><h2>Couleurs générales</h2><p class="panelIntro">Les couleurs principales sont appliquées à l’interface commune et servent de base aux nouveaux menus.</p>
   <div class="colorRow"><div class="colorBox"><label>Couleur principale</label><div class="colorInput"><input id="primaryColor" type="color" data-global><span id="primaryHex"></span></div></div><div class="colorBox"><label>Couleur secondaire</label><div class="colorInput"><input id="secondaryColor" type="color" data-global><span id="secondaryHex"></span></div></div><div class="colorBox"><label>Couleur du texte</label><div class="colorInput"><input id="inkColor" type="color" data-global><span id="inkHex"></span></div></div></div>
@@ -111,7 +111,7 @@ function markDirty(){dirty=true;$('saveState').textContent='Modifications non en
 function showTab(name,btn,opts={}){const valid=['general','system','custom','notifications','logs'];if(!valid.includes(name))name='general';btn=btn||document.querySelector('.side button[data-tab="'+CSS.escape(name)+'"]');document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name));document.querySelectorAll('.side button').forEach(x=>x.classList.toggle('active',x===btn));document.querySelector('.stickySave')?.classList.toggle('hidden',name==='logs'||name==='notifications');try{localStorage.setItem('nettoAdminPortalTab',name)}catch(_){ }const u=new URL(location.href);u.searchParams.set('tab',name);history.replaceState({},'',u);if(opts.sound!==false)window.NettoSounds?.play?.('menuOpen')}
 function normalize(raw){
  const c=raw&&typeof raw==='object'?clone(raw):{};
- c.brand={name:c.brand?.name||'Netto',subtitle:c.brand?.subtitle||'Espace outils'};
+ c.brand={name:c.brand?.name||'Nethor',subtitle:c.brand?.subtitle||'Espace outils'};
  c.home={eyebrow:c.home?.eyebrow||'Espace de travail',intro:c.home?.intro||'Choisis l’espace que tu veux ouvrir.'};
  c.theme={primary:validColor(c.theme?.primary,'#ff2f1f'),secondary:validColor(c.theme?.secondary,'#ff8500'),ink:validColor(c.theme?.ink,'#182235')};
  c.pages=c.pages&&typeof c.pages==='object'?c.pages:{};
@@ -179,7 +179,7 @@ async function uploadCustomImage(id,input){const state=$('saveState');try{state.
 function bindGlobal(){
  ['brandName','brandSubtitle','homeEyebrow','homeIntro','primaryColor','secondaryColor','inkColor'].forEach(id=>$(id).addEventListener('input',()=>{collectGlobal();paintGlobal();markDirty()}))
 }
-function collectGlobal(){config.brand.name=$('brandName').value.trim()||'Netto';config.brand.subtitle=$('brandSubtitle').value.trim();config.home.eyebrow=$('homeEyebrow').value.trim();config.home.intro=$('homeIntro').value.trim();config.theme.primary=$('primaryColor').value;config.theme.secondary=$('secondaryColor').value;config.theme.ink=$('inkColor').value}
+function collectGlobal(){config.brand.name=$('brandName').value.trim()||'Nethor';config.brand.subtitle=$('brandSubtitle').value.trim();config.home.eyebrow=$('homeEyebrow').value.trim();config.home.intro=$('homeIntro').value.trim();config.theme.primary=$('primaryColor').value;config.theme.secondary=$('secondaryColor').value;config.theme.ink=$('inkColor').value}
 function paintGlobal(){document.documentElement.style.setProperty('--primary',config.theme.primary);document.documentElement.style.setProperty('--secondary',config.theme.secondary);document.documentElement.style.setProperty('--ink',config.theme.ink);$('previewName').textContent=config.brand.name;$('previewSubtitle').textContent=config.brand.subtitle;$('primaryHex').textContent=config.theme.primary;$('secondaryHex').textContent=config.theme.secondary;$('inkHex').textContent=config.theme.ink;$('previewMark').style.background='linear-gradient(135deg,'+config.theme.primary+','+config.theme.secondary+')'}
 function fillGlobal(){$('brandName').value=config.brand.name;$('brandSubtitle').value=config.brand.subtitle;$('homeEyebrow').value=config.home.eyebrow;$('homeIntro').value=config.home.intro;$('primaryColor').value=config.theme.primary;$('secondaryColor').value=config.theme.secondary;$('inkColor').value=config.theme.ink;paintGlobal()}
 function syncCustomPages(){
