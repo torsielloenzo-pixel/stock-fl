@@ -154,8 +154,39 @@ async function notifyUsers(entries){
    if(pushError)console.warn('Push planning:',pushError)
  }
 }
+function planningWeekRangeLabel(date){
+ const ws=startOfWeek(parseISO(date)),we=addDays(ws,6);
+ return 'du '+shortDate(isoDate(ws))+' au '+shortDate(isoDate(we))
+}
 async function notifyChangedEmployees(){
- const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'📅 Planning modifié',message:'Ton planning du '+shortDate(date)+' a été modifié.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
+ const entries=[];
+ for(const [userId,v] of changedProfilesByUser()){
+  const dates=[...v.dates].sort();if(!dates.length)continue;
+  const first=dates[0],last=dates[dates.length-1],firstWeek=isoDate(startOfWeek(parseISO(first))),lastWeek=isoDate(startOfWeek(parseISO(last)));
+  let message='';
+  if(dates.length===1){
+   message='Ton planning du '+shortDate(first)+' a été modifié.'
+  }else if(dates.length<=3&&firstWeek===lastWeek){
+   message='Ton planning du '+shortDate(first)+' au '+shortDate(last)+' a été modifié.'
+  }else{
+   const weeks=[...new Set(dates.map(d=>isoDate(startOfWeek(parseISO(d)))))];
+   if(weeks.length===1){
+    message='Ton planning de la semaine '+planningWeekRangeLabel(first)+' a été modifié.'
+   }else{
+    message='Ton planning des semaines '+weeks.map(w=>planningWeekRangeLabel(w)).join(' et ')+' a été modifié.'
+   }
+  }
+  entries.push({
+   user_id:userId,
+   kind:'manual_edit',
+   title:'📅 Planning modifié',
+   message,
+   planning_date:dates.length===1?first:null,
+   week_start:firstWeek,
+   target_url:'planning.html?week='+encodeURIComponent(firstWeek)+'&day='+encodeURIComponent(first)
+  })
+ }
+ await notifyUsers(entries)
 }
 async function notifyWholePlanning(kind,m){
  const ids=new Set(),entries=[];
