@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171717"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script><title>Netto — Personnalisation</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=14"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=15"></script>
 <style>
 :root{--red:#e30613;--red2:#b90710;--black:#171717;--line:#e2e2e5;--muted:#777;--bg:#f2f3f4}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef0f1,#fafafa 48%,#f0f1f2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input,textarea{font:inherit}
@@ -207,10 +207,12 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Netto Outils">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="design-v2.css?v=3"><link rel="stylesheet" href="design-v3.css?v=3">
+<link rel="stylesheet" href="design-v2.css?v=3"><link rel="stylesheet" href="design-v3.css?v=3"><link rel="stylesheet" href="design-v4.css?v=1">
 
 <style id="personalization-v2">
 .preferenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.prefItem{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #e5e7eb;border-radius:15px;padding:12px;background:#fafbfc;transition:.15s}.prefItem:hover{border-color:#ffd0c4;background:#fffaf8}.prefIcon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#fff0ed,#fff7ec);color:#ee4826;font-weight:900;font-size:18px;overflow:hidden}.prefIcon img{width:100%;height:100%;object-fit:cover}.prefInfo{min-width:0}.prefInfo strong{display:block;font-size:12px}.prefInfo span{display:block;margin-top:3px;color:#858990;font-size:9.5px;line-height:1.35}.prefSwitch{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:850;color:#737780}.prefSwitch input{width:20px;height:20px;accent-color:#ff4827}.panelTools{display:flex;gap:7px;flex-wrap:wrap;margin:-4px 0 13px}.miniBtn{border:1px solid #e1e4e8;background:#f5f6f8;color:#50545a;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:850;cursor:pointer}.roleLine{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}.roleBadge{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#fff0ec;color:#da3a1f;font-size:9px;font-weight:900}.rightsHint{font-size:9.5px;color:#8b8f96}.fixedNote{display:flex;gap:10px;align-items:flex-start;background:#f6f7f9;border:1px solid #e4e6ea;border-radius:12px;padding:11px 12px;margin-bottom:13px;font-size:10px;color:#686d74;line-height:1.45}.fixedNote b{color:#292d33}.sharedEditor .itemFields{grid-template-columns:1fr 1.4fr 100px}.sharedEditor .itemFields .desc{grid-column:1/3}.sharedEditor .itemFields .url{grid-column:1/3}.sectionTag{font-size:8px;font-weight:900;letter-spacing:.8px;color:#f05a32;text-transform:uppercase;margin-bottom:5px}.saveState.ok{color:#188345}.saveState.err{color:#b52c20}
+.roleAccessBox{margin:2px 0 12px;padding:11px 12px;border:1px solid #e3e7eb;border-radius:13px;background:#f7f9fa}.roleAccessHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.roleAccessHead strong{font-size:10px}.roleAccessHead span{font-size:8.5px;color:#8a9098}.roleChoices{display:flex;gap:6px;flex-wrap:wrap}.roleChoice{position:relative;display:inline-flex;align-items:center;cursor:pointer}.roleChoice input{position:absolute;opacity:0;pointer-events:none}.roleChoice span{display:inline-flex;align-items:center;min-height:30px;padding:6px 9px;border:1px solid #dce1e6;border-radius:999px;background:#fff;color:#606872;font-size:8.5px;font-weight:850;transition:.15s}.roleChoice input:checked+span{background:linear-gradient(135deg,#fff0ec,#fff6ed);border-color:#f3bba8;color:#d94c2e;box-shadow:inset 0 0 0 1px #fff}.roleChoice:not(.locked):hover span{border-color:#efad96;transform:translateY(-1px)}.roleChoice.locked{cursor:not-allowed}.roleChoice.locked span{opacity:.48;background:#eef0f2}.roleChoice.locked input:checked+span{opacity:.86;background:#f4ebe7;color:#a45743;border-color:#dec6bc}.roleSummary{display:inline-flex;align-items:center;max-width:48%;padding:6px 9px;border-radius:999px;background:#fff0ec;color:#d44226;font-size:8px;font-weight:900;text-align:right}.roleLimitNote{margin-top:8px;color:#8b9199;font-size:8.5px;line-height:1.4}.roleLimitNote b{color:#666d75}.itemHead{align-items:flex-start}.sharedEditor .item{padding:15px}.sharedEditor .itemFields{margin-top:4px}
+:root[data-theme="dark"] .roleAccessBox{background:#23272a;border-color:#3a4045}:root[data-theme="dark"] .roleChoice span{background:#292e32;border-color:#41474c;color:#bbb4ad}:root[data-theme="dark"] .roleChoice input:checked+span{background:#392921;border-color:#634334;color:#e7a082}:root[data-theme="dark"] .roleChoice.locked span{background:#24282b;color:#88827d}:root[data-theme="dark"] .roleSummary{background:#392921;color:#e7a082}:root[data-theme="dark"] .roleAccessHead span,:root[data-theme="dark"] .roleLimitNote{color:#98918b}
 :root[data-theme="dark"] .prefItem,:root[data-theme="dark"] .fixedNote{background:#202226!important;border-color:#363a40!important}:root[data-theme="dark"] .prefItem:hover{background:#27292e!important;border-color:#654235!important}:root[data-theme="dark"] .prefIcon{background:#33241f!important;color:#ff9a72}:root[data-theme="dark"] .miniBtn{background:#25272c;color:#e6e2df;border-color:#3a3e44}:root[data-theme="dark"] .roleBadge{background:#39231e;color:#ff9a72}
 @media(max-width:720px){.preferenceGrid{grid-template-columns:1fr}.prefItem{grid-template-columns:42px minmax(0,1fr) auto;padding:10px}.prefIcon{width:40px;height:40px;border-radius:11px}.sharedEditor .itemFields{grid-template-columns:1fr}.sharedEditor .itemFields .desc,.sharedEditor .itemFields .url{grid-column:auto}.hero h1{font-size:29px}.actions{justify-content:stretch;flex-wrap:wrap}.actions .btn{flex:1;min-width:145px}}
 </style></head>
@@ -222,7 +224,7 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
  <div class="grid">
   <section class="panel wide"><h2>Accueil /home</h2><p class="panelIntro">Active uniquement les cartes que tu veux voir sur ton tableau d’accueil.</p><div class="panelTools"><button class="miniBtn" onclick="setArea('home',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('home',false)">Tout masquer</button></div><div id="homeEditor" class="preferenceGrid"></div></section>
   <section class="panel wide"><h2>Barre utilisateur</h2><p class="panelIntro">Choisis les raccourcis disponibles dans le menu qui s’ouvre depuis ton nom ou ta photo.</p><div class="fixedNote"><span>🔒</span><span><b>Toujours disponibles :</b> Mon profil, Personnalisation, apparence clair/sombre et Déconnexion. Ils restent accessibles pour éviter de verrouiller ton interface.</span></div><div class="panelTools"><button class="miniBtn" onclick="setArea('user_menu',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('user_menu',false)">Tout masquer</button></div><div id="userEditor" class="preferenceGrid"></div></section>
-  <section id="adminConfig" class="panel wide hidden"><h2>Configuration générale du portail</h2><p class="panelIntro">Réservé à l’administrateur. Ces réglages changent les noms, descriptions, destinations et ordre par défaut des outils, sans modifier les droits ni les choix personnels des utilisateurs.</p>
+  <section id="adminConfig" class="panel wide hidden"><h2>Configuration générale du portail</h2><p class="panelIntro">Réservé à l’administrateur. Configure le nom, la description, la destination, l’ordre et les rôles qui peuvent voir chaque module. La visibilité ne peut jamais dépasser les droits fonctionnels réellement prévus par la page.</p>
    <div class="fields"><div class="field"><label>Nom du portail</label><input id="brandName"></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle"></div><div class="field"><label>Petit titre d’accueil</label><input id="homeEyebrow"></div><div class="field"><label>Introduction d’accueil</label><input id="homeIntro"></div></div>
    <div id="sharedEditor" class="sharedEditor" style="margin-top:16px"></div>
   </section>
@@ -235,32 +237,66 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let session=null,profile=null,prefs={home:{},user_menu:{}},sharedConfig={};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const roleName=r=>({admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'})[r]||r||'Compte';
+const ROLE_ORDER=['admin','responsable','employe','lecture'];
+const ROLE_LABEL={admin:'Administrateur',responsable:'Responsable',employe:'Employé',lecture:'Lecture seule'};
+const roleName=r=>ROLE_LABEL[r]||r||'Compte';
 function modules(){return window.NettoProfileUI?.modules||[]}
-function canAccess(m){return window.NettoProfileUI?.canAccess?window.NettoProfileUI.canAccess(m,profile):(!Array.isArray(m.roles)||m.roles.includes(profile?.role))}
+function maxRoles(m){return window.NettoProfileUI?.maxRoles?window.NettoProfileUI.maxRoles(m):(Array.isArray(m?.roles)?m.roles:ROLE_ORDER)}
+function configuredRoles(m){if(m?.id==='settings')return [...ROLE_ORDER];const p=sharedConfig?.pages?.[m?.id],max=maxRoles(m);if(!Array.isArray(p?.roles))return [...max];return [...new Set(p.roles.filter(r=>max.includes(r)))]}
+function canAccess(m){return window.NettoProfileUI?.canAccess?window.NettoProfileUI.canAccess(m,profile,sharedConfig):configuredRoles(m).includes(profile?.role)}
 function prefProfile(){return {...profile,ui_preferences:prefs}}
-function visibleValue(area,m){return window.NettoProfileUI?.isVisible?window.NettoProfileUI.isVisible(area,m,prefProfile()):(prefs?.[area]?.[m.id]??(area==='home'?m.defaultHome!==false:m.defaultUser!==false))}
+function visibleValue(area,m){return window.NettoProfileUI?.isVisible?window.NettoProfileUI.isVisible(area,m,prefProfile(),sharedConfig):(prefs?.[area]?.[m.id]??(area==='home'?m.defaultHome!==false:m.defaultUser!==false))}
 function iconHtml(m){return m.asset?'<img src="'+esc(m.asset)+'" alt="">':esc(m.icon||'•')}
 function ensurePrefs(raw){const p=raw&&typeof raw==='object'&&!Array.isArray(raw)?structuredClone(raw):{};p.home=p.home&&typeof p.home==='object'&&!Array.isArray(p.home)?p.home:{};p.user_menu=p.user_menu&&typeof p.user_menu==='object'&&!Array.isArray(p.user_menu)?p.user_menu:{};return p}
 function renderArea(area,hostId){
  const host=$(hostId),available=modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu));
  if(!available.length){host.innerHTML='<div class="notice">Aucun outil supplémentaire disponible pour ce rôle.</div>';return}
  host.innerHTML=available.map(m=>'<label class="prefItem"><span class="prefIcon">'+iconHtml(m)+'</span><span class="prefInfo"><strong>'+esc(area==='home'?(m.homeLabel||m.label):m.label)+'</strong><span>'+esc(m.subtitle||m.description||'')+'</span></span><span class="prefSwitch"><input type="checkbox" data-area="'+area+'" data-module="'+esc(m.id)+'" '+(visibleValue(area,m)?'checked':'')+'> Visible</span></label>').join('');
- host.querySelectorAll('input[data-module]').forEach(input=>input.onchange=()=>{prefs[input.dataset.area][input.dataset.module]=input.checked;saveState.textContent='Modifications non enregistrées';saveState.className='saveState'});
+ host.querySelectorAll('input[data-module]').forEach(input=>input.onchange=()=>{prefs[input.dataset.area][input.dataset.module]=input.checked;markDirty()});
 }
 function renderPreferences(){renderArea('home','homeEditor');renderArea('user_menu','userEditor');const h=modules().filter(m=>canAccess(m)&&m.home).length,u=modules().filter(m=>canAccess(m)&&m.userMenu).length;$('rightsHint').textContent=h+' outil'+(h>1?'s':'')+' disponible'+(h>1?'s':'')+' sur l’accueil · '+u+' raccourci'+(u>1?'s':'')+' configurable'+(u>1?'s':'')}
-function setArea(area,value){modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu)).forEach(m=>prefs[area][m.id]=value);renderPreferences();saveState.textContent='Modifications non enregistrées';saveState.className='saveState'}
-function defaultSharedPage(m,index){return{label:m.homeLabel||m.label,description:m.description||'',url:m.url||'',order:index+1}}
-function normalizeShared(cfg){const out=cfg&&typeof cfg==='object'&&!Array.isArray(cfg)?structuredClone(cfg):{};out.brand={name:out.brand?.name||'Netto',subtitle:out.brand?.subtitle||'Espace outils'};out.home={eyebrow:out.home?.eyebrow||'Espace de travail',intro:out.home?.intro||'Choisis l’espace que tu veux ouvrir.'};out.pages=out.pages&&typeof out.pages==='object'?out.pages:{};modules().filter(m=>m.home).forEach((m,i)=>out.pages[m.id]={...defaultSharedPage(m,i),...(out.pages[m.id]||{})});return out}
+function setArea(area,value){modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu)).forEach(m=>prefs[area][m.id]=value);renderPreferences();markDirty()}
+function markDirty(){saveState.textContent='Modifications non enregistrées';saveState.className='saveState'}
+function defaultSharedPage(m,index){return{label:m.homeLabel||m.label,description:m.description||'',url:m.url||'',order:index+1,roles:m.id==='settings'?[...ROLE_ORDER]:[...maxRoles(m)]}}
+function normalizeShared(cfg){
+ const out=cfg&&typeof cfg==='object'&&!Array.isArray(cfg)?structuredClone(cfg):{};
+ out.brand={name:out.brand?.name||'Netto',subtitle:out.brand?.subtitle||'Espace outils'};
+ out.home={eyebrow:out.home?.eyebrow||'Espace de travail',intro:out.home?.intro||'Choisis l’espace que tu veux ouvrir.'};
+ out.pages=out.pages&&typeof out.pages==='object'?out.pages:{};
+ modules().filter(m=>m.home).forEach((m,i)=>{
+  const cur=out.pages[m.id]&&typeof out.pages[m.id]==='object'?out.pages[m.id]:{},max=maxRoles(m);
+  let roles=Array.isArray(cur.roles)?cur.roles.filter(r=>max.includes(r)):[...max];
+  if(m.id==='settings')roles=[...ROLE_ORDER];
+  out.pages[m.id]={...defaultSharedPage(m,i),...cur,roles:[...new Set(roles)]};
+ });
+ return out
+}
 function validPath(v){v=String(v||'').trim();return /^[a-zA-Z0-9_./-]+(?:\.html)?(?:[?#][^\s]*)?$/.test(v)&&!v.startsWith('//')&&!v.includes('..')}
+function roleSummary(m){const rows=configuredRoles(m);if(rows.length===ROLE_ORDER.length)return'Tous les rôles';if(!rows.length)return'Masqué pour tous';return rows.map(r=>ROLE_LABEL[r]||r).join(' · ')}
+function rolePicker(m){
+ const selected=configuredRoles(m),max=maxRoles(m),mandatory=m.id==='settings';
+ const choices=ROLE_ORDER.map(r=>{const permitted=max.includes(r),locked=mandatory||!permitted,checked=mandatory||selected.includes(r);return '<label class="roleChoice '+(locked?'locked':'')+'"><input type="checkbox" data-role-module="'+esc(m.id)+'" data-role="'+r+'" '+(checked?'checked':'')+' '+(locked?'disabled':'')+'><span>'+esc(ROLE_LABEL[r])+'</span></label>'}).join('');
+ const limit=max.length<ROLE_ORDER.length?'<div class="roleLimitNote">🔒 Les rôles grisés ne disposent pas actuellement des <b>droits fonctionnels</b> nécessaires sur cette page.</div>':mandatory?'<div class="roleLimitNote">🔒 Personnalisation reste accessible à <b>tous les rôles</b> pour que chacun puisse gérer son interface.</div>':'';
+ return '<div class="roleAccessBox"><div class="roleAccessHead"><strong>Visibilité par rôle</strong><span>Qui peut voir ce module dans le portail</span></div><div class="roleChoices">'+choices+'</div>'+limit+'</div>'
+}
+function syncRoles(moduleId){
+ const m=modules().find(x=>x.id===moduleId);if(!m||m.id==='settings')return;
+ const max=maxRoles(m),checked=[...document.querySelectorAll('[data-role-module="'+CSS.escape(moduleId)+'"]:checked')].map(x=>x.dataset.role).filter(r=>max.includes(r));
+ sharedConfig.pages[moduleId].roles=[...new Set(checked)];
+ const summary=document.querySelector('[data-role-summary="'+CSS.escape(moduleId)+'"]');if(summary)summary.textContent=roleSummary(m);
+ renderPreferences();markDirty()
+}
 function renderAdminConfig(){
  if(profile?.role!=='admin')return;$('adminConfig').classList.remove('hidden');sharedConfig=normalizeShared(sharedConfig);brandName.value=sharedConfig.brand.name;brandSubtitle.value=sharedConfig.brand.subtitle;homeEyebrow.value=sharedConfig.home.eyebrow;homeIntro.value=sharedConfig.home.intro;
- $('sharedEditor').innerHTML=modules().filter(m=>m.home).map(m=>{const p=sharedConfig.pages[m.id];return '<div class="item"><div class="itemHead"><strong>'+esc(m.homeLabel||m.label)+'</strong><span class="roleBadge">'+(Array.isArray(m.roles)?'Admin':'Tous les rôles')+'</span></div><div class="itemFields"><div class="field"><label>Nom</label><input data-shared="'+m.id+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-shared="'+m.id+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-shared="'+m.id+'" data-f="description" value="'+esc(p.description)+'"></div><div class="field url"><label>Destination</label><input data-shared="'+m.id+'" data-f="url" value="'+esc(p.url)+'"></div></div></div>'}).join('');
+ $('sharedEditor').innerHTML=modules().filter(m=>m.home).map(m=>{const p=sharedConfig.pages[m.id];return '<div class="item"><div class="itemHead"><strong>'+esc(m.homeLabel||m.label)+'</strong><span class="roleSummary" data-role-summary="'+esc(m.id)+'">'+esc(roleSummary(m))+'</span></div>'+rolePicker(m)+'<div class="itemFields"><div class="field"><label>Nom</label><input data-shared="'+m.id+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-shared="'+m.id+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-shared="'+m.id+'" data-f="description" value="'+esc(p.description)+'"></div><div class="field url"><label>Destination</label><input data-shared="'+m.id+'" data-f="url" value="'+esc(p.url)+'"></div></div></div>'}).join('');
+ document.querySelectorAll('[data-role-module]:not(:disabled)').forEach(el=>el.onchange=()=>syncRoles(el.dataset.roleModule));
+ document.querySelectorAll('[data-shared]').forEach(el=>el.addEventListener('input',markDirty));
 }
 function collectShared(){
  if(profile?.role!=='admin')return;sharedConfig.brand.name=brandName.value.trim()||'Netto';sharedConfig.brand.subtitle=brandSubtitle.value.trim();sharedConfig.home.eyebrow=homeEyebrow.value.trim();sharedConfig.home.intro=homeIntro.value.trim();
  document.querySelectorAll('[data-shared]').forEach(el=>{const p=sharedConfig.pages[el.dataset.shared],f=el.dataset.f;p[f]=el.type==='number'?Math.max(1,Number(el.value)||1):el.value.trim()});
- for(const p of Object.values(sharedConfig.pages))if(!validPath(p.url))throw new Error('Destination invalide : '+p.url);
+ modules().filter(m=>m.home).forEach(m=>{if(m.id==='settings'){sharedConfig.pages[m.id].roles=[...ROLE_ORDER];return}const max=maxRoles(m),checked=[...document.querySelectorAll('[data-role-module="'+CSS.escape(m.id)+'"]:checked')].map(x=>x.dataset.role).filter(r=>max.includes(r));sharedConfig.pages[m.id].roles=[...new Set(checked)]});
+ for(const p of Object.values(sharedConfig.pages))if(p?.url&&!validPath(p.url))throw new Error('Destination invalide : '+p.url);
 }
 async function saveAll(){
  saveBtn.disabled=true;saveState.className='saveState';saveState.textContent='Enregistrement…';
