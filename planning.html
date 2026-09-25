@@ -53,7 +53,6 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
     <div class="weekNav"><button class="btn light miniNav" onclick="changeWeek(-1)">←</button><button class="btn light" onclick="goCurrentWeek()">Cette semaine</button><button class="btn light miniNav" onclick="changeWeek(1)">→</button><span id="weekLabel" class="weekLabel"></span></div>
   </div>
   <section id="weekView">
-    <div id="personalPlanningBanner" class="personalPlanningBanner hidden"><div id="personalBannerAvatar" class="personalBannerAvatar">U</div><div class="personalBannerText"><strong id="personalBannerTitle"></strong><span id="personalBannerMessage"></span></div></div>
     <div class="toolbar">
       <div id="days" class="days"></div>
       <div class="planningActions"><span id="saveState" class="saveState">Lecture seule</span><div id="importPanel" class="importPanel compactImport hidden"><input id="excelFile" type="file" accept=".xls,.xlsx,.xlsm" hidden onchange="importPlanningFile(this.files[0])"><div class="excelDrop" onclick="document.getElementById('excelFile').click()" ondragover="excelDrag(event,true)" ondragleave="excelDrag(event,false)" ondrop="excelDropFile(event)"><span class="excelIcon">▦</span><div><strong>Importer Excel</strong><small>Importer ou remplacer la semaine</small></div></div><div id="importState" class="importState"></div></div><button id="editPlanningBtn" class="btn dark hidden" onclick="toggleEditMode()">✎ Modifier le planning</button></div>
