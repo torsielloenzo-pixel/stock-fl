@@ -382,7 +382,7 @@ main{position:relative;z-index:1}
 </main>
 <script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let audioCtx=null;
 function logoutSound(){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const a=audioCtx||(audioCtx=new A()),play=()=>{const n=a.currentTime,m=a.createGain();m.gain.setValueAtTime(.0001,n);m.gain.exponentialRampToValueAtTime(.045,n+.04);m.gain.exponentialRampToValueAtTime(.0001,n+.5);m.connect(a.destination);[[587,0],[494,.08],[392,.16]].forEach(([f,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(f,n+d);g.gain.setValueAtTime(.0001,n+d);g.gain.exponentialRampToValueAtTime(.22,n+d+.035);g.gain.exponentialRampToValueAtTime(.0001,n+d+.3);o.connect(g);g.connect(m);o.start(n+d);o.stop(n+d+.33)})};a.state==='suspended'?a.resume().then(play):play()}catch(e){}}
 function toggleUserMenu(e){e?.stopPropagation();const m=document.getElementById('userMenu'),b=document.getElementById('userMenuBtn');m.classList.toggle('hidden');b.setAttribute('aria-expanded',String(!m.classList.contains('hidden')))}
@@ -419,7 +419,7 @@ function renderHomeCards(profile,cfg){
  host.innerHTML=items.map(({m,url,label,description})=>{const icon=m.asset?'<img src="'+homeEsc(m.asset)+'" alt="">':homeEsc(m.icon||'•');return '<button class="pageCard '+homeEsc(m.cardClass||'')+'" data-home-url="'+homeEsc(url)+'"><div class="cardTop"><div class="icon">'+icon+'</div><span class="cardKicker">'+homeEsc(m.kicker||'OUTIL')+'</span></div><div class="cardContent"><h2>'+homeEsc(label)+'</h2><p>'+homeEsc(description)+'</p></div><div class="cardFoot"><span>'+homeEsc(m.action||'Ouvrir')+'</span><span class="arrow">→</span></div></button>'}).join('');
  host.querySelectorAll('[data-home-url]').forEach(el=>el.onclick=()=>location.href=el.dataset.homeUrl);
 }
-async function logout(){logoutSound();await new Promise(r=>setTimeout(r,380));await db.auth.signOut();location.replace('index.html')} async function menuLogout(){await logout()}
+async function logout(){logoutSound();await new Promise(r=>setTimeout(r,380));await db.auth.signOut({scope:'local'});location.replace('index.html')} async function menuLogout(){await logout()}
 boot();
 
 async function loadSharedSiteConfig(){
