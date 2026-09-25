@@ -1,0 +1,320 @@
+/* Netto Ops Design System v4 — interface unifiée web + mobile */
+:root{
+  --ui-bg:#f3f5f7;
+  --ui-bg-2:#f8f9fa;
+  --ui-surface:#ffffff;
+  --ui-surface-2:#f7f8fa;
+  --ui-surface-3:#eef1f4;
+  --ui-text:#1b1f24;
+  --ui-muted:#68717c;
+  --ui-soft:#89919b;
+  --ui-line:#dfe4e9;
+  --ui-line-strong:#cfd6dd;
+  --ui-red:#f23b27;
+  --ui-orange:#f47c20;
+  --ui-accent:linear-gradient(135deg,#f53627 0%,#f55327 52%,#f58a22 100%);
+  --ui-accent-soft:linear-gradient(135deg,#fff1ed 0%,#fff6ec 100%);
+  --ui-success:#21804f;
+  --ui-warning:#aa6500;
+  --ui-danger:#bd352a;
+  --ui-radius:20px;
+  --ui-radius-sm:13px;
+  --ui-shadow-sm:0 6px 18px rgba(25,34,45,.055);
+  --ui-shadow:0 14px 40px rgba(25,34,45,.085);
+  --ui-shadow-lg:0 28px 78px rgba(21,28,38,.16);
+}
+html{background:var(--ui-bg)!important}
+body{
+  color:var(--ui-text)!important;
+  background:
+    radial-gradient(circle at 0 -5%,rgba(245,68,38,.055),transparent 29rem),
+    radial-gradient(circle at 100% 105%,rgba(245,132,32,.045),transparent 31rem),
+    linear-gradient(180deg,var(--ui-bg-2),var(--ui-bg))!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+*{scrollbar-width:thin;scrollbar-color:#c8cdd3 transparent}
+::selection{background:rgba(245,83,39,.18)}
+button,input,select,textarea{font:inherit}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button{transition:transform .14s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease,opacity .18s ease}
+button:active{transform:scale(.98)}
+a{color:inherit}
+
+/* Barre haute */
+header{
+  background:rgba(250,251,252,.9)!important;
+  border-bottom:1px solid rgba(207,214,221,.82)!important;
+  box-shadow:0 6px 26px rgba(22,31,42,.05)!important;
+  backdrop-filter:blur(20px) saturate(1.16)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.16)!important;
+}
+header:after{height:2px!important;opacity:.88!important}
+.top{width:min(96vw,1540px)!important;max-width:1540px!important;margin-inline:auto!important}
+.mark,.brandMark,.loginMark,.welcomeMark{
+  background:var(--ui-accent)!important;
+  border:0!important;
+  border-radius:13px!important;
+  box-shadow:0 8px 21px rgba(245,80,38,.20)!important;
+}
+.title,.brand strong{color:var(--ui-text)!important;font-weight:900!important;letter-spacing:-.35px!important}
+.sub,.subtitle,.small{color:var(--ui-muted)!important}
+
+/* Surfaces */
+.panel,.pageCard,.card,.side,.chat,.sheet,.modal,.notificationsCard,.planningLogs,.monthCard,
+.uploadBox,.countBox,.stockViewOptions,.priorityPanel,.workspaceAction,.consultCard,.quickStockRow,
+.stat,.metaBox,.logItem,.category,.cat,.group{
+  border-color:var(--ui-line)!important;
+  box-shadow:var(--ui-shadow-sm)!important;
+}
+.panel,.notificationsCard,.planningLogs,.uploadBox,.monthCard{border-radius:var(--ui-radius)!important}
+.pageCard,.card,.side,.chat,.sheet,.category,.cat,.group{border-radius:18px!important}
+.panel,.pageCard,.card,.side,.chat,.notificationsCard,.planningLogs,.uploadBox,.monthCard,.stat,.metaBox,.logItem{
+  background:var(--ui-surface)!important;
+}
+.panel:hover,.pageCard:hover,.consultCard:hover,.quickStockRow:hover{border-color:#f1b49f!important}
+h1,h2,h3{color:var(--ui-text)!important;letter-spacing:-.025em!important}
+.hero p,.intro p,.panelIntro,.hint,.fieldHelp{color:var(--ui-muted)!important;line-height:1.55!important}
+
+/* Formulaires */
+.field label,label{color:#4f5863}
+input,select,textarea,.search,.searchBox input{
+  background:var(--ui-surface)!important;
+  color:var(--ui-text)!important;
+  border:1px solid var(--ui-line-strong)!important;
+  border-radius:12px!important;
+  min-height:44px;
+}
+input::placeholder,textarea::placeholder{color:#9aa1aa!important}
+input:focus,select:focus,textarea:focus,.search:focus,.searchBox input:focus{
+  outline:0!important;
+  border-color:#e98562!important;
+  box-shadow:0 0 0 4px rgba(239,102,57,.10)!important;
+}
+input[type="checkbox"],input[type="radio"]{min-height:0;accent-color:var(--ui-red)}
+.btn,.primary,.secondary,.light,.dark,.manage,.send,.loginSubmit{
+  min-height:40px;
+  border-radius:12px!important;
+  font-weight:820!important;
+}
+.primary,.dark,.manage,.send,.loginSubmit{
+  background:var(--ui-accent)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 18px rgba(245,80,38,.17)!important;
+}
+.secondary,.light,.back,.logout{
+  background:var(--ui-surface)!important;
+  color:var(--ui-text)!important;
+  border:1px solid var(--ui-line)!important;
+  box-shadow:0 3px 10px rgba(24,32,42,.04)!important;
+}
+.secondary:hover,.light:hover,.back:hover,.logout:hover{background:var(--ui-surface-2)!important;border-color:var(--ui-line-strong)!important}
+.danger{background:#fff1ee!important;color:var(--ui-danger)!important;border-color:#f2c7bf!important}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(239,102,57,.20)!important;
+  outline-offset:2px!important;
+}
+
+/* Menus globaux */
+.nettoBellBtn,.nettoUserBtn,.nettoBackBtn{
+  background:rgba(255,255,255,.96)!important;
+  border-color:var(--ui-line)!important;
+  box-shadow:var(--ui-shadow-sm)!important;
+}
+.nettoDrop{
+  background:rgba(255,255,255,.985)!important;
+  border-color:var(--ui-line)!important;
+  box-shadow:var(--ui-shadow-lg)!important;
+  border-radius:18px!important;
+}
+.nettoNavBtn:hover{background:#f4f6f8!important}
+.nettoNavBtn>span:first-child{background:var(--ui-accent-soft)!important;color:#e95531!important}
+.nettoMenuSection{color:#8b7066!important}
+.nettoNotifHead,.nettoUserHead{border-color:#e8ebef!important}
+
+/* Accueil */
+body:has(.pages) main{width:min(94vw,1200px)!important;max-width:1200px!important}
+.hello{
+  border-radius:28px!important;
+  background:
+    linear-gradient(125deg,#1b1f24 0%,#242a30 55%,#46372f 100%)!important;
+  box-shadow:0 22px 60px rgba(19,25,34,.17)!important;
+}
+.hello h1{font-weight:950!important;letter-spacing:-1px!important}
+.hello p{color:rgba(255,255,255,.76)!important}
+.helloMeta span{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.12)!important}
+.pages{gap:14px!important}
+.pageCard{background:rgba(255,255,255,.97)!important;overflow:hidden!important}
+.pageCard:hover{transform:translateY(-3px)!important;box-shadow:0 17px 42px rgba(24,32,42,.10)!important}
+.pageCard .icon{border-radius:14px!important;background:var(--ui-accent-soft)!important;border:1px solid #f4d7cc!important}
+.cardFoot{background:#fafbfc!important;border-color:#eceff2!important}
+.arrow{background:var(--ui-accent)!important;color:#fff!important}
+
+/* Stock / catalogue */
+.stockModeNav,.viewTabs{border-color:var(--ui-line)!important;background:rgba(233,236,240,.9)!important}
+.stockModeBtn.active,.quickCat.active{box-shadow:0 3px 11px rgba(24,32,42,.09)!important}
+.quickStockRow,.consultCard,.workspaceAction,.priorityPanel,.stockViewOptions{background:var(--ui-surface)!important}
+.quickStockRow:hover,.consultCard:hover{transform:translateY(-1px)!important}
+.counter,.quickControls{border-color:var(--ui-line)!important}
+.quickControls button,.counter button{background:var(--ui-surface-3)!important;color:var(--ui-text)!important}
+.quickControls .quickPlus,.counter .plus{background:#252a30!important;color:#fff!important}
+
+/* Planning */
+.personalPlanningBanner{
+  background:linear-gradient(135deg,#fff,#fff7f3)!important;
+  border-color:#f1d6cc!important;
+  box-shadow:var(--ui-shadow-sm)!important;
+}
+.sheetViewport{border-color:var(--ui-line-strong)!important;box-shadow:var(--ui-shadow)!important}
+.day{border-color:var(--ui-line)!important;background:var(--ui-surface)!important}
+.day.active,.viewTab.active,.paintChoice.active{background:var(--ui-accent)!important;color:#fff!important;border-color:transparent!important}
+.cell,.name,.time,.total{border-color:#dfe4e9!important}
+
+/* Chat */
+.side,.chat{background:var(--ui-surface)!important}
+.chatHead,.composer{background:rgba(255,255,255,.96)!important;border-color:var(--ui-line)!important}
+.member:hover{background:var(--ui-surface-2)!important}
+.mine .bubble{background:linear-gradient(135deg,#fff3ef,#fff8f2)!important;border-color:#f2d3c7!important}
+
+/* Comptes / profil / personnalisation */
+.profileTop,.panelHead,.activityMini{border-color:var(--ui-line)!important}
+.readonlyProfileName{background:var(--ui-surface-2)!important;border-color:var(--ui-line)!important}
+.item{background:#fafbfc!important;border-color:var(--ui-line)!important}
+.actions{background:rgba(250,251,252,.93)!important;border-color:var(--ui-line)!important;box-shadow:var(--ui-shadow)!important}
+.roleBadge{box-shadow:none!important}
+.resetAlert{border-radius:14px!important}
+.tabs{border-color:var(--ui-line)!important}
+
+/* Dialogues */
+dialog{border:1px solid rgba(255,255,255,.7)!important;border-radius:20px!important;box-shadow:0 28px 82px rgba(18,24,32,.24)!important}
+dialog::backdrop{background:rgba(18,22,28,.48)!important;backdrop-filter:blur(4px)!important}
+.modal{background:var(--ui-surface)!important}
+
+/* États */
+.loading,.empty{background:rgba(255,255,255,.72)!important;border-color:var(--ui-line)!important;color:var(--ui-muted)!important}
+.notice{border-color:var(--ui-line)!important;background:#f8f9fa!important;color:#5f6873!important}
+.saveState.ok{color:var(--ui-success)!important}.saveState.err,.error{color:var(--ui-danger)!important}
+
+/* Mode sombre confortable */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ui-bg:#131516;
+  --ui-bg-2:#17191b;
+  --ui-surface:#1d2022;
+  --ui-surface-2:#23272a;
+  --ui-surface-3:#2a2f33;
+  --ui-text:#eeeae5;
+  --ui-muted:#b1aaa3;
+  --ui-soft:#918b86;
+  --ui-line:#373c40;
+  --ui-line-strong:#464c51;
+  --ui-red:#ff7255;
+  --ui-orange:#e99752;
+  --ui-accent:linear-gradient(135deg,#d9503a 0%,#df6841 54%,#d98b4b 100%);
+  --ui-accent-soft:linear-gradient(135deg,#372620,#33291f 100%);
+  --ui-success:#73c994;
+  --ui-warning:#e1ab65;
+  --ui-danger:#ee8578;
+  --ui-shadow-sm:0 7px 20px rgba(0,0,0,.20);
+  --ui-shadow:0 16px 44px rgba(0,0,0,.28);
+  --ui-shadow-lg:0 30px 86px rgba(0,0,0,.44);
+}
+:root[data-theme="dark"] html{background:#131516!important}
+:root[data-theme="dark"] body{
+  color:var(--ui-text)!important;
+  background:
+    radial-gradient(circle at 0 -8%,rgba(210,79,53,.07),transparent 27rem),
+    radial-gradient(circle at 100% 106%,rgba(194,125,67,.045),transparent 31rem),
+    linear-gradient(180deg,#151718,#131516)!important;
+}
+:root[data-theme="dark"] *{scrollbar-color:#555c61 #181a1c}
+:root[data-theme="dark"] header{background:rgba(24,26,28,.94)!important;border-color:#33383c!important;box-shadow:0 8px 30px rgba(0,0,0,.26)!important}
+:root[data-theme="dark"] header:after{filter:saturate(.72) brightness(.94)}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,
+:root[data-theme="dark"] .title,:root[data-theme="dark"] .brand strong,:root[data-theme="dark"] strong{color:#f0ece7!important}
+:root[data-theme="dark"] .sub,:root[data-theme="dark"] .subtitle,:root[data-theme="dark"] .small,
+:root[data-theme="dark"] .meta,:root[data-theme="dark"] .hint,:root[data-theme="dark"] .fieldHelp,
+:root[data-theme="dark"] .panelIntro,:root[data-theme="dark"] .hero p,:root[data-theme="dark"] .intro p{color:var(--ui-muted)!important}
+:root[data-theme="dark"] .panel,:root[data-theme="dark"] .pageCard,:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .side,:root[data-theme="dark"] .chat,:root[data-theme="dark"] .sheet,
+:root[data-theme="dark"] .notificationsCard,:root[data-theme="dark"] .planningLogs,
+:root[data-theme="dark"] .monthCard,:root[data-theme="dark"] .uploadBox,:root[data-theme="dark"] .countBox,
+:root[data-theme="dark"] .stockViewOptions,:root[data-theme="dark"] .priorityPanel,
+:root[data-theme="dark"] .workspaceAction,:root[data-theme="dark"] .consultCard,
+:root[data-theme="dark"] .quickStockRow,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .metaBox,
+:root[data-theme="dark"] .logItem,:root[data-theme="dark"] .category,:root[data-theme="dark"] .cat,
+:root[data-theme="dark"] .group,:root[data-theme="dark"] .item,:root[data-theme="dark"] .profileTop{
+  background:linear-gradient(180deg,#202325,#1c1f21)!important;
+  border-color:var(--ui-line)!important;
+  color:var(--ui-text)!important;
+  box-shadow:var(--ui-shadow-sm)!important;
+}
+:root[data-theme="dark"] .panel:hover,:root[data-theme="dark"] .pageCard:hover,
+:root[data-theme="dark"] .consultCard:hover,:root[data-theme="dark"] .quickStockRow:hover{border-color:#52585d!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .search,:root[data-theme="dark"] .searchBox input{
+  background:#25292c!important;color:#eeeae5!important;border-color:#444a4f!important;
+}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#837e79!important}
+:root[data-theme="dark"] input:focus,:root[data-theme="dark"] select:focus,:root[data-theme="dark"] textarea:focus{
+  border-color:#a66c55!important;box-shadow:0 0 0 4px rgba(210,108,70,.14)!important
+}
+:root[data-theme="dark"] .secondary,:root[data-theme="dark"] .light,:root[data-theme="dark"] .back,
+:root[data-theme="dark"] .logout,:root[data-theme="dark"] .nettoBellBtn,:root[data-theme="dark"] .nettoUserBtn,
+:root[data-theme="dark"] .nettoBackBtn{background:#24282b!important;color:#e9e4df!important;border-color:#3c4247!important}
+:root[data-theme="dark"] .secondary:hover,:root[data-theme="dark"] .light:hover,:root[data-theme="dark"] .nettoNavBtn:hover{background:#2b3034!important}
+:root[data-theme="dark"] .nettoDrop{background:rgba(29,32,34,.985)!important;border-color:#3b4145!important;color:#eeeae5!important}
+:root[data-theme="dark"] .nettoUserHead,:root[data-theme="dark"] .nettoNotifHead{background:linear-gradient(180deg,#23272a,#1f2224)!important;border-color:#383d42!important}
+:root[data-theme="dark"] .nettoNavBtn>span:first-child{background:#342720!important;color:#e79a78!important}
+:root[data-theme="dark"] .cardFoot,:root[data-theme="dark"] .chatHead,:root[data-theme="dark"] .composer,
+:root[data-theme="dark"] .actions{background:#202427!important;border-color:#373d41!important}
+:root[data-theme="dark"] .readonlyProfileName,:root[data-theme="dark"] .priorityRow,
+:root[data-theme="dark"] .quickControls button,:root[data-theme="dark"] .counter button{background:#282d31!important;border-color:#3d4348!important;color:#eae5df!important}
+:root[data-theme="dark"] .quickControls .quickPlus,:root[data-theme="dark"] .counter .plus{background:#34393e!important;color:#f0ece7!important}
+:root[data-theme="dark"] .stockModeNav,:root[data-theme="dark"] .viewTabs{background:#202427!important;border-color:#383e43!important}
+:root[data-theme="dark"] .day{background:#202427!important;border-color:#393f44!important;color:#eae6e1!important}
+:root[data-theme="dark"] .chatHead,:root[data-theme="dark"] .composer{background:#202326!important}
+:root[data-theme="dark"] .member:hover{background:#262a2d!important}
+:root[data-theme="dark"] .mine .bubble{background:#2b2522!important;border-color:#49362f!important}
+:root[data-theme="dark"] .notice,:root[data-theme="dark"] .loading,:root[data-theme="dark"] .empty{background:#202427!important;border-color:#393f44!important;color:#aaa49e!important}
+:root[data-theme="dark"] .danger{background:#352321!important;color:#e98b7f!important;border-color:#553733!important}
+:root[data-theme="dark"] .cardKicker{background:#292d30!important;color:#b7b0aa!important;border-color:#383e43!important}
+:root[data-theme="dark"] .hello{
+  background:linear-gradient(125deg,#1b1d1f 0%,#222527 58%,#342b26 100%)!important;
+  border-color:#303438!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.31)!important
+}
+:root[data-theme="dark"] .hello p{color:#c4bdb6!important}
+:root[data-theme="dark"] .personalPlanningBanner{background:linear-gradient(135deg,#202325,#29231f)!important;border-color:#4a3830!important}
+:root[data-theme="dark"] dialog{border-color:#3b4145!important}
+:root[data-theme="dark"] .modal{background:#1d2022!important}
+
+/* Mobile */
+@media(max-width:700px){
+  header{min-height:58px!important}
+  .top{width:calc(100% - 14px)!important}
+  main{padding-left:10px!important;padding-right:10px!important}
+  .mark,.brandMark{width:37px!important;height:37px!important}
+  .title,.brand strong{font-size:15px!important}.sub,.subtitle{font-size:8.5px!important}
+  .panel,.notificationsCard,.planningLogs{border-radius:16px!important}
+  body:has(.pages) main{width:calc(100% - 14px)!important;padding-top:16px!important}
+  .hello{padding:23px 19px!important;border-radius:21px!important}
+  .hello h1{font-size:28px!important}
+  .hello p{font-size:10.5px!important;line-height:1.55!important}
+  .pages{grid-template-columns:1fr!important;gap:10px!important}
+  .pageCard{min-height:0!important;border-radius:17px!important}
+  .nettoDrop{left:8px!important;right:8px!important;border-radius:18px!important}
+  .nettoNavBtn{min-height:49px!important}
+  input,select,textarea{font-size:16px!important}
+  dialog{width:min(96vw,520px)!important;max-height:90dvh!important}
+  .actions{bottom:8px!important}
+}
+@media(max-width:430px){
+  .hero h1{font-size:27px!important}
+  .hello h1{font-size:26px!important}
+  .btn,.primary,.secondary,.light,.dark{min-height:42px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
