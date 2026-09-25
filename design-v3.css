@@ -256,3 +256,285 @@ body:has(.pages) main{width:min(94vw,1180px)!important;max-width:1180px!importan
 .loginCard{background:#fff!important}.loginHello{color:#ef4b27!important;font-size:9px!important;font-weight:900!important;letter-spacing:1px!important;text-transform:uppercase!important}.loginCard h1{font-weight:950!important}.loginFoot{color:#9a9ea6!important}
 :root[data-theme="dark"] .loading,:root[data-theme="dark"] .empty{background:#181c22!important;border-color:#303640!important}
 @media(max-width:700px){.helloMeta{margin-top:13px}.helloMeta span{font-size:7.5px;min-height:24px}.loginShell{border-radius:22px!important}.loginVisual{padding-bottom:22px!important}}
+
+
+/* =========================================================
+   Dark Comfort v4 — charbon chaud, contraste lisible, DA Netto
+   ========================================================= */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ops-ink:#f5f2ef;
+  --ops-muted:#b2ada8;
+  --ops-bg:#111214;
+  --ops-surface:#1a1c1f;
+  --ops-surface-2:#202326;
+  --ops-surface-3:#272a2e;
+  --ops-line:#34373b;
+  --ops-line-strong:#45494e;
+  --ops-success:#52bf7a;
+  --ops-warning:#f2a64a;
+  --ops-danger:#ff7668;
+  --ops-blue:#78a7ff;
+  --ops-shadow-sm:0 5px 16px rgba(0,0,0,.20);
+  --ops-shadow:0 16px 42px rgba(0,0,0,.27);
+  --ops-shadow-lg:0 28px 80px rgba(0,0,0,.42);
+}
+:root[data-theme="dark"] *{scrollbar-color:#555a60 #17191b}
+:root[data-theme="dark"] html{background:#111214!important}
+:root[data-theme="dark"] body{
+  color:#f5f2ef!important;
+  background:
+    radial-gradient(circle at 3% -5%,rgba(255,74,34,.095),transparent 28rem),
+    radial-gradient(circle at 100% 105%,rgba(255,138,0,.055),transparent 30rem),
+    linear-gradient(180deg,#111214 0%,#151719 48%,#121315 100%)!important;
+}
+:root[data-theme="dark"] body:before,:root[data-theme="dark"] body:after{opacity:.22!important}
+:root[data-theme="dark"] header{
+  background:rgba(22,23,25,.93)!important;
+  border-color:#303337!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.26)!important;
+  backdrop-filter:blur(20px) saturate(1.08)!important;
+}
+:root[data-theme="dark"] header:after{opacity:.78!important}
+:root[data-theme="dark"] .title,
+:root[data-theme="dark"] .brand strong,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] strong{color:#f7f4f1!important}
+:root[data-theme="dark"] .sub,
+:root[data-theme="dark"] .subtitle,
+:root[data-theme="dark"] .small,
+:root[data-theme="dark"] .meta,
+:root[data-theme="dark"] .hint,
+:root[data-theme="dark"] .status,
+:root[data-theme="dark"] .saveState,
+:root[data-theme="dark"] .readerMeta,
+:root[data-theme="dark"] .articleMeta,
+:root[data-theme="dark"] .cat,
+:root[data-theme="dark"] .fieldHelp,
+:root[data-theme="dark"] .logWhen,
+:root[data-theme="dark"] .logBody small{color:#a9a39e!important}
+
+/* Surfaces principales */
+:root[data-theme="dark"] .pageCard,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .side,
+:root[data-theme="dark"] .chat,
+:root[data-theme="dark"] .sheet,
+:root[data-theme="dark"] .notificationsCard,
+:root[data-theme="dark"] .planningLogs,
+:root[data-theme="dark"] .quickStockRow,
+:root[data-theme="dark"] .consultCard,
+:root[data-theme="dark"] .workspaceAction,
+:root[data-theme="dark"] .priorityPanel,
+:root[data-theme="dark"] .stockViewOptions,
+:root[data-theme="dark"] .monthCard,
+:root[data-theme="dark"] .stat,
+:root[data-theme="dark"] .manageAction,
+:root[data-theme="dark"] .row,
+:root[data-theme="dark"] .articleInfoBox,
+:root[data-theme="dark"] .metaBox,
+:root[data-theme="dark"] .logItem,
+:root[data-theme="dark"] .soundToggle,
+:root[data-theme="dark"] .soundVolume,
+:root[data-theme="dark"] .profileTop,
+:root[data-theme="dark"] .countBox,
+:root[data-theme="dark"] .uploadBox,
+:root[data-theme="dark"] .category,
+:root[data-theme="dark"] .cat,
+:root[data-theme="dark"] .group{
+  background:linear-gradient(180deg,#1c1e21 0%,#191b1e 100%)!important;
+  border-color:#34373b!important;
+  color:#f5f2ef!important;
+  box-shadow:0 7px 22px rgba(0,0,0,.18)!important;
+}
+:root[data-theme="dark"] .panel:hover,
+:root[data-theme="dark"] .pageCard:hover,
+:root[data-theme="dark"] .consultCard:hover,
+:root[data-theme="dark"] .quickStockRow:hover{border-color:#4b4f54!important}
+:root[data-theme="dark"] .cardFoot,
+:root[data-theme="dark"] .chatHead,
+:root[data-theme="dark"] .composer,
+:root[data-theme="dark"] .panelHead,
+:root[data-theme="dark"] .sheetBar,
+:root[data-theme="dark"] .foot,
+:root[data-theme="dark"] .activityMini{
+  background:#202225!important;
+  border-color:#34373b!important;
+}
+
+/* Sous-surfaces : assez claires pour distinguer les niveaux */
+:root[data-theme="dark"] .priorityRow,
+:root[data-theme="dark"] .item,
+:root[data-theme="dark"] .readonlyProfileName,
+:root[data-theme="dark"] .fact,
+:root[data-theme="dark"] .sheetView div,
+:root[data-theme="dark"] .logIcon,
+:root[data-theme="dark"] .changed b,
+:root[data-theme="dark"] .rolePill,
+:root[data-theme="dark"] .quickControls button,
+:root[data-theme="dark"] .quickPic,
+:root[data-theme="dark"] .consultVisual,
+:root[data-theme="dark"] .articleHero{
+  background:#25282b!important;
+  border-color:#3a3e43!important;
+  color:#ece8e4!important;
+}
+
+/* Champs */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .search,
+:root[data-theme="dark"] .searchBox input,
+:root[data-theme="dark"] .logsToolbar input,
+:root[data-theme="dark"] .logsToolbar select,
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field select{
+  background:#202225!important;
+  border-color:#3a3e43!important;
+  color:#f4f1ee!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.015)!important;
+}
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder{color:#7f7b77!important}
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus,
+:root[data-theme="dark"] .search:focus,
+:root[data-theme="dark"] .searchBox input:focus{
+  border-color:#ff7650!important;
+  box-shadow:0 0 0 3px rgba(255,92,44,.15)!important;
+}
+:root[data-theme="dark"] select:disabled,
+:root[data-theme="dark"] input:disabled{background:#242629!important;color:#8f8b87!important}
+
+/* Boutons secondaires */
+:root[data-theme="dark"] .secondary,
+:root[data-theme="dark"] .light,
+:root[data-theme="dark"] .back,
+:root[data-theme="dark"] .logout,
+:root[data-theme="dark"] .openBtn,
+:root[data-theme="dark"] .adminHub button,
+:root[data-theme="dark"] .tabs button{
+  background:#24272a!important;
+  border-color:#3b3f44!important;
+  color:#eeeae6!important;
+  box-shadow:none!important;
+}
+:root[data-theme="dark"] .secondary:hover,
+:root[data-theme="dark"] .light:hover,
+:root[data-theme="dark"] .back:hover,
+:root[data-theme="dark"] .openBtn:hover,
+:root[data-theme="dark"] .adminHub button:hover{
+  background:#2c2f33!important;border-color:#4d5157!important
+}
+:root[data-theme="dark"] .primary,
+:root[data-theme="dark"] .dark,
+:root[data-theme="dark"] .manage,
+:root[data-theme="dark"] .send,
+:root[data-theme="dark"] .saveFinishBtn{
+  box-shadow:0 8px 22px rgba(255,68,30,.18)!important;
+}
+
+/* Navigation / filtres */
+:root[data-theme="dark"] .stockModeNav,
+:root[data-theme="dark"] .viewTabs,
+:root[data-theme="dark"] .filters{
+  background:#1d1f22!important;
+  border-color:#34373b!important;
+}
+:root[data-theme="dark"] .stockModeBtn,
+:root[data-theme="dark"] .filter{color:#aaa5a0!important}
+:root[data-theme="dark"] .stockModeBtn.active,
+:root[data-theme="dark"] .quickCat,
+:root[data-theme="dark"] .day{
+  background:#25282c!important;
+  color:#eeeae6!important;
+  border-color:#3b3f44!important;
+}
+:root[data-theme="dark"] .quickCat.active,
+:root[data-theme="dark"] .viewTab.active,
+:root[data-theme="dark"] .day.active,
+:root[data-theme="dark"] .paintChoice.active,
+:root[data-theme="dark"] .filter.active{
+  background:var(--ops-grad)!important;color:#fff!important;border-color:transparent!important
+}
+
+/* Accueil */
+:root[data-theme="dark"] .hello{
+  background:
+    radial-gradient(circle at 92% 30%,rgba(255,104,36,.18),transparent 24rem),
+    linear-gradient(125deg,#1a1b1e 0%,#232428 58%,#342921 100%)!important;
+  border-color:#3a332f!important;
+  box-shadow:0 24px 60px rgba(0,0,0,.32)!important
+}
+:root[data-theme="dark"] .pageCard{
+  background:linear-gradient(180deg,#1d1f22 0%,#1a1c1f 72%,#211c19 100%)!important;
+}
+:root[data-theme="dark"] .pageCard p{color:#b2ada8!important}
+:root[data-theme="dark"] .cardKicker{
+  background:#2a2522!important;color:#ff9b76!important;border-color:#46342d!important
+}
+:root[data-theme="dark"] .cardFoot span:first-child{color:#bbb5af!important}
+
+/* Planning */
+:root[data-theme="dark"] .sheetViewport{
+  background:#17191b!important;border-color:#383c41!important;
+  box-shadow:0 15px 38px rgba(0,0,0,.27)!important
+}
+:root[data-theme="dark"] .mobileEmployeeCard{
+  background:#1c1e21!important;border-color:#363a3f!important
+}
+:root[data-theme="dark"] .sourceBadge{
+  background:#30241f!important;color:#ffad89!important;border-color:#50352b!important
+}
+
+/* Chat */
+:root[data-theme="dark"] .member:hover{background:#25282b!important}
+:root[data-theme="dark"] .bubble{
+  background:#24272a!important;border-color:#393d42!important;color:#eeeae6!important
+}
+:root[data-theme="dark"] .mine .bubble{
+  background:linear-gradient(135deg,#30231f,#2a2420)!important;
+  border-color:#51352b!important;color:#f7f1ed!important
+}
+
+/* États / badges : couleurs moins agressives sur fond sombre */
+:root[data-theme="dark"] .badge.on{background:#173625!important;color:#79d99b!important}
+:root[data-theme="dark"] .badge.off{background:#3a211d!important;color:#ff9487!important}
+:root[data-theme="dark"] .quickZero,
+:root[data-theme="dark"] .danger{background:#39211d!important;color:#ff8d80!important;border-color:#57312a!important}
+:root[data-theme="dark"] .familyLine,
+:root[data-theme="dark"] .unlisted{color:#e7916f!important}
+
+/* Modales */
+:root[data-theme="dark"] dialog{
+  background:#1a1c1f!important;border-color:#3b3e43!important;
+  box-shadow:0 32px 90px rgba(0,0,0,.58)!important
+}
+:root[data-theme="dark"] .modal{background:#1b1d20!important;color:#f4f1ee!important}
+:root[data-theme="dark"] dialog::backdrop{background:rgba(5,6,7,.72)!important;backdrop-filter:blur(5px)!important}
+
+/* Écrans de chargement / vides */
+:root[data-theme="dark"] .loading,
+:root[data-theme="dark"] .empty{
+  background:#1a1c1f!important;border-color:#3b3e43!important;color:#aaa5a0!important
+}
+
+/* Mobile : séparation plus franche entre le fond et les cartes */
+@media(max-width:700px){
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(circle at 0 0,rgba(255,75,36,.07),transparent 18rem),
+      #121315!important
+  }
+  :root[data-theme="dark"] .pageCard,
+  :root[data-theme="dark"] .panel,
+  :root[data-theme="dark"] .card,
+  :root[data-theme="dark"] .quickStockRow{
+    box-shadow:0 5px 16px rgba(0,0,0,.22)!important
+  }
+}
