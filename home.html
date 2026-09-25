@@ -401,6 +401,8 @@ function homeFriendlyHour(t){const h=Math.floor(t),min=Math.round((t-h)*60);retu
 function homeWorkRanges(row,m){const out=[];let start=null;for(let i=0;i<=row.length;i++){const working=i<row.length&&(row[i]==='g'||row[i]==='b');if(working&&start===null)start=i;if(!working&&start!==null){out.push({a:(m.startTime??6)+start*.25,b:(m.startTime??6)+i*.25});start=null}}return out}
 async function loadHomeTodayPlanning(profile,name){
  const el=document.getElementById('homeTodayMessage');if(!el)return;
+ if(profile?.role==='admin'){el.classList.add('hidden');el.textContent='';return}
+ el.classList.remove('hidden');
  const today=new Date(),week=homeIsoDate(homeStartOfWeek(today)),todayKey=homeIsoDate(today);
  const {data,error}=await db.from('planning_weeks').select('data').eq('week_start',week).maybeSingle();
  if(error||!data?.data){el.textContent='Ton planning d’aujourd’hui n’est pas encore renseigné.';return}
