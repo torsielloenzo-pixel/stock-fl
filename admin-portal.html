@@ -108,7 +108,7 @@ function uid(prefix='menu'){return prefix+'_'+Date.now().toString(36)+'_'+Math.r
 function validColor(v,f='#ff2f1f'){return /^#[0-9a-f]{6}$/i.test(String(v||''))?v:f}
 function validUrl(v){const s=String(v||'').trim();return !s||(!/^\s*(javascript|data|vbscript):/i.test(s)&&(/^(https?:\/\/|\.\/|\.\.\/|[a-zA-Z0-9_./?=&%-]+$)/.test(s)))}
 function markDirty(){dirty=true;$('saveState').textContent='Modifications non enregistrées';$('saveState').className='saveState'}
-function showTab(name,btn){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name));document.querySelectorAll('.side button').forEach(x=>x.classList.toggle('active',x===btn));document.querySelector('.stickySave')?.classList.toggle('hidden',name==='logs'||name==='notifications');window.NettoSounds?.play?.('menuOpen')}
+function showTab(name,btn,opts={}){const valid=['general','system','custom','notifications','logs'];if(!valid.includes(name))name='general';btn=btn||document.querySelector('.side button[data-tab="'+CSS.escape(name)+'"]');document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name));document.querySelectorAll('.side button').forEach(x=>x.classList.toggle('active',x===btn));document.querySelector('.stickySave')?.classList.toggle('hidden',name==='logs'||name==='notifications');try{localStorage.setItem('nettoAdminPortalTab',name)}catch(_){ }const u=new URL(location.href);u.searchParams.set('tab',name);history.replaceState({},'',u);if(opts.sound!==false)window.NettoSounds?.play?.('menuOpen')}
 function normalize(raw){
  const c=raw&&typeof raw==='object'?clone(raw):{};
  c.brand={name:c.brand?.name||'Netto',subtitle:c.brand?.subtitle||'Espace outils'};
@@ -288,7 +288,11 @@ async function sendAdminNotification(){
 async function boot(){
  const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');
  const {data:p,error}=await db.from('profiles').select('display_name,role').eq('id',s.user.id).maybeSingle();if(error||!p||p.role!=='admin')return location.replace('home.html');profile=p;
- await waitProfileUI();bindGlobal();await loadConfig();previewAdminNotification();loadNotificationAdmin()
+ await waitProfileUI();bindGlobal();await loadConfig();previewAdminNotification();loadNotificationAdmin();
+ const qs=new URLSearchParams(location.search),saved=qs.get('tab')||localStorage.getItem('nettoAdminPortalTab')||'general';
+ const tab=['general','system','custom','notifications','logs'].includes(saved)?saved:'general';
+ showTab(tab,document.querySelector('.side button[data-tab="'+CSS.escape(tab)+'"]'),{sound:false});
+ if(tab==='notifications')loadNotificationAdmin();if(tab==='logs')loadPortalLogs()
 }
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
 boot();
