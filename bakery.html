@@ -106,7 +106,7 @@ async function loadProducts(){
  const {data,error}=await db.from('products').select('*,product_categories(id,name,icon,color,family_id),product_packagings(id,name)').eq('active',true).eq('family_id',bakeryId).order('position').order('name');
  if(error)throw error;products=(data||[]).map(p=>({...p,category:p.category_id?(p.product_categories?.name||p.category||'Non répertorié'):'Non répertorié',packaging:p.packaging_id?(p.product_packagings?.name||p.packaging||'Non répertorié'):'Non répertorié'}))
 }
-function setMode(v){mode=v;activeCat='Tous';document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===v));render()}
+function setMode(v,opts={}){v=['stock','consult','manage'].includes(v)?v:'stock';mode=v;activeCat='Tous';document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===v));try{localStorage.setItem('nettoBakeryMode',v)}catch(_){ }const u=new URL(location.href);u.searchParams.set('mode',v);history.replaceState({},'',u);render();if(opts.sound!==false)window.NettoSounds?.play?.('switch')}
 function visible(){return products.filter(p=>(activeCat==='Tous'||p.category===activeCat)&&(!search||[p.name,p.category,p.packaging,p.article_code,p.ean].some(v=>String(v||'').toLocaleLowerCase('fr').includes(search))))}
 function toolbar(){
  const cats=['Tous',...bakeryCats().map(x=>x.name).filter(n=>products.some(p=>p.category===n))];
