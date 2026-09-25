@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171717">
 <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem('nettoTheme')||'light'}catch(_){}})();</script>
-<title>Netto — Menu</title>
+<title>Nethor — Menu</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="profile-ui.js?v=22"></script>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/app-icon.svg">
@@ -37,7 +37,7 @@ async function boot(){
  if(!menu||menu.enabled===false||!(Array.isArray(menu.roles)?menu.roles:[]).includes(profile.role))return location.replace('home.html');
  const primary=cleanColor(menu.color,cfg.theme?.primary||'#ff2f1f'),accent=cleanColor(menu.accent,cfg.theme?.secondary||'#ff8500');
  document.documentElement.style.setProperty('--menu',primary);document.documentElement.style.setProperty('--accent',accent);
- document.title='Netto — '+(menu.label||'Menu');$('headerTitle').textContent=menu.label||'Menu';$('headerSub').textContent=menu.subtitle||'Espace personnalisé';$('eyebrow').textContent=menu.kicker||'ESPACE';$('menuTitle').textContent=menu.label||'Menu';$('menuDescription').textContent=menu.description||menu.subtitle||'';
+ document.title='Nethor — '+(menu.label||'Menu');$('headerTitle').textContent=menu.label||'Menu';$('headerSub').textContent=menu.subtitle||'Espace personnalisé';$('eyebrow').textContent=menu.kicker||'ESPACE';$('menuTitle').textContent=menu.label||'Menu';$('menuDescription').textContent=menu.description||menu.subtitle||'';
  const visual=$('heroVisual');if(menu.image_url){visual.innerHTML='<img src="'+esc(menu.image_url)+'" alt="">'}else visual.textContent=menu.icon||'◆';
  const items=(Array.isArray(menu.items)?menu.items:[]).filter(x=>x&&x.enabled!==false&&(!Array.isArray(x.roles)||x.roles.includes(profile.role)));
  if(!items.length){$('items').innerHTML='<div class="empty">Aucun élément disponible dans ce menu pour le moment.</div>';return}
