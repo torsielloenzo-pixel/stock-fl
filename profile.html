@@ -92,6 +92,13 @@ function setPushUI(mode,title,text){
  help.classList.toggle('show',mode==='install');
 }
 async function currentPushSubscription(){if(!pushSupported())return null;const reg=await navigator.serviceWorker.ready;return reg.pushManager.getSubscription()}
+async function syncExistingPushSubscription(){
+ if(!pushSupported()||Notification.permission!=='granted')return;
+ try{
+   const sub=await currentPushSubscription();if(!sub)return;
+   await db.functions.invoke('planning-push',{body:{action:'subscribe',subscription:sub.toJSON(),user_agent:navigator.userAgent}});
+ }catch(e){console.warn('Synchronisation Push:',e)}
+}
 async function refreshPushStatus(){
  if(!pushSupported()){setPushUI('unsupported','Non compatible','Ce navigateur ne prend pas en charge les notifications Push.');return}
  if(isIOS()&&!isStandalone()){setPushUI('install','Installation requise','Ajoute Netto Outils à l’écran d’accueil pour recevoir les notifications sur iPhone.');return}
@@ -168,8 +175,12 @@ async function equipReward(kind,itemId){if(profile?.role!=='admin')return;const 
 
 function toggleMenu(e){e?.stopPropagation();$('nMenu').classList.toggle('hidden')}document.addEventListener('click',e=>{if(!e.target.closest('.nMenuWrap'))$('nMenu').classList.add('hidden')});
 function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}function applyTheme(t){t=t==='dark'?'dark':'light';document.documentElement.dataset.theme=t;localStorage.setItem('nettoTheme',t);const ts=$('themeSelect');if(ts)ts.value=t;document.querySelectorAll('.themeIcon').forEach(x=>x.textContent=t==='dark'?'☀':'☾');document.querySelectorAll('.themeLabel').forEach(x=>x.textContent=t==='dark'?'Mode clair':'Mode sombre');document.querySelectorAll('.themeSub').forEach(x=>x.textContent=t==='dark'?'Revenir au thème clair':'Passer au thème sombre')}function toggleTheme(e){e?.stopPropagation();window.NettoSounds?.play?.('switch');applyTheme(currentTheme()==='dark'?'light':'dark')}
-async function logout(){window.NettoSounds?.play?.('logout');await new Promise(r=>setTimeout(r,390));await db.auth.signOut({scope:'local'});location.href='index.html'}
-async function boot(){const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');const {data:p,error}=await db.from('profiles').select('display_name,role,avatar_path,status_text,profile_color').eq('id',s.user.id).maybeSingle();if(error||!p)return location.replace('index.html');profile=p;$('displayName').textContent=p.display_name||'Utilisateur';$('role').textContent=({admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'})[p.role]||p.role||'';$('readonlyProfileName').textContent=p.display_name||'Utilisateur';$('statusInput').value=p.status_text||'';$('colorInput').value=p.profile_color||'#ff5a2a';$('removeBtn').disabled=!p.avatar_path;await paintAvatar(p.avatar_path);applyTheme(currentTheme());syncSoundSettings();await refreshPushStatus();await loadNotifications();if(p.role==='admin')await loadRewardCustomizer()}
+async function logout(){
+ window.NettoSounds?.play?.('logout');await new Promise(r=>setTimeout(r,390));
+ try{const sub=await currentPushSubscription();if(sub){try{await db.functions.invoke('planning-push',{body:{action:'unsubscribe',endpoint:sub.endpoint}})}catch(_){}await sub.unsubscribe()}}catch(_){}
+ await db.auth.signOut({scope:'local'});location.href='index.html'
+}
+async function boot(){const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');const {data:p,error}=await db.from('profiles').select('display_name,role,avatar_path,status_text,profile_color').eq('id',s.user.id).maybeSingle();if(error||!p)return location.replace('index.html');profile=p;$('displayName').textContent=p.display_name||'Utilisateur';$('role').textContent=({admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'})[p.role]||p.role||'';$('readonlyProfileName').textContent=p.display_name||'Utilisateur';$('statusInput').value=p.status_text||'';$('colorInput').value=p.profile_color||'#ff5a2a';$('removeBtn').disabled=!p.avatar_path;await paintAvatar(p.avatar_path);applyTheme(currentTheme());syncSoundSettings();await syncExistingPushSubscription();await refreshPushStatus();await loadNotifications();if(p.role==='admin')await loadRewardCustomizer()}
 boot();
 </script><script>
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
