@@ -102,7 +102,7 @@ function moduleAllowed(module,profileOrRole,config=api?.siteConfig){
 function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
-function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
+function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="" onerror="this.onerror=null;this.src=\'assets/app-icon.svg\'">':esc(module?.icon||'•')}
 const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference};
 window.NettoProfileUI=api;
 
