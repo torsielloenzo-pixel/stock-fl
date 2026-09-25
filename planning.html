@@ -155,7 +155,7 @@ async function notifyUsers(entries){
  }
 }
 async function notifyChangedEmployees(){
- const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'Planning modifié',message:'Ton planning du '+shortDate(date)+' a été modifié. Consulte tes horaires.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
+ const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'📅 Planning modifié',message:'Ton planning du '+shortDate(date)+' a été modifié.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
 }
 async function notifyWholePlanning(kind,m){
  const ids=new Set(),entries=[];
