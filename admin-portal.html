@@ -283,16 +283,16 @@ async function sendAdminNotification(){
  if(!title||!message){state.className='sendResult err';state.textContent='Renseigne un titre et un message.';return}
  btn.disabled=true;state.textContent='Envoi en cours…';
  try{
-  const {data,error}=await db.rpc('admin_send_notification_test',{target_user_ids:ids,notif_title:title,notif_message:message,notif_target_url:target});
+  const {data,error}=await db.functions.invoke('planning-push',{body:{action:'admin-message',user_ids:ids,title,message,target_url:target}});
   if(error||!data?.ok)throw error||new Error(data?.error||'Envoi impossible');
-  const internal=Number(data?.internal||0),blocked=Number(data?.blocked||0),sent=Number(data?.push?.sent||0),failed=Number(data?.push?.failed||0);
+  const internal=Number(data?.internal||0),blocked=Number(data?.blocked||0),sent=Number(data?.push?.sent||0),failed=Number(data?.push?.failed||0),removed=Number(data?.push?.removed||0);
   state.className='sendResult ok';
-  state.textContent='✓ '+internal+' notification'+(internal>1?'s':'')+' créée'+(internal>1?'s':'')+' dans le portail'+(sent?' · '+sent+' Push envoyé'+(sent>1?'s':''):' · Aucun appareil Push actif')+(blocked?' · '+blocked+' compte'+(blocked>1?'s':'')+' bloqué'+(blocked>1?'s':''):'')+(failed?' · '+failed+' échec'+(failed>1?'s':''):'');
+  state.textContent='✓ '+internal+' notification'+(internal>1?'s':'')+' créée'+(internal>1?'s':'')+' dans le portail · '+sent+' Push envoyé'+(sent>1?'s':'')+(blocked?' · '+blocked+' compte'+(blocked>1?'s':'')+' bloqué'+(blocked>1?'s':''):'')+(failed?' · '+failed+' échec'+(failed>1?'s':''):'')+(removed?' · '+removed+' appareil'+(removed>1?'s':'')+' expiré'+(removed>1?'s':'')+' retiré'+(removed>1?'s':''):'');
   window.NettoSounds?.play?.('success');await loadNotificationAdmin()
  }catch(e){
   console.error('Envoi notification admin:',e);
   state.className='sendResult err';
-  state.textContent='Erreur pendant l’envoi : '+(e?.message||'erreur inconnue');
+  state.textContent='Erreur pendant l’envoi : '+(e?.context?.body?.error||e?.message||'erreur inconnue');
   window.NettoSounds?.play?.('error')
  }
  finally{btn.disabled=false}
