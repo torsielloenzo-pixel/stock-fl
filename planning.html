@@ -145,13 +145,14 @@ function changedProfilesByUser(){
 }
 async function notifyUsers(entries){if(!db||!currentUser||!entries?.length)return;const payload=entries.map(x=>({user_id:x.user_id,created_by:currentUser.id,kind:x.kind,title:x.title,message:x.message,planning_date:x.planning_date||null,week_start:x.week_start||isoDate(currentWeekStart),target_url:x.target_url||null}));const {error}=await db.from('planning_notifications').insert(payload);if(error)console.warn('Notifications planning:',error)}
 async function notifyChangedEmployees(){
- const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'Tes horaires du '+shortDate(date)+' ont été modifiés',message:'La journée du '+shortDate(date)+' a été modifiée. Merci de reconsulter tes horaires.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
+ const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'Planning modifié',message:'Ton planning du '+shortDate(date)+' a été modifié. Consulte tes horaires.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
 }
 async function notifyWholePlanning(kind,m){
- const ids=new Set(),entries=[],replace=kind==='import_replace';
- if(replace){teamProfiles.forEach(p=>{if(p?.id)ids.add(p.id)})}else{for(const emp of m?.employees||[]){const p=planningProfileFor(emp.name);if(p?.id)ids.add(p.id)}}
- const ws=m?.weekStart||isoDate(currentWeekStart),pretty=frDate(parseISO(ws)),target='planning.html?week='+encodeURIComponent(ws)+'&day='+encodeURIComponent(ws);
- for(const id of ids)entries.push({user_id:id,kind,title:replace?'Planning remplacé':'Nouveau planning disponible',message:replace?'Le planning de la semaine du '+pretty+' a été remplacé. Merci de reconsulter tes horaires.':'Le planning de la semaine du '+pretty+' est disponible. Consulte tes horaires.',week_start:ws,target_url:target});
+ const ids=new Set(),entries=[];
+ for(const emp of m?.employees||[]){const p=planningProfileFor(emp.name);if(p?.id)ids.add(p.id)}
+ const ws=m?.weekStart||isoDate(currentWeekStart),we=isoDate(addDays(parseISO(ws),6)),target='planning.html?week='+encodeURIComponent(ws)+'&day='+encodeURIComponent(ws);
+ const from=frDate(parseISO(ws)),to=frDate(parseISO(we));
+ for(const id of ids)entries.push({user_id:id,kind:'import_new',title:'Nouveau planning',message:'Un planning a été mis en ligne du '+from+' au '+to+'.',week_start:ws,target_url:target});
  await notifyUsers(entries)
 }
 function logDetails(obj){return JSON.stringify(obj)}
