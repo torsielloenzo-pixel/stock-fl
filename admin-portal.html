@@ -199,12 +199,21 @@ async function loadConfig(){const {data,error}=await db.from('app_settings').sel
 
 
 function logDate(value){const d=new Date(value);return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
+function isImportantPortalLog(x){
+ if(!x)return false;
+ if(x.source==='auto')return true;
+ const title=String(x.title||'').toLowerCase(),area=String(x.area||'').toLowerCase();
+ if(area==='notifications'&&/^notifications de /.test(title))return false;
+ if(x.details?.importance==='low')return false;
+ return true
+}
 function renderPortalLogs(){
  const host=$('portalLogs');if(!host)return;
- $('logTotalCount').textContent=String(portalLogs.length);
- $('logAutoCount').textContent=String(portalLogs.filter(x=>x.source==='auto').length);
- $('logManualCount').textContent=String(portalLogs.filter(x=>x.source==='manual').length);
- const rows=portalLogs.filter(x=>(logSourceFilter==='all'||x.source===logSourceFilter)&&(logTypeFilter==='all'||x.release_type===logTypeFilter));
+ const important=portalLogs.filter(isImportantPortalLog);
+ $('logTotalCount').textContent=String(important.length);
+ $('logAutoCount').textContent=String(important.filter(x=>x.source==='auto').length);
+ $('logManualCount').textContent=String(important.filter(x=>x.source==='manual').length);
+ const rows=important.filter(x=>(logSourceFilter==='all'||x.source===logSourceFilter)&&(logTypeFilter==='all'||x.release_type===logTypeFilter));
  if(!rows.length){host.innerHTML='<div class="logEmpty">Aucune entrée ne correspond à ces filtres.</div>';return}
  host.innerHTML=rows.map(x=>{
   const auto=x.source==='auto',author=auto?'AUTO':(x.actor_name||'Administrateur'),letter=auto?'A':String(author||'M').trim().charAt(0).toUpperCase();
@@ -255,7 +264,6 @@ async function setUserNotifications(userId,enabled,input){
   const {data,error}=await db.rpc('admin_set_notification_control',{target_user:userId,new_enabled:enabled});
   if(error||data!==true)throw error||new Error('Mise à jour refusée');
   const u=notificationUsers.find(x=>x.id===userId);if(u)u.enabled=enabled;
-  await writeManualLog('patch','Notifications de '+(u?.display_name||'un utilisateur')+' '+(enabled?'activées':'désactivées'),'Les notifications du portail ont été '+(enabled?'autorisées':'bloquées')+' pour ce compte.','Notifications',{target_user_id:userId,enabled});
   renderNotificationAdmin();window.NettoSounds?.play?.('switch');if($('tab-logs')?.classList.contains('active'))await loadPortalLogs()
  }catch(e){console.error(e);input.checked=!enabled;alert('Impossible de modifier les notifications de cet utilisateur.')}
  finally{input.disabled=false}
