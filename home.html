@@ -303,6 +303,54 @@ header{position:relative;z-index:1000!important;overflow:visible!important}
 .userMenu{z-index:1200!important}
 main{position:relative;z-index:1}
 .hello,.pages,.pageCard{z-index:auto}
+
+/* Dark Comfort — accueil */
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 4% -8%,rgba(255,74,34,.09),transparent 24rem),
+    radial-gradient(circle at 100% 105%,rgba(255,138,0,.05),transparent 28rem),
+    linear-gradient(180deg,#111214,#151719 48%,#121315)!important;
+  color:#f5f2ef!important
+}
+:root[data-theme="dark"] header{
+  background:#17181aec!important;border-color:#303337!important;
+  box-shadow:0 8px 28px #0004!important
+}
+:root[data-theme="dark"] header:after{opacity:.78!important}
+:root[data-theme="dark"] .brand strong,:root[data-theme="dark"] .hello h1,:root[data-theme="dark"] .pageCard h2{color:#f7f4f1!important}
+:root[data-theme="dark"] .brand small,:root[data-theme="dark"] .status{color:#aaa5a0!important}
+:root[data-theme="dark"] .hello{
+  background:
+    radial-gradient(circle at 92% 32%,rgba(255,106,38,.18),transparent 23rem),
+    linear-gradient(125deg,#1a1b1e 0%,#232428 58%,#342921 100%)!important;
+  border-color:#3a332f!important;
+  box-shadow:0 24px 60px rgba(0,0,0,.32)!important
+}
+:root[data-theme="dark"] .hello .eyebrow{background:#ffffff0b!important;border-color:#ffffff16!important;color:#ffd2c2!important}
+:root[data-theme="dark"] .homeTodayMessage,:root[data-theme="dark"] .hello p{color:#c0bab5!important}
+:root[data-theme="dark"] .helloMeta span{background:#ffffff0a!important;border-color:#ffffff17!important;color:#d1cbc6!important}
+:root[data-theme="dark"] .pageCard{
+  background:linear-gradient(180deg,#1d1f22 0%,#1a1c1f 72%,#211c19 100%)!important;
+  border-color:#34373b!important;
+  box-shadow:0 8px 24px #0003!important;
+  color:#f5f2ef!important
+}
+:root[data-theme="dark"] .pageCard:hover{border-color:#51413a!important;box-shadow:0 16px 38px #0006!important}
+:root[data-theme="dark"] .pageCard p{color:#b2ada8!important}
+:root[data-theme="dark"] .cardKicker{background:#2a2522!important;color:#ff9b76!important;border:1px solid #46342d!important}
+:root[data-theme="dark"] .cardFoot{background:#202225!important;border-color:#34373b!important;color:#bbb5af!important}
+:root[data-theme="dark"] .arrow{box-shadow:0 4px 12px #0003!important}
+:root[data-theme="dark"] .userPill{background:#202225!important;border-color:#393d42!important;color:#f2efec!important;box-shadow:0 5px 16px #0003!important}
+:root[data-theme="dark"] .userPill:hover{background:#282b2e!important;border-color:#4b4f54!important}
+:root[data-theme="dark"] .userText small,:root[data-theme="dark"] .userChevron{color:#aaa5a0!important}
+:root[data-theme="dark"] .userMenu{background:#1b1d20fa!important;border-color:#3a3e43!important;color:#f5f2ef!important;box-shadow:0 24px 70px #0008!important}
+:root[data-theme="dark"] .userMenuHead{border-color:#34383d!important}
+:root[data-theme="dark"] .userMenu button:hover{background:#272a2d!important}
+:root[data-theme="dark"] .userMenu button>span{background:#292c2f!important}
+@media(max-width:650px){
+  :root[data-theme="dark"] body{background:#121315!important}
+  :root[data-theme="dark"] .pageCard{box-shadow:0 5px 16px #0004!important}
+}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/app-icon.svg">
