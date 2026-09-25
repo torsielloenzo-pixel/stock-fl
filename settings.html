@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#171717"><script>(function(){try{var t=localStorage.getItem('nettoTheme')||'light';document.documentElement.dataset.theme=t}catch(e){}})();</script><title>Netto — Personnalisation</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=13"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile-ui.js?v=14"></script>
 <style>
 :root{--red:#e30613;--red2:#b90710;--black:#171717;--line:#e2e2e5;--muted:#777;--bg:#f2f3f4}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef0f1,#fafafa 48%,#f0f1f2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#171717}button,input,textarea{font:inherit}
@@ -208,75 +208,83 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 <meta name="apple-mobile-web-app-title" content="Netto Outils">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="design-v2.css?v=3"><link rel="stylesheet" href="design-v3.css?v=3">
-</head>
-<body><div class="mobileNavBackdrop" onclick="closeNMenu()"></div>
-<header><div class="top"><div class="brand"><div class="nMenuWrap"><button class="mark nMenuBtn" onclick="location.href='home.html'">N</button><div id="nMenu" class="nMenu hidden"><div class="nMenuTitle">Navigation</div><button onclick="location.href='home.html'"><span>⌂</span><div><strong>Accueil</strong><small>Choisir un outil</small></div></button><button onclick="location.href='profile.html'"><span>☺</span><div><strong>Mon profil</strong><small>Photo et compte</small></div></button><button onclick="location.href='index.html'"><span class="navToolLogo stock"></span><div><strong>Stock F&amp;L</strong><small>Gestion du stock</small></div></button><button onclick="location.href='planning.html'"><span class="navToolLogo planning"></span><div><strong>Planning</strong><small>Horaires de l'équipe</small></div></button><button onclick="location.href='chat.html'"><span class="navToolLogo equipe"></span><div><strong>Équipe</strong><small>Messagerie interne</small></div></button><button onclick="location.href='articles.html'"><span class="navToolLogo article"></span><div><strong>Fiches articles</strong><small>Référentiel EAN</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='stock-test.html'"><span>▦</span><div><strong>Vue test</strong><small>Stock groupé par familles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='index.html?admin=accounts'"><span>♙</span><div><strong>Comptes</strong><small>Utilisateurs et rôles</small></div></button><button class="adminOnlyMenu hidden" onclick="location.href='settings.html'"><span>⚙</span><div><strong>Personnalisation</strong><small>Réglages du portail</small></div></button><button class="themeToggle" onclick="toggleTheme(event)"><span class="themeIcon">☾</span><div><strong class="themeLabel">Mode sombre</strong><small class="themeSub">Passer au thème sombre</small></div></button><button class="logoutItem" onclick="menuLogout()"><span>↪</span><div><strong>Déconnexion</strong><small>Quitter la session</small></div></button></div></div><div><div class="title">Administration</div><div class="sub">Configuration du portail</div></div></div><button class="btn light" onclick="location.href='home.html'">← Retour</button></div></header>
+
+<style id="personalization-v2">
+.preferenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.prefItem{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid #e5e7eb;border-radius:15px;padding:12px;background:#fafbfc;transition:.15s}.prefItem:hover{border-color:#ffd0c4;background:#fffaf8}.prefIcon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#fff0ed,#fff7ec);color:#ee4826;font-weight:900;font-size:18px;overflow:hidden}.prefIcon img{width:100%;height:100%;object-fit:cover}.prefInfo{min-width:0}.prefInfo strong{display:block;font-size:12px}.prefInfo span{display:block;margin-top:3px;color:#858990;font-size:9.5px;line-height:1.35}.prefSwitch{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:850;color:#737780}.prefSwitch input{width:20px;height:20px;accent-color:#ff4827}.panelTools{display:flex;gap:7px;flex-wrap:wrap;margin:-4px 0 13px}.miniBtn{border:1px solid #e1e4e8;background:#f5f6f8;color:#50545a;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:850;cursor:pointer}.roleLine{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}.roleBadge{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#fff0ec;color:#da3a1f;font-size:9px;font-weight:900}.rightsHint{font-size:9.5px;color:#8b8f96}.fixedNote{display:flex;gap:10px;align-items:flex-start;background:#f6f7f9;border:1px solid #e4e6ea;border-radius:12px;padding:11px 12px;margin-bottom:13px;font-size:10px;color:#686d74;line-height:1.45}.fixedNote b{color:#292d33}.sharedEditor .itemFields{grid-template-columns:1fr 1.4fr 100px}.sharedEditor .itemFields .desc{grid-column:1/3}.sharedEditor .itemFields .url{grid-column:1/3}.sectionTag{font-size:8px;font-weight:900;letter-spacing:.8px;color:#f05a32;text-transform:uppercase;margin-bottom:5px}.saveState.ok{color:#188345}.saveState.err{color:#b52c20}
+:root[data-theme="dark"] .prefItem,:root[data-theme="dark"] .fixedNote{background:#202226!important;border-color:#363a40!important}:root[data-theme="dark"] .prefItem:hover{background:#27292e!important;border-color:#654235!important}:root[data-theme="dark"] .prefIcon{background:#33241f!important;color:#ff9a72}:root[data-theme="dark"] .miniBtn{background:#25272c;color:#e6e2df;border-color:#3a3e44}:root[data-theme="dark"] .roleBadge{background:#39231e;color:#ff9a72}
+@media(max-width:720px){.preferenceGrid{grid-template-columns:1fr}.prefItem{grid-template-columns:42px minmax(0,1fr) auto;padding:10px}.prefIcon{width:40px;height:40px;border-radius:11px}.sharedEditor .itemFields{grid-template-columns:1fr}.sharedEditor .itemFields .desc,.sharedEditor .itemFields .url{grid-column:auto}.hero h1{font-size:29px}.actions{justify-content:stretch;flex-wrap:wrap}.actions .btn{flex:1;min-width:145px}}
+</style></head>
+<body>
+<header><div class="top"><div class="brand"><button class="mark" onclick="location.href='home.html'" aria-label="Accueil">N</button><div><div class="title">Personnalisation</div><div class="sub">Ton portail, selon tes droits</div></div></div></div></header>
 <main>
- <div class="hero"><div><h1>Panel administrateur</h1><p>Modifie les noms, textes, visibilité, ordre et destinations des principaux outils. Les changements sont partagés avec tous les utilisateurs.</p></div><div id="saveState" class="saveState">Chargement…</div></div>
- <div class="notice">Les destinations sont des chemins du site, par exemple <strong>planning.html</strong>. Évite les URL externes pour garder une navigation cohérente et sûre.</div>
+ <div class="hero"><div><div class="sectionTag">PRÉFÉRENCES PERSONNELLES</div><h1>Personnalise ton espace</h1><p>Choisis les outils que tu veux retrouver sur l’accueil et dans ta barre utilisateur. Les choix sont enregistrés sur ton compte et restent limités aux accès accordés par ton rôle.</p><div class="roleLine"><span id="roleBadge" class="roleBadge">Chargement…</span><span id="rightsHint" class="rightsHint"></span></div></div><div id="saveState" class="saveState">Chargement…</div></div>
+ <div class="notice"><strong>Principe :</strong> masquer un raccourci ne retire jamais un droit. À l’inverse, un outil auquel ton rôle n’a pas accès n’est jamais proposé ici et ne peut pas être réactivé par la personnalisation.</div>
  <div class="grid">
-  <section class="panel"><h2>Identité</h2><p class="panelIntro">Nom général du portail et sous-titre affiché sur l’accueil.</p><div class="fields"><div class="field"><label>Nom</label><input id="brandName"></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle"></div></div></section>
-  <section class="panel"><h2>Accueil</h2><p class="panelIntro">Textes situés au-dessus des cartes d’outils.</p><div class="fields"><div class="field"><label>Petit titre</label><input id="homeEyebrow"></div><div class="field"><label>Introduction</label><input id="homeIntro"></div></div></section>
-  <section class="panel wide"><h2>Outils du menu principal</h2><p class="panelIntro">Nom, description, icône, ordre, visibilité et page ouverte par chaque carte.</p><div id="pagesEditor"></div></section>
-  <section class="panel wide"><h2>Menu N</h2><p class="panelIntro">Personnalise les intitulés et les destinations de la navigation globale.</p><div id="navEditor"></div></section>
-  <section class="panel wide"><h2>Titres des pages</h2><p class="panelIntro">Change les titres affichés dans l’en-tête de chaque outil sans toucher à son fonctionnement.</p><div id="titlesEditor"></div></section>
+  <section class="panel wide"><h2>Accueil /home</h2><p class="panelIntro">Active uniquement les cartes que tu veux voir sur ton tableau d’accueil.</p><div class="panelTools"><button class="miniBtn" onclick="setArea('home',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('home',false)">Tout masquer</button></div><div id="homeEditor" class="preferenceGrid"></div></section>
+  <section class="panel wide"><h2>Barre utilisateur</h2><p class="panelIntro">Choisis les raccourcis disponibles dans le menu qui s’ouvre depuis ton nom ou ta photo.</p><div class="fixedNote"><span>🔒</span><span><b>Toujours disponibles :</b> Mon profil, Personnalisation, apparence clair/sombre et Déconnexion. Ils restent accessibles pour éviter de verrouiller ton interface.</span></div><div class="panelTools"><button class="miniBtn" onclick="setArea('user_menu',true)">Tout afficher</button><button class="miniBtn" onclick="setArea('user_menu',false)">Tout masquer</button></div><div id="userEditor" class="preferenceGrid"></div></section>
+  <section id="adminConfig" class="panel wide hidden"><h2>Configuration générale du portail</h2><p class="panelIntro">Réservé à l’administrateur. Ces réglages changent les noms, descriptions, destinations et ordre par défaut des outils, sans modifier les droits ni les choix personnels des utilisateurs.</p>
+   <div class="fields"><div class="field"><label>Nom du portail</label><input id="brandName"></div><div class="field"><label>Sous-titre</label><input id="brandSubtitle"></div><div class="field"><label>Petit titre d’accueil</label><input id="homeEyebrow"></div><div class="field"><label>Introduction d’accueil</label><input id="homeIntro"></div></div>
+   <div id="sharedEditor" class="sharedEditor" style="margin-top:16px"></div>
+  </section>
  </div>
- <div class="actions"><button class="btn danger" onclick="resetConfig()">Réinitialiser</button><button id="saveBtn" class="btn dark" onclick="saveConfig()">Enregistrer les réglages</button></div>
+ <div class="actions"><button class="btn danger" onclick="resetPersonal()">Réinitialiser mon affichage</button><button id="saveBtn" class="btn dark" onclick="saveAll()">Enregistrer</button></div>
 </main>
 <script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const DEFAULT_CONFIG={
- brand:{name:'Netto',subtitle:'Espace outils'},
- home:{eyebrow:'Espace de travail',intro:'Choisis l’espace que tu veux ouvrir.'},
- pages:{
-  stock:{label:'Stock F&L',description:'Gérer les quantités, les fiches articles, les suggestions de commande et le panier.',url:'index.html',icon:'N',visible:true,order:1},
-  planning:{label:'Planning',description:'Consulter les horaires de l’équipe.',url:'planning.html',icon:'▦',visible:true,order:2},
-  chat:{label:'Équipe',description:'Échanger avec l’équipe et partager des fichiers.',url:'chat.html',icon:'◉',visible:true,order:3},
-  test:{label:'Vue test',description:'Stock groupé par familles.',url:'stock-test.html',icon:'☷',visible:true,order:4}
- },
- nav:{
-  home:{label:'Accueil',subtitle:'Choisir un outil',url:'home.html',icon:'⌂'},
-  stock:{label:'Stock F&L',subtitle:'Gestion du stock',url:'index.html',icon:'☷'},
-  planning:{label:'Planning',subtitle:'Horaires de l’équipe',url:'planning.html',icon:'▦'},
-  chat:{label:'Équipe',subtitle:'Messagerie interne',url:'chat.html',icon:'◉'},
-  test:{label:'Vue test',subtitle:'Stock groupé par familles',url:'stock-test.html',icon:'☷'}
- },
- pageTitles:{
-  stock:{title:'Netto',subtitle:'Stock Fruits & Légumes'},
-  planning:{title:'Planning',subtitle:'Netto • Horaires de l’équipe'},
-  chat:{title:'Équipe',subtitle:'Messagerie interne'},
-  test:{title:'Stock groupé',subtitle:'Vue ordinateur • Fruits & Légumes'}
- }
-};
-let config=structuredClone(DEFAULT_CONFIG);
-const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-function merge(a,b){if(!b||typeof b!=='object')return a;for(const k of Object.keys(b)){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))a[k]=merge(a[k]&&typeof a[k]==='object'?a[k]:{},b[k]);else a[k]=b[k]}return a}
+let session=null,profile=null,prefs={home:{},user_menu:{}},sharedConfig={};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const roleName=r=>({admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'})[r]||r||'Compte';
+function modules(){return window.NettoProfileUI?.modules||[]}
+function canAccess(m){return window.NettoProfileUI?.canAccess?window.NettoProfileUI.canAccess(m,profile):(!Array.isArray(m.roles)||m.roles.includes(profile?.role))}
+function prefProfile(){return {...profile,ui_preferences:prefs}}
+function visibleValue(area,m){return window.NettoProfileUI?.isVisible?window.NettoProfileUI.isVisible(area,m,prefProfile()):(prefs?.[area]?.[m.id]??(area==='home'?m.defaultHome!==false:m.defaultUser!==false))}
+function iconHtml(m){return m.asset?'<img src="'+esc(m.asset)+'" alt="">':esc(m.icon||'•')}
+function ensurePrefs(raw){const p=raw&&typeof raw==='object'&&!Array.isArray(raw)?structuredClone(raw):{};p.home=p.home&&typeof p.home==='object'&&!Array.isArray(p.home)?p.home:{};p.user_menu=p.user_menu&&typeof p.user_menu==='object'&&!Array.isArray(p.user_menu)?p.user_menu:{};return p}
+function renderArea(area,hostId){
+ const host=$(hostId),available=modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu));
+ if(!available.length){host.innerHTML='<div class="notice">Aucun outil supplémentaire disponible pour ce rôle.</div>';return}
+ host.innerHTML=available.map(m=>'<label class="prefItem"><span class="prefIcon">'+iconHtml(m)+'</span><span class="prefInfo"><strong>'+esc(area==='home'?(m.homeLabel||m.label):m.label)+'</strong><span>'+esc(m.subtitle||m.description||'')+'</span></span><span class="prefSwitch"><input type="checkbox" data-area="'+area+'" data-module="'+esc(m.id)+'" '+(visibleValue(area,m)?'checked':'')+'> Visible</span></label>').join('');
+ host.querySelectorAll('input[data-module]').forEach(input=>input.onchange=()=>{prefs[input.dataset.area][input.dataset.module]=input.checked;saveState.textContent='Modifications non enregistrées';saveState.className='saveState'});
+}
+function renderPreferences(){renderArea('home','homeEditor');renderArea('user_menu','userEditor');const h=modules().filter(m=>canAccess(m)&&m.home).length,u=modules().filter(m=>canAccess(m)&&m.userMenu).length;$('rightsHint').textContent=h+' outil'+(h>1?'s':'')+' disponible'+(h>1?'s':'')+' sur l’accueil · '+u+' raccourci'+(u>1?'s':'')+' configurable'+(u>1?'s':'')}
+function setArea(area,value){modules().filter(m=>canAccess(m)&&(area==='home'?m.home:m.userMenu)).forEach(m=>prefs[area][m.id]=value);renderPreferences();saveState.textContent='Modifications non enregistrées';saveState.className='saveState'}
+function defaultSharedPage(m,index){return{label:m.homeLabel||m.label,description:m.description||'',url:m.url||'',order:index+1}}
+function normalizeShared(cfg){const out=cfg&&typeof cfg==='object'&&!Array.isArray(cfg)?structuredClone(cfg):{};out.brand={name:out.brand?.name||'Netto',subtitle:out.brand?.subtitle||'Espace outils'};out.home={eyebrow:out.home?.eyebrow||'Espace de travail',intro:out.home?.intro||'Choisis l’espace que tu veux ouvrir.'};out.pages=out.pages&&typeof out.pages==='object'?out.pages:{};modules().filter(m=>m.home).forEach((m,i)=>out.pages[m.id]={...defaultSharedPage(m,i),...(out.pages[m.id]||{})});return out}
 function validPath(v){v=String(v||'').trim();return /^[a-zA-Z0-9_./-]+(?:\.html)?(?:[?#][^\s]*)?$/.test(v)&&!v.startsWith('//')&&!v.includes('..')}
-function render(){brandName.value=config.brand.name||'';brandSubtitle.value=config.brand.subtitle||'';homeEyebrow.value=config.home.eyebrow||'';homeIntro.value=config.home.intro||'';
- const labels={stock:'Stock F&L',planning:'Planning',chat:'Équipe',test:'Vue test'};
- pagesEditor.innerHTML=Object.keys(config.pages).map(k=>{const p=config.pages[k];return '<div class="item"><div class="itemHead"><strong>'+esc(labels[k]||k)+'</strong><label class="switch"><input type="checkbox" data-page="'+k+'" data-f="visible" '+(p.visible!==false?'checked':'')+'> Visible</label></div><div class="itemFields"><div class="field"><label>Icône</label><input data-page="'+k+'" data-f="icon" value="'+esc(p.icon)+'"></div><div class="field"><label>Nom</label><input data-page="'+k+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Destination</label><input data-page="'+k+'" data-f="url" value="'+esc(p.url)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-page="'+k+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-page="'+k+'" data-f="description" value="'+esc(p.description)+'"></div></div></div>'}).join('');
- navEditor.innerHTML=Object.keys(config.nav).map(k=>{const n=config.nav[k];return '<div class="item"><div class="itemHead"><strong>'+esc(k)+'</strong></div><div class="itemFields"><div class="field"><label>Icône</label><input data-nav="'+k+'" data-f="icon" value="'+esc(n.icon)+'"></div><div class="field"><label>Nom</label><input data-nav="'+k+'" data-f="label" value="'+esc(n.label)+'"></div><div class="field"><label>Destination</label><input data-nav="'+k+'" data-f="url" value="'+esc(n.url)+'"></div><div></div><div class="field desc"><label>Sous-titre</label><input data-nav="'+k+'" data-f="subtitle" value="'+esc(n.subtitle)+'"></div></div></div>'}).join('');
- titlesEditor.innerHTML=Object.keys(config.pageTitles).map(k=>{const n=config.pageTitles[k];return '<div class="item"><div class="itemHead"><strong>'+esc(k)+'</strong></div><div class="fields"><div class="field"><label>Titre</label><input data-title="'+k+'" data-f="title" value="'+esc(n.title)+'"></div><div class="field"><label>Sous-titre</label><input data-title="'+k+'" data-f="subtitle" value="'+esc(n.subtitle)+'"></div></div></div>'}).join('');
+function renderAdminConfig(){
+ if(profile?.role!=='admin')return;$('adminConfig').classList.remove('hidden');sharedConfig=normalizeShared(sharedConfig);brandName.value=sharedConfig.brand.name;brandSubtitle.value=sharedConfig.brand.subtitle;homeEyebrow.value=sharedConfig.home.eyebrow;homeIntro.value=sharedConfig.home.intro;
+ $('sharedEditor').innerHTML=modules().filter(m=>m.home).map(m=>{const p=sharedConfig.pages[m.id];return '<div class="item"><div class="itemHead"><strong>'+esc(m.homeLabel||m.label)+'</strong><span class="roleBadge">'+(Array.isArray(m.roles)?'Admin':'Tous les rôles')+'</span></div><div class="itemFields"><div class="field"><label>Nom</label><input data-shared="'+m.id+'" data-f="label" value="'+esc(p.label)+'"></div><div class="field"><label>Ordre</label><input type="number" min="1" max="99" data-shared="'+m.id+'" data-f="order" value="'+Number(p.order||1)+'"></div><div class="field desc"><label>Description</label><input data-shared="'+m.id+'" data-f="description" value="'+esc(p.description)+'"></div><div class="field url"><label>Destination</label><input data-shared="'+m.id+'" data-f="url" value="'+esc(p.url)+'"></div></div></div>'}).join('');
 }
-function collect(){config.brand.name=brandName.value.trim()||'Netto';config.brand.subtitle=brandSubtitle.value.trim();config.home.eyebrow=homeEyebrow.value.trim();config.home.intro=homeIntro.value.trim();
- document.querySelectorAll('[data-page]').forEach(el=>{const k=el.dataset.page,f=el.dataset.f;config.pages[k][f]=el.type==='checkbox'?el.checked:(el.type==='number'?Number(el.value)||1:el.value.trim())});
- document.querySelectorAll('[data-nav]').forEach(el=>{config.nav[el.dataset.nav][el.dataset.f]=el.value.trim()});
- document.querySelectorAll('[data-title]').forEach(el=>{config.pageTitles[el.dataset.title][el.dataset.f]=el.value.trim()});
- for(const p of Object.values(config.pages))if(!validPath(p.url))throw new Error('Destination invalide : '+p.url);
- for(const n of Object.values(config.nav))if(!validPath(n.url))throw new Error('Destination invalide : '+n.url);
+function collectShared(){
+ if(profile?.role!=='admin')return;sharedConfig.brand.name=brandName.value.trim()||'Netto';sharedConfig.brand.subtitle=brandSubtitle.value.trim();sharedConfig.home.eyebrow=homeEyebrow.value.trim();sharedConfig.home.intro=homeIntro.value.trim();
+ document.querySelectorAll('[data-shared]').forEach(el=>{const p=sharedConfig.pages[el.dataset.shared],f=el.dataset.f;p[f]=el.type==='number'?Math.max(1,Number(el.value)||1):el.value.trim()});
+ for(const p of Object.values(sharedConfig.pages))if(!validPath(p.url))throw new Error('Destination invalide : '+p.url);
 }
-async function saveConfig(){try{collect();saveBtn.disabled=true;saveState.textContent='Enregistrement…';const {error}=await db.from('app_settings').upsert({key:'site_config',value:config,updated_by:(await db.auth.getUser()).data.user.id,updated_at:new Date().toISOString()});if(error)throw error;saveState.textContent='✓ Réglages enregistrés';setTimeout(()=>saveState.textContent='À jour',1500)}catch(e){alert(e.message);saveState.textContent='Erreur'}finally{saveBtn.disabled=false}}
-function resetConfig(){if(!confirm('Réinitialiser tous les réglages visuels et de navigation ?'))return;config=structuredClone(DEFAULT_CONFIG);render();saveState.textContent='Réglages par défaut chargés — enregistre pour appliquer'}
-function toggleNMenu(e){e?.stopPropagation();document.getElementById('nMenu').classList.toggle('hidden')}function closeNMenu(){document.getElementById('nMenu').classList.add('hidden')}document.addEventListener('click',e=>{if(!e.target.closest('.nMenuWrap'))closeNMenu()});async function menuLogout(){closeNMenu();await db.auth.signOut();location.href='index.html'}
-async function boot(){const {data:{session}}=await db.auth.getSession();if(!session)return location.replace('index.html');const {data:p}=await db.from('profiles').select('role').eq('id',session.user.id).maybeSingle();if(p?.role!=='admin')return location.replace('home.html');window.currentRole='admin';document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.remove('hidden'));const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();config=merge(structuredClone(DEFAULT_CONFIG),data?.value||{});render();saveState.textContent='À jour'}
+async function saveAll(){
+ saveBtn.disabled=true;saveState.className='saveState';saveState.textContent='Enregistrement…';
+ try{
+  collectShared();
+  const {error}=await db.from('profiles').update({ui_preferences:prefs}).eq('id',session.user.id);if(error)throw error;
+  if(profile.role==='admin'){const {error:se}=await db.from('app_settings').upsert({key:'site_config',value:sharedConfig,updated_by:session.user.id,updated_at:new Date().toISOString()},{onConflict:'key'});if(se)throw se}
+  profile.ui_preferences=structuredClone(prefs);saveState.className='saveState ok';saveState.textContent='✓ Personnalisation enregistrée';window.NettoSounds?.play?.('success');await window.NettoProfileUI?.refresh?.();
+ }catch(e){console.error(e);saveState.className='saveState err';saveState.textContent='Erreur : '+(e?.message||'enregistrement impossible');window.NettoSounds?.play?.('error')}
+ finally{saveBtn.disabled=false}
+}
+async function resetPersonal(){
+ if(!confirm('Revenir à l’affichage par défaut prévu pour ton rôle ?'))return;prefs={home:{},user_menu:{}};renderPreferences();saveState.textContent='Réinitialisation…';
+ const {error}=await db.from('profiles').update({ui_preferences:prefs}).eq('id',session.user.id);if(error){saveState.className='saveState err';saveState.textContent='Erreur : '+error.message;return}
+ profile.ui_preferences=structuredClone(prefs);saveState.className='saveState ok';saveState.textContent='✓ Affichage par défaut restauré';window.NettoSounds?.play?.('success');await window.NettoProfileUI?.refresh?.();
+}
+async function boot(){
+ const {data:{session:s}}=await db.auth.getSession();session=s;if(!s)return location.replace('index.html');
+ const {data:p,error}=await db.from('profiles').select('display_name,role,ui_preferences').eq('id',s.user.id).maybeSingle();if(error||!p)return location.replace('index.html');profile=p;window.currentRole=p.role;prefs=ensurePrefs(p.ui_preferences);
+ $('roleBadge').textContent=roleName(p.role);
+ const {data}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();sharedConfig=data?.value||{};
+ renderPreferences();renderAdminConfig();saveState.textContent='À jour';
+}
 boot();
-
-function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
-function applyTheme(theme){theme=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=theme;try{localStorage.setItem('nettoTheme',theme)}catch(e){}document.querySelectorAll('.themeIcon').forEach(x=>x.textContent=theme==='dark'?'☀':'☾');document.querySelectorAll('.themeLabel').forEach(x=>x.textContent=theme==='dark'?'Mode clair':'Mode sombre');document.querySelectorAll('.themeSub').forEach(x=>x.textContent=theme==='dark'?'Revenir au thème clair':'Passer au thème sombre');const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=theme==='dark'?'#111214':'#f4f4f6'}
-function toggleTheme(e){e?.stopPropagation();applyTheme(currentTheme()==='dark'?'light':'dark')}
-document.addEventListener('DOMContentLoaded',()=>applyTheme(currentTheme()));
-</script><script>
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
 </script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
 </body></html>
