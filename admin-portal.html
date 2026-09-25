@@ -235,20 +235,25 @@ function renderNotificationAdmin(){
  recipientsHost.innerHTML=notificationUsers.map(u=>'<label class="recipient"><input type="checkbox" data-notif-recipient="'+attr(u.id)+'" '+(u.enabled?'':'disabled')+'><span><strong>'+esc(u.display_name||'Utilisateur')+'</strong><small>'+esc(notificationRole(u.role))+' · '+(u.devices||0)+' appareil'+((u.devices||0)>1?'s':'')+' Push</small></span>'+(u.enabled?'':'<span class="blocked">Bloqué</span>')+'</label>').join('')
 }
 async function loadNotificationAdmin(){
- const usersHost=$('notificationUsers');if(!usersHost)return;
+ const usersHost=$('notificationUsers'),recipientsHost=$('notificationRecipients');if(!usersHost)return;
  usersHost.innerHTML='<div class="empty">Chargement des utilisateurs…</div>';
+ if(recipientsHost)recipientsHost.innerHTML='<div class="empty">Chargement…</div>';
  try{
-  const {data,error}=await db.functions.invoke('planning-push',{body:{action:'admin-status'}});
+  const {data,error}=await db.rpc('admin_notification_users');
   if(error)throw error;
-  notificationUsers=Array.isArray(data?.users)?data.users:[];
+  notificationUsers=Array.isArray(data)?data:[];
   renderNotificationAdmin()
- }catch(e){console.error(e);usersHost.innerHTML='<div class="empty">Impossible de charger les réglages de notifications.</div>'}
+ }catch(e){
+  console.error('Chargement notifications admin:',e);
+  usersHost.innerHTML='<div class="empty">Impossible de charger les réglages de notifications.<br><small>'+esc(e?.message||'Erreur inconnue')+'</small></div>';
+  if(recipientsHost)recipientsHost.innerHTML='<div class="empty">Impossible de charger les destinataires.</div>'
+ }
 }
 async function setUserNotifications(userId,enabled,input){
  input.disabled=true;
  try{
-  const {data,error}=await db.functions.invoke('planning-push',{body:{action:'admin-control',user_id:userId,enabled}});
-  if(error||!data?.ok)throw error||new Error('Mise à jour refusée');
+  const {data,error}=await db.rpc('admin_set_notification_control',{target_user:userId,new_enabled:enabled});
+  if(error||data!==true)throw error||new Error('Mise à jour refusée');
   const u=notificationUsers.find(x=>x.id===userId);if(u)u.enabled=enabled;
   await writeManualLog('patch','Notifications de '+(u?.display_name||'un utilisateur')+' '+(enabled?'activées':'désactivées'),'Les notifications du portail ont été '+(enabled?'autorisées':'bloquées')+' pour ce compte.','Notifications',{target_user_id:userId,enabled});
   renderNotificationAdmin();window.NettoSounds?.play?.('switch');if($('tab-logs')?.classList.contains('active'))await loadPortalLogs()
