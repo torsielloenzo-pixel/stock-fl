@@ -302,7 +302,19 @@ function renderPlanningLog(x){
  else{detail=x.details||''}
  return '<div class="planningLog '+cls+'" data-log-id="'+esc(x.id)+'"><span class="logIcon">'+icon+'</span><div class="logBody"><strong>'+esc(title)+'</strong>'+(detail?'<span>'+esc(detail)+'</span>':'')+'<small>'+esc(stamp)+'</small></div>'+(role==='admin'?'<button class="logDelete" type="button" title="Supprimer cette ligne" aria-label="Supprimer cette ligne" onclick="deletePlanningLog('+Number(x.id)+')">×</button>':'')+'</div>'
 }
-async function loadPlanningLogs(){const box=document.getElementById('planningLogsList');if(!box)return;const {data,error}=await db.from('planning_logs').select('display_name,action,details,created_at').order('created_at',{ascending:false}).limit(100);if(error){box.innerHTML='<span class="logsEmpty">Historique indisponible.</span>';return}const clean=(data||[]).filter(x=>x.action!=='modify'||!!parseLogDetails(x.details));box.innerHTML=clean.length?clean.map(renderPlanningLog).join(''):'<span class="logsEmpty">Aucune activité enregistrée.</span>'}
+async function loadPlanningLogs(){const box=document.getElementById('planningLogsList');if(!box)return;const {data,error}=await db.from('planning_logs').select('id,display_name,action,details,created_at').order('created_at',{ascending:false}).limit(100);if(error){box.innerHTML='<span class="logsEmpty">Historique indisponible.</span>';return}const clean=(data||[]).filter(x=>x.action!=='modify'||!!parseLogDetails(x.details));box.innerHTML=clean.length?clean.map(renderPlanningLog).join(''):'<span class="logsEmpty">Aucune activité enregistrée.</span>'}
+async function deletePlanningLog(id){
+ if(role!=='admin')return;
+ const logId=Number(id);if(!Number.isFinite(logId))return;
+ if(!confirm('Supprimer uniquement cette ligne de l’historique ?'))return;
+ const row=document.querySelector('.planningLog[data-log-id="'+String(logId)+'"]');
+ if(row){row.style.opacity='.45';row.style.pointerEvents='none'}
+ const {error}=await db.from('planning_logs').delete().eq('id',logId);
+ if(error){if(row){row.style.opacity='';row.style.pointerEvents=''}window.NettoSounds?.play?.('error');alert('Impossible de supprimer cette ligne : '+error.message);return}
+ window.NettoSounds?.play?.('delete');
+ if(row)row.remove();else await loadPlanningLogs();
+ const box=document.getElementById('planningLogsList');if(box&&!box.querySelector('.planningLog'))box.innerHTML='<span class="logsEmpty">Aucune activité enregistrée.</span>'
+}
 async function clearPlanningLogs(){if(role!=='admin'||!confirm('Effacer tout l’historique du planning ?'))return;const {error}=await db.from('planning_logs').delete().gte('id',0);if(error)alert('Impossible d’effacer les logs.');else loadPlanningLogs()}
 
 async function changeWeek(delta){currentWeekStart=addDays(currentWeekStart,delta*7);currentDay=0;await loadWeek(currentWeekStart);playUISound()}
