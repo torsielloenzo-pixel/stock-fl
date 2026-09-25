@@ -1,6 +1,6 @@
 {
-  "name": "Netto — Outils du quotidien",
-  "short_name": "Netto Outils",
+  "name": "Netto",
+  "short_name": "Netto",
   "description": "Planning, stock et outils pratiques pour l'équipe.",
   "start_url": "./home.html",
   "scope": "./",
