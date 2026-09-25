@@ -25,7 +25,7 @@ self.addEventListener('fetch',e=>{
 self.addEventListener('push',e=>{
  let data={};
  try{data=e.data?e.data.json():{}}catch(_){data={body:e.data?.text?.()||''}}
- const title=data.title||'Netto Outils';
+ const title=data.title||'Notification';
  const options={
    body:data.body||'',
    icon:'./assets/app-icon.svg',
