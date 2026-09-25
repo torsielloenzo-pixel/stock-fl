@@ -103,7 +103,7 @@ function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
 function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
-const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,refresh,loadNotifications};
+const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications};
 window.NettoProfileUI=api;
 
 const SOUND_DEFS={
