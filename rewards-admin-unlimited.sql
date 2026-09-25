@@ -10,7 +10,7 @@ declare
   c public.reward_catalog;
   u uuid := auth.uid();
 begin
-  if u is null or not public.has_role(array['admin']) then
+  if u is null or not private.has_role(array['admin']) then
     raise exception 'Boutique réservée à l’administrateur';
   end if;
 
@@ -38,7 +38,7 @@ declare
   u uuid := auth.uid();
   item_ok boolean;
 begin
-  if u is null or not public.has_role(array['admin']) then
+  if u is null or not private.has_role(array['admin']) then
     raise exception 'Personnalisation réservée à l’administrateur';
   end if;
 
