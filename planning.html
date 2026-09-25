@@ -143,7 +143,17 @@ function changedProfilesByUser(){
  for(const [date,names] of editChanges.entries())for(const name of names){const p=planningProfileFor(name);if(!p?.id)continue;if(!map.has(p.id))map.set(p.id,{profile:p,dates:new Set()});map.get(p.id).dates.add(date)}
  return map
 }
-async function notifyUsers(entries){if(!db||!currentUser||!entries?.length)return;const payload=entries.map(x=>({user_id:x.user_id,created_by:currentUser.id,kind:x.kind,title:x.title,message:x.message,planning_date:x.planning_date||null,week_start:x.week_start||isoDate(currentWeekStart),target_url:x.target_url||null}));const {error}=await db.from('planning_notifications').insert(payload);if(error)console.warn('Notifications planning:',error)}
+async function notifyUsers(entries){
+ if(!db||!currentUser||!entries?.length)return;
+ const payload=entries.map(x=>({user_id:x.user_id,created_by:currentUser.id,kind:x.kind,title:x.title,message:x.message,planning_date:x.planning_date||null,week_start:x.week_start||isoDate(currentWeekStart),target_url:x.target_url||null}));
+ const {error}=await db.from('planning_notifications').insert(payload);
+ if(error){console.warn('Notifications planning:',error);return}
+ const pushable=payload.filter(x=>x.kind==='manual_edit'||x.kind==='import_new').map(x=>({user_id:x.user_id,kind:x.kind,title:x.title,message:x.message,target_url:x.target_url}));
+ if(pushable.length){
+   const {error:pushError}=await db.functions.invoke('planning-push',{body:{action:'send',notifications:pushable}});
+   if(pushError)console.warn('Push planning:',pushError)
+ }
+}
 async function notifyChangedEmployees(){
  const entries=[];for(const [userId,v] of changedProfilesByUser()){for(const date of [...v.dates].sort()){entries.push({user_id:userId,kind:'manual_edit',title:'Planning modifié',message:'Ton planning du '+shortDate(date)+' a été modifié. Consulte tes horaires.',planning_date:date,week_start:isoDate(startOfWeek(parseISO(date))),target_url:'planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(date))))+'&day='+encodeURIComponent(date)})}}await notifyUsers(entries)
 }
