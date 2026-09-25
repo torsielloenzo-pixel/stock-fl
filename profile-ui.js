@@ -106,6 +106,14 @@ function bindHomeMark(){
  document.body.classList.remove('mobileNavOpen')
 }
 function findHeaderTop(){return document.querySelector('#site header .top')||document.querySelector('header .top')}
+async function detachPushBeforeLogout(){
+ try{
+  if(!api.client||!api.session||!('serviceWorker' in navigator)||!('PushManager' in window))return;
+  const reg=await navigator.serviceWorker.getRegistration();const sub=await reg?.pushManager?.getSubscription();if(!sub)return;
+  try{await api.client.functions.invoke('planning-push',{body:{action:'unsubscribe',endpoint:sub.endpoint}})}catch(_){}
+  await sub.unsubscribe()
+ }catch(e){console.warn('Désabonnement Push:',e)}
+}
 function buildGlobalHeader(){
  const previous=document.getElementById('nettoGlobalTools');if(previous)previous.remove();bindHomeMark();
  const top=findHeaderTop();if(!top||!api.profile)return;
@@ -118,7 +126,7 @@ function buildGlobalHeader(){
  paint(document.getElementById('nettoTopAvatar'),api.avatarUrl,name,p.profile_color);paint(document.getElementById('nettoMenuAvatar'),api.avatarUrl,name,p.profile_color);updateThemeText();
  wrap.querySelectorAll('.nettoNavBtn[data-url]').forEach(b=>b.onclick=()=>{sounds.play('navigate');const url=b.dataset.url;setTimeout(()=>location.href=url,55)});
  document.getElementById('nettoThemeBtn').onclick=e=>{e.stopPropagation();sounds.play('switch');changeTheme();updateThemeText()};
- document.getElementById('nettoLogoutBtn').onclick=async()=>{sounds.play('logout');await new Promise(r=>setTimeout(r,390));await api.client.auth.signOut({scope:'local'});location.href='index.html'};
+ document.getElementById('nettoLogoutBtn').onclick=async()=>{sounds.play('logout');await new Promise(r=>setTimeout(r,390));await detachPushBeforeLogout();await api.client.auth.signOut({scope:'local'});location.href='index.html'};
  document.getElementById('nettoUserBtn').onclick=e=>{e.stopPropagation();toggleDrop('user')};
  document.getElementById('nettoBellBtn').onclick=e=>{e.stopPropagation();toggleDrop('notifications')};
  document.getElementById('nettoMarkRead').onclick=e=>{e.stopPropagation();sounds.play('confirm');markAllRead()};
