@@ -103,7 +103,7 @@ function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
 function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
-const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications};
+const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference};
 window.NettoProfileUI=api;
 
 const SOUND_DEFS={
@@ -172,7 +172,41 @@ function addStyle(){
 function paint(el,url,name,color){if(!el)return;el.style.setProperty('--profile-accent',color||'#ff5a2a');if(url){el.classList.add('hasPhoto');el.style.backgroundImage='url("'+url.replace(/"/g,'%22')+'")';el.textContent=''}else{el.classList.remove('hasPhoto');el.style.backgroundImage='';el.textContent=initials(name)}}
 function makeButton(icon,title,sub,url,cls=''){return '<button class="nettoNavBtn '+cls+'" data-url="'+esc(url||'')+'"><span>'+icon+'</span><span><strong>'+esc(title)+'</strong><small>'+esc(sub||'')+'</small></span></button>'}
 function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
-function changeTheme(){if(typeof window.toggleTheme==='function'){window.toggleTheme({stopPropagation(){}});return}const next=currentTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('nettoTheme',next)}catch(_){};updateThemeText()}
+function validTheme(value){return value==='dark'||value==='light'?value:null}
+function localTheme(theme){
+ theme=validTheme(theme)||'light';
+ if(typeof window.applyTheme==='function')window.applyTheme(theme);
+ else{document.documentElement.dataset.theme=theme;try{localStorage.setItem('nettoTheme',theme)}catch(_){}}
+ updateThemeText();
+ return theme
+}
+function preferredTheme(profile=api.profile){return validTheme(preferenceMap(profile)?.theme)}
+async function saveThemePreference(theme){
+ theme=localTheme(theme);
+ if(!api.profile)return theme;
+ const prefs={...preferenceMap(api.profile),theme};
+ api.profile={...api.profile,ui_preferences:prefs};
+ saveGlobalCache();
+ window.dispatchEvent(new CustomEvent('netto:theme-preference',{detail:{theme}}));
+ if(api.client&&api.session){
+  const {error}=await api.client.from('profiles').update({ui_preferences:prefs}).eq('id',api.session.user.id);
+  if(error)console.warn('Préférence thème:',error)
+ }
+ return theme
+}
+function applyProfileTheme(profile=api.profile,persistMissing=false){
+ const stored=preferredTheme(profile),theme=stored||currentTheme();
+ localTheme(theme);
+ if(!stored&&persistMissing&&api.client&&api.session)saveThemePreference(theme).catch(()=>{});
+ return theme
+}
+function changeTheme(){
+ const next=currentTheme()==='dark'?'light':'dark';
+ if(typeof window.toggleTheme==='function')window.toggleTheme({stopPropagation(){}});
+ else localTheme(next);
+ saveThemePreference(next).catch(()=>{});
+ updateThemeText()
+}
 function updateThemeText(){const dark=currentTheme()==='dark';document.querySelectorAll('.nettoThemeLabel').forEach(x=>x.textContent=dark?'Mode clair':'Mode sombre');document.querySelectorAll('.nettoThemeIcon').forEach(x=>x.textContent=dark?'☀':'☾')}
 function bindHomeMark(){
  document.querySelectorAll('.mark,.brandMark,.nMenuBtn,.brandMenuBtn').forEach(b=>{if((b.textContent||'').trim()!=='N')return;b.removeAttribute('onclick');b.removeAttribute('aria-expanded');b.setAttribute('aria-label','Retour à l’accueil');b.onclick=e=>{e.preventDefault();e.stopPropagation();location.href='home.html'}})
@@ -262,11 +296,11 @@ function globalCacheKey(){return api.session?.user?.id?'nettoGlobalUI:'+api.sess
 function hydrateGlobalCache(){
  try{
   const k=globalCacheKey();if(!k)return false;const x=JSON.parse(localStorage.getItem(k)||'null');if(!x||Date.now()-Number(x.saved_at||0)>120000)return false;
-  if(!x.profile)return false;api.profile=x.profile;api.siteConfig=x.siteConfig||{};api.avatarUrl=x.avatarUrl||null;rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);document.documentElement.style.setProperty('--profile-accent',api.profile.profile_color||'#ff5a2a');updateKnownUI();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:api.profile,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig,cached:true}}));return true
+  if(!x.profile)return false;api.profile=x.profile;api.siteConfig=x.siteConfig||{};api.avatarUrl=x.avatarUrl||null;applyProfileTheme(api.profile,false);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);document.documentElement.style.setProperty('--profile-accent',api.profile.profile_color||'#ff5a2a');updateKnownUI();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:api.profile,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig,cached:true}}));return true
  }catch(_){return false}
 }
 function saveGlobalCache(){try{const k=globalCacheKey();if(k&&api.profile)localStorage.setItem(k,JSON.stringify({saved_at:Date.now(),profile:api.profile,siteConfig:api.siteConfig,avatarUrl:api.avatarUrl}))}catch(_){}}
-async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,status_text,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
+async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,status_text,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
 async function init(){addStyle();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;const cached=hydrateGlobalCache(),fresh=refresh();if(!cached)await fresh;else fresh.catch(()=>{});rememberSiteBase();addBackButton();logPageView();bindHomeMark();loadNotifications();startNotificationsRealtime();startPresence();let lastFocusReload=0;const reload=()=>{const now=Date.now();if(now-lastFocusReload<15000)return;lastFocusReload=now;loadNotifications()};window.addEventListener('focus',reload);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reload()})}
 const rewardScript=document.createElement('script');rewardScript.src='reward-profile.js?v=2';rewardScript.defer=true;document.head.appendChild(rewardScript);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
