@@ -111,7 +111,7 @@ function renderMobileSchedule(day,employees,rows){
  const box=document.getElementById('mobileSchedule');if(!box)return;if(!model||!day){box.classList.add('hidden');box.innerHTML='';return}box.classList.remove('hidden');
  const colorName={g:'Matin',b:'Après-midi',r:'Rouge',y:'Jaune',o:'Orange',w:'Blanc'};
  let html='<div class="mobileTimelineNote">Vue mobile simplifiée • les horaires restent issus exactement du fichier Excel.</div>';
- employees.forEach((emp,ri)=>{const row=rows[ri]||[],p=planningProfileFor(emp.name),name=p?.display_name||emp.name,ranges=rowRanges(row).filter(x=>x.c&&x.c!=='w'),total=totalForRow(row);
+ employees.forEach((emp,ri)=>{const row=rows[ri]||[],p=planningProfileFor(emp.name),name=p?.display_name||emp.name,ranges=rowRanges(row).filter(x=>x.c==='g'||x.c==='b'),total=totalForRow(row);
    html+='<article class="mobileEmployeeCard"><div class="mobileEmployeeHead">'+identityAvatarHtml(p,name)+'<div class="mobileEmployeeInfo"><strong>'+esc(name)+'</strong></div><span class="mobileTotal">'+String(total).replace('.',',')+' h</span></div><div class="mobileShifts">';
    if(ranges.length)ranges.forEach(x=>{html+='<div class="mobileShift"><i style="--shift:'+COLOR[x.c]+'"></i><strong>'+fmtTime(x.a)+' → '+fmtTime(x.b)+'</strong><small>'+esc(colorName[x.c]||'')+'</small></div>'});else html+='<div class="mobileOff">Aucun horaire renseigné</div>';
    html+='</div></article>'
