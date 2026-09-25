@@ -811,9 +811,13 @@ let profileLoaderShownAt=0;
 function showProfileLoader(message='Application de tes préférences…'){const el=$('profileLoader'),txt=$('profileLoaderText');if(!el)return;if(txt)txt.textContent=message;profileLoaderShownAt=performance.now();el.classList.add('show')}
 async function hideProfileLoader(minMs=320){const el=$('profileLoader');if(!el)return;const elapsed=performance.now()-profileLoaderShownAt;if(elapsed<minMs)await new Promise(r=>setTimeout(r,minMs-elapsed));el.classList.remove('show');await new Promise(r=>setTimeout(r,245))}
 function profilePrefs(p){return p?.ui_preferences&&typeof p.ui_preferences==='object'&&!Array.isArray(p.ui_preferences)?p.ui_preferences:{}}
+function profileThemeKey(uid){return uid?'nettoProfileTheme:'+uid:null}
+function cachedProfileTheme(uid){try{const k=profileThemeKey(uid),v=k?localStorage.getItem(k):null;return v==='dark'||v==='light'?v:null}catch(_){return null}}
+function rememberProfileTheme(uid,theme){if(theme!=='dark'&&theme!=='light')return;try{const k=profileThemeKey(uid);if(k)localStorage.setItem(k,theme)}catch(_){}}
+function applyCachedProfileTheme(uid){const t=cachedProfileTheme(uid);if(t)applyTheme(t);return t}
 async function syncProfileTheme(p,uid){
- const prefs=profilePrefs(p),stored=prefs.theme==='dark'||prefs.theme==='light'?prefs.theme:null,theme=stored||currentTheme();
- applyTheme(theme);p.ui_preferences={...prefs,theme};
+ const prefs=profilePrefs(p),stored=prefs.theme==='dark'||prefs.theme==='light'?prefs.theme:null,theme=stored||cachedProfileTheme(uid)||currentTheme();
+ applyTheme(theme);rememberProfileTheme(uid,theme);p.ui_preferences={...prefs,theme};
  if(!stored&&uid){const {error}=await db.from('profiles').update({ui_preferences:p.ui_preferences}).eq('id',uid);if(error)console.warn('Initialisation thème profil:',error)}
  return theme
 }
@@ -833,7 +837,7 @@ async function boot(){
  const {data,error}=await loadSessionProfile(session.user.id);
  if(error){console.warn('Profil:',error);await hideProfileLoader(180);return showLogin('Connexion momentanément indisponible. Recharge la page : ta session est conservée.')}
  if(!data){await db.auth.signOut({scope:'local'});await hideProfileLoader(180);return showLogin('Compte non autorisé.')}
- profile=data;await syncProfileTheme(profile,session.user.id);window.currentRole=profile.role;const ENZO_FL_MANAGER_ID='203b7c03-7ac7-41ca-a211-3cf7cabd9a4a';const {data:flPerm}=await db.from('user_module_permissions').select('permission').eq('user_id',session.user.id).eq('module','fruits_legumes').eq('permission','responsable').maybeSingle();canManageFL=profile.role==='admin'||profile.role==='responsable'||session.user.id===ENZO_FL_MANAGER_ID||!!flPerm;window.canManageFL=canManageFL;const returnTo=safeReturnPath();if(returnTo&&profile.role==='admin'){location.replace(returnTo);return}$('login').classList.add('hidden');$('site').classList.remove('hidden');$('who').textContent=(profile.display_name||'Utilisateur')+' • '+(canManageFL&&profile.role!=='admin'&&profile.role!=='responsable'?'Responsable F&L':profile.role);
+ profile=data;const loaderTxt=$('profileLoaderText');if(loaderTxt)loaderTxt.textContent='Application de ton thème…';await syncProfileTheme(profile,session.user.id);window.currentRole=profile.role;const ENZO_FL_MANAGER_ID='203b7c03-7ac7-41ca-a211-3cf7cabd9a4a';const {data:flPerm}=await db.from('user_module_permissions').select('permission').eq('user_id',session.user.id).eq('module','fruits_legumes').eq('permission','responsable').maybeSingle();canManageFL=profile.role==='admin'||profile.role==='responsable'||session.user.id===ENZO_FL_MANAGER_ID||!!flPerm;window.canManageFL=canManageFL;const returnTo=safeReturnPath();if(returnTo&&profile.role==='admin'){location.replace(returnTo);return}$('login').classList.add('hidden');$('site').classList.remove('hidden');$('who').textContent=(profile.display_name||'Utilisateur')+' • '+(canManageFL&&profile.role!=='admin'&&profile.role!=='responsable'?'Responsable F&L':profile.role);
  const manager=profile.role==='admin';document.querySelectorAll('.adminOnlyMenu').forEach(x=>x.classList.toggle('hidden',!manager));document.querySelectorAll('.adminWorkspace').forEach(x=>x.classList.toggle('hidden',!manager));
  const qs=new URLSearchParams(location.search),requested=qs.get('mode')||localStorage.getItem('nettoStockMode')||'stock';stockMode=(['stock','consult'].includes(requested)||manager&&['order','manage'].includes(requested))?requested:'stock';
  updateCartBadge();const hadStockCache=hydrateStockCache();if(hadStockCache){render();applyStockModeUI()}await loadSharedSiteConfig();if(hadStockCache)await Promise.all([loadOptions(),loadProducts()]);else{await loadOptions();await loadProducts()}applyStockModeUI();
@@ -868,11 +872,11 @@ async function login(e){
  const {data:authData,error}=await db.auth.signInWithPassword({email:authEmail,password:$('password').value});
  if(error)return loginDenied('Email ou mot de passe incorrect.');
  const uid=authData?.user?.id;if(!uid){await db.auth.signOut({scope:'local'});return showLogin('Compte non autorisé.')}
- showProfileLoader();
+ applyCachedProfileTheme(uid);showProfileLoader('Chargement de ton profil…');
  const {data:p,error:pe}=await loadSessionProfile(uid,'display_name,email,role,ui_preferences');
  if(pe){await hideProfileLoader(180);return showLogin('Connexion momentanément indisponible. Ta session a bien été créée : recharge la page.')}
  if(!p){await db.auth.signOut({scope:'local'});await hideProfileLoader(180);return showLogin('Compte non autorisé.')}
- profile=p;await syncProfileTheme(profile,uid);playLoginSound();$('login').classList.add('hidden');$('site').classList.add('hidden');
+ profile=p;const loaderTxt=$('profileLoaderText');if(loaderTxt)loaderTxt.textContent='Application de ton thème…';await syncProfileTheme(profile,uid);playLoginSound();$('login').classList.add('hidden');$('site').classList.add('hidden');
  await hideProfileLoader(380);await showWelcome();
  const returnTo=safeReturnPath();location.href=returnTo&&p.role==='admin'?returnTo:'home.html'
 }
