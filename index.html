@@ -876,6 +876,7 @@ async function login(e){
  const {data:p,error:pe}=await loadSessionProfile(uid,'display_name,email,role,ui_preferences');
  if(pe){await hideProfileLoader(180);return showLogin('Connexion momentanément indisponible. Ta session a bien été créée : recharge la page.')}
  if(!p){await db.auth.signOut({scope:'local'});await hideProfileLoader(180);return showLogin('Compte non autorisé.')}
+ try{const {error:loginLogError}=await db.from('login_history').insert({user_id:uid,signed_in_at:new Date().toISOString(),user_agent:String(navigator.userAgent||'').slice(0,500),source:'app'});if(loginLogError)console.warn('Historique connexion:',loginLogError)}catch(loginLogError){console.warn('Historique connexion:',loginLogError)}
  profile=p;const loaderTxt=$('profileLoaderText');if(loaderTxt)loaderTxt.textContent='Application de ton thème…';await syncProfileTheme(profile,uid);playLoginSound();$('login').classList.add('hidden');$('site').classList.add('hidden');
  await hideProfileLoader(380);await showWelcome();
  const returnTo=safeReturnPath();location.href=returnTo&&p.role==='admin'?returnTo:'home.html'
