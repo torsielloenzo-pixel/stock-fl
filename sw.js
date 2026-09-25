@@ -1,4 +1,4 @@
-const CACHE='netto-tools-v35';
+const CACHE='netto-tools-v36';
 const CORE=['./rewards.html','./rewards.css?v=1','./rewards.js?v=3','./reward-profile.js?v=2','./','./index.html','./home.html','./articles.html','./bakery.html','./planning.html','./chat.html','./profile.html','./settings.html','./stock-test.html','./accounts.html','./admin-portal.html','./custom-menu.html','./fl-assistant.html','./manifest.webmanifest','./design-v2.css','./design-v3.css?v=3','./design-v4.css?v=1','./profile-ui.js?v=22','./assets/app-icon.svg','./assets/logo-stock.svg','./assets/logo-planning.svg','./assets/logo-equipe.svg','./assets/logo-article.svg','./assets/logo-boulangerie.svg','./assets/fl-background.webp'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([
