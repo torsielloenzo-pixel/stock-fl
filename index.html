@@ -800,7 +800,7 @@ function setStockResetMode(mode){
  renderStockResetSummary()
 }
 function openStockReset(){
- if(!['admin','responsable'].includes(profile?.role)||!flFamilyId)return;
+ if(!canManageFL||!flFamilyId)return;
  $('resetStockFamily').value=String(flFamilyId);
  stockResetMode='family';$('resetStockState').textContent='';setStockResetMode('family');renderStockResetCategories();renderStockResetSummary();$('stockResetDialog').showModal();window.NettoSounds?.play?.('menuOpen')
 }
