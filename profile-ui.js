@@ -398,6 +398,81 @@ function hydrateGlobalCache(){
 }
 function saveGlobalCache(){try{const k=globalCacheKey();if(k&&api.profile)localStorage.setItem(k,JSON.stringify({saved_at:Date.now(),profile:api.profile,siteConfig:api.siteConfig,avatarUrl:api.avatarUrl}))}catch(_){}}
 async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
+
+const APP_RELEASE=54;
+const APP_ICON='assets/app-icon-v54.svg';
+let updateRegistration=null;
+function ensureUpdateStyles(){
+ if(document.getElementById('nettoUpdateStyle'))return;
+ const s=document.createElement('style');s.id='nettoUpdateStyle';
+ s.textContent='.nettoUpdateToast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,18px);width:min(94vw,520px);z-index:2147482500;background:rgba(25,27,30,.96);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:15px;box-shadow:0 24px 70px rgba(0,0,0,.36);backdrop-filter:blur(18px);opacity:0;transition:opacity .2s ease,transform .2s ease}.nettoUpdateToast.show{opacity:1;transform:translate(-50%,0)}.nettoUpdateTop{display:flex;gap:12px;align-items:flex-start}.nettoUpdateIcon{width:48px;height:48px;border-radius:14px;object-fit:cover;background:#303236;flex:none}.nettoUpdateCopy{min-width:0;flex:1}.nettoUpdateCopy strong{display:block;font-size:14px;line-height:1.25}.nettoUpdateCopy span{display:block;margin-top:4px;color:#d3d6db;font-size:11px;line-height:1.45}.nettoUpdateVersion{display:inline-flex!important;width:auto!important;margin-top:8px!important;padding:4px 8px;border-radius:999px;background:#ffffff12;color:#ff9a72!important;font-size:9px!important;font-weight:900;letter-spacing:.4px}.nettoUpdateActions{display:flex;gap:8px;margin-top:13px}.nettoUpdateActions button{border:0;border-radius:12px;min-height:39px;padding:0 13px;font:800 11px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.nettoUpdateLater{background:#ffffff12;color:#f3f4f5}.nettoUpdateNow{margin-left:auto;background:linear-gradient(135deg,#ff4b2b,#ff8126);color:#fff;box-shadow:0 8px 22px rgba(255,91,37,.28)}.nettoUpdateNow:disabled{opacity:.65;cursor:wait}@media(max-width:520px){.nettoUpdateToast{width:calc(100vw - 20px);border-radius:18px}.nettoUpdateActions{display:grid;grid-template-columns:1fr 1.25fr}.nettoUpdateNow{margin-left:0}}';
+ document.head.appendChild(s)
+}
+function syncAppIconLinks(){
+ document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(x=>x.remove());
+ const icon=document.createElement('link');icon.rel='icon';icon.type='image/svg+xml';icon.href=APP_ICON+'?v='+APP_RELEASE;document.head.appendChild(icon);
+ const apple=document.createElement('link');apple.rel='apple-touch-icon';apple.href=APP_ICON+'?v='+APP_RELEASE;document.head.appendChild(apple);
+ const manifest=document.querySelector('link[rel="manifest"]');if(manifest)manifest.href='manifest.webmanifest?v='+APP_RELEASE;
+}
+function workerVersion(worker){
+ return new Promise(resolve=>{
+  if(!worker){resolve(null);return}
+  const ch=new MessageChannel(),timer=setTimeout(()=>resolve(null),1200);
+  ch.port1.onmessage=e=>{clearTimeout(timer);resolve(Number(e.data&&e.data.version)||null)};
+  try{worker.postMessage({type:'GET_VERSION'},[ch.port2])}catch(_){clearTimeout(timer);resolve(null)}
+ })
+}
+async function releaseInfo(){
+ try{const r=await fetch('app-version.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));return await r.json()}catch(_){return{version:APP_RELEASE,label:'v'+APP_RELEASE,important:true,title:'Mise à jour Nethor disponible',message:'Une nouvelle version de l’application est disponible.',icon:APP_ICON}}
+}
+async function notifyUpdateSystem(reg,info){
+ if(!reg||typeof Notification==='undefined'||Notification.permission!=='granted')return;
+ const key='nettoUpdateSystemNotified:'+String(info.version||APP_RELEASE);
+ try{if(localStorage.getItem(key)==='1')return;await reg.showNotification(info.title||'Mise à jour Nethor disponible',{body:info.message||'Une nouvelle version est prête à être installée.',icon:info.icon||APP_ICON,badge:info.icon||APP_ICON,tag:'nethor-update-'+String(info.version||APP_RELEASE),renotify:false,data:{url:'home.html',kind:'app_update'}});localStorage.setItem(key,'1')}catch(_){}
+}
+function hideUpdateToast(){
+ const el=document.getElementById('nettoUpdateToast');if(!el)return;el.classList.remove('show');setTimeout(()=>el.remove(),220)
+}
+async function activateWaitingUpdate(info){
+ const reg=updateRegistration||await navigator.serviceWorker.getRegistration();const worker=reg&&reg.waiting;if(!worker)return location.reload();
+ const btn=document.getElementById('nettoUpdateNow');if(btn){btn.disabled=true;btn.textContent='Mise à jour…'}
+ try{localStorage.setItem('nettoAppVersion',String(info.version||APP_RELEASE));localStorage.setItem('nettoAppUpdatedAt',new Date().toISOString())}catch(_){}
+ let changed=false;
+ const reload=()=>{if(changed)return;changed=true;syncAppIconLinks();location.reload()};
+ navigator.serviceWorker.addEventListener('controllerchange',reload,{once:true});
+ worker.postMessage({type:'SKIP_WAITING'});
+ setTimeout(reload,4500)
+}
+async function showUpdateAvailable(reg){
+ updateRegistration=reg||updateRegistration;
+ const info=await releaseInfo(),version=Number(info.version)||APP_RELEASE;
+ if(sessionStorage.getItem('nettoUpdateLater')===String(version))return;
+ if(document.getElementById('nettoUpdateToast'))return;
+ ensureUpdateStyles();
+ const el=document.createElement('aside');el.id='nettoUpdateToast';el.className='nettoUpdateToast';el.setAttribute('role','status');el.setAttribute('aria-live','polite');
+ el.innerHTML='<div class="nettoUpdateTop"><img class="nettoUpdateIcon" src="'+esc(info.icon||APP_ICON)+'" alt=""><div class="nettoUpdateCopy"><strong>'+esc(info.title||'Mise à jour Nethor disponible')+'</strong><span>'+esc(info.message||'Une nouvelle version de l’application est prête.')+'</span><span class="nettoUpdateVersion">'+esc(info.label||('v'+version))+' • dernière version</span></div></div><div class="nettoUpdateActions"><button type="button" class="nettoUpdateLater" id="nettoUpdateLater">Plus tard</button><button type="button" class="nettoUpdateNow" id="nettoUpdateNow">Mettre à jour</button></div>';
+ document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));sounds.play('notification');
+ document.getElementById('nettoUpdateLater').onclick=()=>{sessionStorage.setItem('nettoUpdateLater',String(version));hideUpdateToast()};
+ document.getElementById('nettoUpdateNow').onclick=()=>activateWaitingUpdate(info);
+ notifyUpdateSystem(reg,info)
+}
+async function setupAppUpdates(){
+ if(!('serviceWorker' in navigator))return;
+ try{
+  ensureUpdateStyles();
+  const reg=await navigator.serviceWorker.register('./sw.js');updateRegistration=reg;
+  const activeVersion=await workerVersion(navigator.serviceWorker.controller);
+  if(activeVersion===APP_RELEASE){try{localStorage.setItem('nettoAppVersion',String(APP_RELEASE))}catch(_){};syncAppIconLinks()}
+  if(reg.waiting&&navigator.serviceWorker.controller)showUpdateAvailable(reg);
+  reg.addEventListener('updatefound',()=>{
+   const worker=reg.installing;if(!worker)return;
+   worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller&&reg.waiting)showUpdateAvailable(reg)})
+  });
+  reg.update().catch(()=>{});
+  window.addEventListener('focus',()=>reg.update().catch(()=>{}));
+ }catch(e){console.warn('Mise à jour application:',e)}
+}
+
 function ensureAccessibleNames(root=document){
  root.querySelectorAll('input,select,textarea').forEach(el=>{
   if(el.type==='hidden'||el.hasAttribute('aria-label')||el.hasAttribute('aria-labelledby')||el.labels?.length)return;
@@ -418,7 +493,7 @@ function startAccessibleNameObserver(){
  observer.observe(document.body,{childList:true,subtree:true});
  window.__nettoA11yObserver=observer;
 }
-async function init(){addStyle();ensureAccessibleNames();startAccessibleNameObserver();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;const rememberedTheme=cachedProfileTheme(session.user.id);if(rememberedTheme)localTheme(rememberedTheme);const cached=hydrateGlobalCache(),fresh=refresh();if(!cached)await fresh;else fresh.catch(()=>{});rememberSiteBase();addBackButton();logPageView();bindHomeMark();loadNotifications();startNotificationsRealtime();startPresence();let lastFocusReload=0;const reload=()=>{const now=Date.now();if(now-lastFocusReload<15000)return;lastFocusReload=now;loadNotifications()};window.addEventListener('focus',reload);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reload()})}
+async function init(){addStyle();ensureAccessibleNames();startAccessibleNameObserver();setupAppUpdates();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;const rememberedTheme=cachedProfileTheme(session.user.id);if(rememberedTheme)localTheme(rememberedTheme);const cached=hydrateGlobalCache(),fresh=refresh();if(!cached)await fresh;else fresh.catch(()=>{});rememberSiteBase();addBackButton();logPageView();bindHomeMark();loadNotifications();startNotificationsRealtime();startPresence();let lastFocusReload=0;const reload=()=>{const now=Date.now();if(now-lastFocusReload<15000)return;lastFocusReload=now;loadNotifications()};window.addEventListener('focus',reload);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reload()})}
 const rewardScript=document.createElement('script');rewardScript.src='reward-profile.js?v=2';rewardScript.defer=true;document.head.appendChild(rewardScript);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
