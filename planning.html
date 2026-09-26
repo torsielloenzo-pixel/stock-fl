@@ -113,6 +113,20 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
 @media(max-width:1180px){.yearGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:900px){main{padding:14px 10px 50px}.top{width:100%}.yearGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.xlsTable col.nameCol{width:135px}.xlsTable .nameCell,.xlsTable .nameHead{max-width:135px}.excelDrop{grid-template-columns:38px minmax(0,1fr)}.excelDrop>b{display:none}}
 @media(max-width:620px){.sub{display:none}.title{font-size:18px}.planningViewBar{align-items:flex-start}.weekNav{width:100%}.days{width:100%}.planningActions{width:100%;justify-content:flex-end;gap:6px;flex-wrap:wrap}.saveState{width:100%;text-align:right}.compactImport{flex:1;min-width:0}.compactImport .excelDrop{min-height:42px;padding:6px 9px;justify-content:flex-start}.compactImport .excelIcon{width:29px;height:29px}.compactImport .excelDrop strong{font-size:9.5px}.compactImport .excelDrop small{display:none}.importState{left:0;right:auto;top:47px;max-width:min(82vw,320px)}.personalPlanningBanner{padding:10px 11px;margin-bottom:10px}.personalBannerAvatar{width:34px;height:34px}.personalBannerText strong{font-size:11px}.personalBannerText span{font-size:9.5px}.dateTitle{font-size:21px}.yearHero{display:grid;grid-template-columns:1fr;padding:13px;margin-bottom:10px}.yearIntro strong{font-size:13px}.yearHead{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) 42px}.yearNavBtn{width:42px;height:42px}.yearCurrent{width:100%;height:42px}.yearTodayBtn{grid-column:1/-1;width:100%;height:38px}.yearLegend{gap:10px;margin:0 2px 10px}.yearGrid{grid-template-columns:1fr;gap:10px}.monthCard{padding:12px 13px;border-radius:15px}.monthCard:hover{transform:none}.monthCard h3{font-size:14px}.monthStatus{font-size:8px}.monthWeekdays,.monthDays{gap:5px}.monthWeekdays span{font-size:8px}.yearDay,.yearEmptySlot{min-height:38px}.yearDay{font-size:10.5px;border-radius:9px}.yearDay i{width:5px;height:5px;bottom:4px}.paintChoices{width:100%}.planningLogsHead{align-items:flex-start}.mobileSchedule{display:grid;gap:8px}.sheetViewport{display:none!important}body.planningEditing .mobileSchedule{display:none!important}body.planningEditing .sheetViewport{display:block!important}.xlsTable col.nameCol{width:145px}.xlsTable col.slotCol{width:27px}.xlsTable .slot{width:27px;min-width:27px}.readerHead{align-items:flex-start}.sourceBadge{max-width:48vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.legend{margin-top:8px}.editSaveBar{position:sticky;bottom:8px;z-index:60;box-shadow:0 10px 30px #0003}.editSaveBarText small{display:none}.saveFinishBtn{padding:10px 11px;font-size:10px}.planningLogs{padding:10px;margin-top:12px}.planningLogsList{max-height:none}.planningLog{grid-template-columns:32px minmax(0,1fr) auto;padding:9px}.logIcon{width:30px;height:30px}.logDelete{width:32px;height:32px;font-size:20px}.planningLog strong{font-size:10px}.planningLog span{font-size:9px}}
+
+/* Planning intelligence : couverture, anomalies, indisponibilités */
+.planningInsights{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.9fr) minmax(300px,1fr);gap:10px;margin:0 0 12px}
+.planningInsightCard{min-width:0;background:#fff;border:1px solid #e1e4e8;border-radius:16px;padding:13px;box-shadow:0 6px 18px #18223509}
+.insightHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}.insightHead strong{display:block;font-size:12px}.insightHead small{display:block;margin-top:3px;color:#858991;font-size:8.5px;line-height:1.35}.insightMetric{font-size:9px;font-weight:850;background:#f2f3f5;border-radius:999px;padding:6px 8px;white-space:nowrap}
+.coverageSummary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}.coveragePill{font-size:9px;font-weight:800;background:#f4f5f7;border:1px solid #e4e6e9;border-radius:9px;padding:6px 8px}.coveragePill b{font-size:11px}
+.coverageScroller{overflow-x:auto;padding:2px 0 3px}.coverageBars{height:96px;min-width:760px;display:flex;align-items:flex-end;gap:3px;padding:17px 2px 20px;border-bottom:1px solid #e9ebee;position:relative}.coverageBar{position:relative;flex:1;min-width:8px;height:var(--h);min-height:3px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--orange),var(--red));opacity:.9}.coverageBar.isLow{opacity:.45}.coverageBar span{position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);font-size:7px;font-weight:850;color:#686d74}.coverageBar small{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);font-size:6.5px;color:#92969d;white-space:nowrap}.coverageEmpty{font-size:9.5px;color:#92969d;padding:18px 2px}
+.anomalyList,.absenceList{display:grid;gap:7px;max-height:220px;overflow:auto;padding-right:1px}.anomalyItem{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;align-items:start;padding:8px 9px;border:1px solid #e6e8eb;border-radius:11px;background:#fafbfc}.anomalyItem .ai{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:#f0f2f4;font-size:11px}.anomalyItem strong{display:block;font-size:9.5px;line-height:1.25}.anomalyItem span{display:block;font-size:8.5px;color:#7d8289;margin-top:2px;line-height:1.35}.anomalyItem.warn{background:#fff8ee;border-color:#ffe1b4}.anomalyItem.warn .ai{background:#ffedce}.anomalyItem.alert{background:#fff1ef;border-color:#ffd1ca}.anomalyItem.alert .ai{background:#ffddd8}.anomalyGood{padding:12px 10px;border:1px solid #d8ecdf;border-radius:11px;background:#f2faf5;font-size:9px;color:#267545;font-weight:800}
+.absenceActions{display:flex;gap:6px;align-items:center}.absenceAddBtn{padding:7px 9px!important;font-size:9px!important}.absenceRow{padding:9px 10px;border:1px solid #e5e7ea;border-radius:11px;background:#fafbfc}.absenceTop{display:flex;align-items:center;justify-content:space-between;gap:8px}.absenceTop strong{font-size:9.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.absenceStatus{font-size:7.5px;font-weight:900;padding:4px 6px;border-radius:999px;white-space:nowrap}.absenceStatus.pending{background:#fff0d7;color:#9a5b00}.absenceStatus.approved{background:#dff5e7;color:#18713a}.absenceStatus.rejected{background:#ffe1dd;color:#a92a1d}.absenceStatus.cancelled{background:#eceef1;color:#6c7178}.absenceMeta{font-size:8.5px;color:#777d85;margin-top:4px}.absenceNote{font-size:8.5px;color:#555b63;margin-top:5px;line-height:1.35}.absenceButtons{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.absenceButtons button{border:0;border-radius:8px;padding:5px 7px;font-size:8px;font-weight:850;cursor:pointer}.absenceApprove{background:#e2f5e8;color:#176f38}.absenceReject{background:#ffe5e1;color:#a42b20}.absenceCancel{background:#eceef1;color:#555b63}.absenceEmpty{font-size:9px;color:#92969d;padding:9px 2px}
+.planningModal{position:fixed;inset:0;z-index:6100;background:#11182755;backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px}.planningModalCard{width:min(92vw,460px);background:#fff;border:1px solid #e0e3e7;border-radius:18px;padding:16px;box-shadow:0 24px 80px #0004}.planningModalHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:13px}.planningModalHead strong{display:block;font-size:14px}.planningModalHead small{display:block;font-size:9px;color:#858991;margin-top:3px}.planningModalClose{width:30px;height:30px;border:0;border-radius:9px;background:#f0f1f3;font-size:18px;cursor:pointer}.absenceForm{display:grid;gap:10px}.absenceForm label{display:grid;gap:5px;font-size:9px;font-weight:850;color:#5f646b}.absenceForm input,.absenceForm select,.absenceForm textarea{width:100%;border:1px solid #d9dde2;border-radius:10px;background:#fff;color:#222;padding:9px 10px;outline:none}.absenceForm textarea{min-height:78px;resize:vertical}.absenceDates{display:grid;grid-template-columns:1fr 1fr;gap:8px}.absenceSubmit{background:linear-gradient(135deg,var(--red),var(--orange));color:#fff}.absenceFormHelp{font-size:8px;color:#8b9097;line-height:1.4}
+:root[data-theme="dark"] .planningInsightCard,:root[data-theme="dark"] .planningModalCard{background:#1a1b1e;border-color:#34363b}:root[data-theme="dark"] .insightMetric,:root[data-theme="dark"] .coveragePill{background:#292b30;border-color:#3d4046;color:#f0f1f3}:root[data-theme="dark"] .coverageBars{border-color:#34363b}:root[data-theme="dark"] .coverageBar span,:root[data-theme="dark"] .coverageBar small,:root[data-theme="dark"] .insightHead small{color:#abb0b8}:root[data-theme="dark"] .anomalyItem,:root[data-theme="dark"] .absenceRow{background:#222429;border-color:#383b41}:root[data-theme="dark"] .anomalyItem span,:root[data-theme="dark"] .absenceMeta,:root[data-theme="dark"] .absenceNote{color:#b9bdc4}:root[data-theme="dark"] .anomalyItem.warn{background:#2c2418;border-color:#54401f}:root[data-theme="dark"] .anomalyItem.alert{background:#2f1e1c;border-color:#57302b}:root[data-theme="dark"] .anomalyGood{background:#18271d;border-color:#2b4a35;color:#7ed69b}:root[data-theme="dark"] .planningModalClose,:root[data-theme="dark"] .absenceCancel{background:#303238;color:#f1f2f4}:root[data-theme="dark"] .absenceForm input,:root[data-theme="dark"] .absenceForm select,:root[data-theme="dark"] .absenceForm textarea{background:#222429;border-color:#41444b;color:#f2f3f5}:root[data-theme="dark"] .absenceForm label{color:#d5d8dd}
+@media(max-width:1050px){.planningInsights{grid-template-columns:1fr 1fr}.coverageCard{grid-column:1/-1}}
+@media(max-width:720px){.planningInsights{grid-template-columns:1fr}.coverageCard{grid-column:auto}.planningInsightCard{padding:11px;border-radius:14px}.absenceDates{grid-template-columns:1fr}.anomalyList,.absenceList{max-height:260px}.coverageBars{min-width:680px}}
+
 </style><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/app-icon-v63.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/app-icon-v63.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -132,6 +146,22 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
       <div class="planningActions"><span id="saveState" class="saveState">Lecture seule</span><div id="importPanel" class="importPanel compactImport hidden"><input id="excelFile" type="file" accept=".xls,.xlsx,.xlsm" multiple hidden onchange="importPlanningFiles(this.files)"><div class="excelDrop" onclick="document.getElementById('excelFile').click()" ondragover="excelDrag(event,true)" ondragleave="excelDrag(event,false)" ondrop="excelDropFile(event)"><span class="excelIcon">▦</span><div><strong>Importer Excel</strong><small>Un ou plusieurs fichiers à la fois</small></div></div><div id="importState" class="importState"></div></div><button id="editPlanningBtn" class="btn dark hidden" onclick="toggleEditMode()">✎ Modifier le planning</button></div>
     </div>
     <div class="readerHead"><div><div id="dateTitle" class="dateTitle"></div><div id="readerMeta" class="readerMeta"></div></div><span id="sourceBadge" class="sourceBadge hidden"></span></div>
+
+    <section id="planningInsights" class="planningInsights">
+      <article class="planningInsightCard coverageCard">
+        <div class="insightHead"><div><strong>Couverture magasin</strong><small>Présence planifiée par tranche de 15 minutes pour la journée sélectionnée.</small></div><span id="coverageMetric" class="insightMetric">—</span></div>
+        <div id="coverageSummary" class="coverageSummary"></div>
+        <div id="coverageScroller" class="coverageScroller"><div id="coverageBars" class="coverageBars"></div></div>
+      </article>
+      <article class="planningInsightCard">
+        <div class="insightHead"><div><strong>Détection d’anomalies</strong><small>Contrôles automatiques d’organisation. Ils ne remplacent pas un contrôle RH ou réglementaire.</small></div><span id="anomalyMetric" class="insightMetric">0</span></div>
+        <div id="anomalyList" class="anomalyList"></div>
+      </article>
+      <article class="planningInsightCard">
+        <div class="insightHead"><div><strong>Indisponibilités / Congés</strong><small id="absenceSubtitle">Demandes liées à cette semaine.</small></div><div class="absenceActions"><button class="btn light absenceAddBtn" type="button" onclick="openAbsenceModal()">+ Demander</button></div></div>
+        <div id="absenceList" class="absenceList"></div>
+      </article>
+    </section>
     <div id="editTools" class="editTools hidden">
       <strong>Modifier directement le tableau</strong>
       <div class="paintChoices">
@@ -149,13 +179,26 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
     <div class="legend"><span><i class="sw" style="background:#1FB714"></i>Matin</span><span><i class="sw" style="background:#00ABEA"></i>Après-midi</span></div><div id="editSaveBar" class="editSaveBar hidden"><div class="editSaveBarText"><strong>Modifications du planning</strong><small>Quand tout est correct, enregistre et quitte le mode modification.</small></div><button class="btn saveFinishBtn" onclick="saveAndFinishEdit()">✓ Enregistrer et terminer</button></div>
     <section id="planningLogs" class="planningLogs"><div class="planningLogsHead"><div><strong>Historique du planning</strong><small>Imports et modifications du tableau</small></div><button id="clearPlanningLogs" class="btn light hidden" onclick="clearPlanningLogs()">Effacer les logs</button></div><div id="planningLogsList" class="planningLogsList"><span class="logsEmpty">Aucune activité enregistrée.</span></div></section>
   </section>
+
+  <div id="absenceModal" class="planningModal hidden" onclick="if(event.target===this)closeAbsenceModal()">
+    <div class="planningModalCard" role="dialog" aria-modal="true" aria-labelledby="absenceModalTitle">
+      <div class="planningModalHead"><div><strong id="absenceModalTitle">Nouvelle demande</strong><small>Indique la période concernée. La demande restera en attente jusqu’à validation.</small></div><button class="planningModalClose" type="button" onclick="closeAbsenceModal()" aria-label="Fermer">×</button></div>
+      <form class="absenceForm" onsubmit="submitAbsenceRequest(event)">
+        <label>Type<select id="absenceType"><option value="unavailable">Indisponibilité</option><option value="leave">Congé</option></select></label>
+        <div class="absenceDates"><label>Du<input id="absenceStart" type="date" required></label><label>Au<input id="absenceEnd" type="date" required></label></div>
+        <label>Note facultative<textarea id="absenceNote" maxlength="500" placeholder="Ex. rendez-vous, contrainte personnelle…"></textarea></label>
+        <div class="absenceFormHelp">Une demande validée est également contrôlée par la détection d’anomalies si des horaires restent planifiés sur la même période.</div>
+        <button id="absenceSubmitBtn" class="btn absenceSubmit" type="submit">Envoyer la demande</button>
+      </form>
+    </div>
+  </div>
   <div id="weekTotalsModal" class="weekTotalsModal hidden" onclick="if(event.target===this)closeWeekTotals()"><div class="weekTotalsCard" role="dialog" aria-modal="true" aria-labelledby="weekTotalsTitle"><div class="weekTotalsHead"><div><strong id="weekTotalsTitle">Total de la semaine</strong><small id="weekTotalsSubtitle"></small></div><button class="weekTotalsClose" type="button" onclick="closeWeekTotals()" aria-label="Fermer">×</button></div><div id="weekTotalsList" class="weekTotalsList"></div></div></div>
   <section id="yearView" class="yearView hidden"><div class="yearHero"><div class="yearIntro"><strong>Vue annuelle du planning</strong><span id="yearSummary">Repère rapidement les semaines déjà publiées.</span></div><div class="yearHead"><button class="btn light yearNavBtn" onclick="changeYear(-1)" aria-label="Année précédente">←</button><button id="yearTitle" class="btn light yearCurrent" onclick="goCurrentYear()" title="Revenir à l’année actuelle"></button><button class="btn light yearNavBtn" onclick="changeYear(1)" aria-label="Année suivante">→</button><button class="btn light yearTodayBtn" onclick="goCurrentYear()">Cette année</button></div></div><div class="yearLegend"><span><i class="available"></i>Planning disponible</span><span><i class="todayMark"></i>Aujourd’hui</span><span>Appuie sur un jour pour ouvrir sa semaine</span></div><div id="yearGrid" class="yearGrid"></div></section>
 </main><script>
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const COLOR={g:'#1FB714',b:'#00ABEA',r:'#DD0806',y:'#FFFF00',o:'#EDA900',w:'#FFFFFF'};
 const DAYS=[['LUNDI','Lundi'],['MARDI','Mardi'],['MERCREDI','Mercredi'],['JEUDI','Jeudi'],['VENDREDI','Vendredi'],['SAMEDI','Samedi'],['DIMANCHE','Dimanche']];
-let db=null,role=null,canEdit=false,currentUser=null,model=null,editMode=false,paintColor='g',planningView='week',teamProfiles=[],planningProfileChannel=null;
+let db=null,role=null,canEdit=false,currentUser=null,model=null,editMode=false,paintColor='g',planningView='week',teamProfiles=[],planningProfileChannel=null,planningAbsences=[];
 let currentWeekStart=startOfWeek(new Date()),currentDay=Math.max(0,Math.min(6,(new Date().getDay()+6)%7)),currentYear=new Date().getFullYear();
 let drag={active:false,row:null,pointerId:null,changed:new Set(),first:null,last:null};
 let editChanges=new Map();
@@ -279,6 +322,106 @@ function parseLogDetails(v){try{const x=JSON.parse(v||'');return x&&typeof x==='
 
 
 
+
+function absenceTypeLabel(v){return v==='leave'?'Congé':'Indisponibilité'}
+function absenceStatusLabel(v){return({pending:'En attente',approved:'Validée',rejected:'Refusée',cancelled:'Annulée'})[v]||v}
+function dateInAbsence(date,a){return !!a&&date>=a.start_date&&date<=a.end_date}
+async function loadPlanningAbsences(){
+ if(!db||!currentUser)return;
+ const from=isoDate(currentWeekStart),to=isoDate(addDays(currentWeekStart,6));
+ const {data,error}=await db.from('planning_absences').select('id,user_id,display_name,type,start_date,end_date,note,status,created_at,updated_at,reviewed_by,reviewed_at').lte('start_date',to).gte('end_date',from).order('created_at',{ascending:false});
+ if(error){console.warn('Indisponibilités planning:',error);planningAbsences=[];return}
+ planningAbsences=data||[]
+}
+function employeeAbsences(name,date,statuses=['approved','pending']){
+ const p=planningProfileFor(name),id=p?.id,n=norm(p?.display_name||name);
+ return planningAbsences.filter(a=>statuses.includes(a.status)&&dateInAbsence(date,a)&&(id?a.user_id===id:norm(a.display_name)===n))
+}
+function coverageForDay(day){
+ const ss=slots(),rows=day?.cells||[];
+ return ss.map((t,si)=>({time:t,count:rows.reduce((n,row)=>n+(((row?.[si]==='g'||row?.[si]==='b')?1:0)),0)}))
+}
+function renderCoverage(){
+ const bars=document.getElementById('coverageBars'),summary=document.getElementById('coverageSummary'),metric=document.getElementById('coverageMetric');if(!bars||!summary||!metric)return;
+ const day=modelDay(),data=coverageForDay(day),active=data.filter(x=>x.count>0);
+ if(!model||!day||!active.length){metric.textContent='0 présent';summary.innerHTML='<span class="coveragePill">Aucun horaire</span>';bars.innerHTML='<div class="coverageEmpty">La couverture apparaîtra dès qu’un planning est renseigné pour cette journée.</div>';return}
+ const max=Math.max(...active.map(x=>x.count)),min=Math.min(...active.map(x=>x.count)),avg=active.reduce((s,x)=>s+x.count,0)/active.length;
+ metric.textContent=max+' max';
+ summary.innerHTML='<span class="coveragePill"><b>'+min+'</b> minimum</span><span class="coveragePill"><b>'+String(Math.round(avg*10)/10).replace('.',',')+'</b> moyenne</span><span class="coveragePill"><b>'+max+'</b> pic</span>';
+ bars.innerHTML=data.map((x,i)=>{const h=x.count?Math.max(7,Math.round(x.count/max*72)):3,label=i%4===0?fmtTime(x.time):'';return '<div class="coverageBar '+(x.count===1?'isLow':'')+'" style="--h:'+h+'px" title="'+fmtTime(x.time)+' • '+x.count+' personne'+(x.count>1?'s':'')+'"><span>'+(x.count||'')+'</span>'+(label?'<small>'+label+'</small>':'')+'</div>'}).join('')
+}
+function planningAnomalies(){
+ const out=[],day=modelDay(),date=dayKey();if(!model||!day)return out;
+ const rows=day.cells||[],employees=model.employees||[];
+ employees.forEach((emp,ri)=>{
+  const row=rows[ri]||[],total=totalForRow(row),ranges=workRangesFor(row,model),label=planningProfileFor(emp.name)?.display_name||emp.name;
+  if(total>10)out.push({level:'warn',icon:'↗',title:label+' • journée longue',detail:String(total).replace('.',',')+' h planifiées — à vérifier selon votre organisation.'});
+  for(const r of ranges)if(r.b-r.a<=.5)out.push({level:'warn',icon:'⌁',title:label+' • créneau très court',detail:friendlyHour(r.a)+' à '+friendlyHour(r.b)+' ('+String((r.b-r.a)*60)+' min).'});
+  for(let i=1;i<ranges.length;i++){const gap=ranges[i].a-ranges[i-1].b;if(gap>=2)out.push({level:'warn',icon:'Ⅱ',title:label+' • longue coupure',detail:String(Math.round(gap*100)/100).replace('.',',')+' h entre deux périodes de travail.'})}
+  const abs=employeeAbsences(emp.name,date,['approved','pending']);
+  for(const a of abs)if(total>0)out.push({level:a.status==='approved'?'alert':'warn',icon:a.status==='approved'?'!':'?',title:label+' • '+absenceStatusLabel(a.status).toLowerCase()+' mais horaires présents',detail:absenceTypeLabel(a.type)+' du '+shortDate(a.start_date)+' au '+shortDate(a.end_date)+'.'});
+ });
+ const cov=coverageForDay(day),first=cov.findIndex(x=>x.count>0),last=cov.length-1-[...cov].reverse().findIndex(x=>x.count>0);
+ if(first>=0&&last>=first){
+  const low=cov.slice(first,last+1).filter(x=>x.count===1);
+  if(low.length){const firstLow=low[0];out.push({level:'warn',icon:'1',title:'Couverture réduite',detail:'Une seule personne planifiée autour de '+fmtTime(firstLow.time)+(low.length>1?' et sur '+low.length+' créneaux de 15 min.':'.')})}
+ }
+ return out.slice(0,12)
+}
+function renderAnomalies(){
+ const list=document.getElementById('anomalyList'),metric=document.getElementById('anomalyMetric');if(!list||!metric)return;const items=planningAnomalies();metric.textContent=String(items.length);
+ if(!model){list.innerHTML='<div class="absenceEmpty">Aucun planning à analyser pour cette semaine.</div>';return}
+ if(!items.length){list.innerHTML='<div class="anomalyGood">✓ Aucune anomalie technique détectée sur cette journée.</div>';return}
+ list.innerHTML=items.map(x=>'<div class="anomalyItem '+x.level+'"><span class="ai">'+esc(x.icon)+'</span><div><strong>'+esc(x.title)+'</strong><span>'+esc(x.detail)+'</span></div></div>').join('')
+}
+function renderAbsencePanel(){
+ const list=document.getElementById('absenceList'),sub=document.getElementById('absenceSubtitle');if(!list||!currentUser)return;
+ const rows=[...planningAbsences].sort((a,b)=>a.start_date.localeCompare(b.start_date)||b.id-a.id);if(sub)sub.textContent=canEdit?'Demandes de l’équipe liées à cette semaine.':'Tes demandes liées à cette semaine.';
+ if(!rows.length){list.innerHTML='<div class="absenceEmpty">Aucune demande sur cette semaine.</div>';return}
+ list.innerHTML=rows.map(a=>{
+  const own=a.user_id===currentUser.id,canReview=canEdit&&a.status==='pending',canCancel=own&&a.status==='pending';
+  const who=canEdit?'<strong>'+esc(a.display_name)+'</strong>':'<strong>'+esc(absenceTypeLabel(a.type))+'</strong>';
+  const type=canEdit?' • '+absenceTypeLabel(a.type):'';
+  return '<div class="absenceRow">'+
+   '<div class="absenceTop">'+who+'<span class="absenceStatus '+esc(a.status)+'">'+esc(absenceStatusLabel(a.status))+'</span></div>'+
+   '<div class="absenceMeta">'+shortDate(a.start_date)+' → '+shortDate(a.end_date)+type+'</div>'+
+   (a.note?'<div class="absenceNote">'+esc(a.note)+'</div>':'')+
+   ((canReview||canCancel)?'<div class="absenceButtons">'+
+      (canReview?'<button class="absenceApprove" type="button" onclick="reviewAbsence('+a.id+',\'approved\')">✓ Valider</button><button class="absenceReject" type="button" onclick="reviewAbsence('+a.id+',\'rejected\')">× Refuser</button>':'')+
+      (canCancel?'<button class="absenceCancel" type="button" onclick="cancelAbsence('+a.id+')">Annuler ma demande</button>':'')+
+    '</div>':'')+
+  '</div>'
+ }).join('')
+}
+function renderPlanningInsights(){renderCoverage();renderAnomalies();renderAbsencePanel()}
+function openAbsenceModal(){
+ const modal=document.getElementById('absenceModal'),start=document.getElementById('absenceStart'),end=document.getElementById('absenceEnd'),note=document.getElementById('absenceNote'),type=document.getElementById('absenceType');if(!modal)return;
+ const d=dayKey();start.value=d;end.value=d;note.value='';type.value='unavailable';modal.classList.remove('hidden');document.body.style.overflow='hidden'
+}
+function closeAbsenceModal(){document.getElementById('absenceModal')?.classList.add('hidden');document.body.style.overflow=''}
+async function submitAbsenceRequest(e){
+ e.preventDefault();if(!db||!currentUser)return;const type=document.getElementById('absenceType').value,start=document.getElementById('absenceStart').value,end=document.getElementById('absenceEnd').value,note=document.getElementById('absenceNote').value.trim(),btn=document.getElementById('absenceSubmitBtn');
+ if(!start||!end||end<start){alert('La date de fin doit être identique ou postérieure à la date de début.');return}
+ btn.disabled=true;btn.textContent='Envoi…';
+ const {error}=await db.from('planning_absences').insert({user_id:currentUser.id,display_name:currentUser.name,type,start_date:start,end_date:end,note:note||null,status:'pending'});
+ btn.disabled=false;btn.textContent='Envoyer la demande';
+ if(error){console.warn(error);window.NettoSounds?.play?.('error');alert('Impossible d’envoyer la demande : '+error.message);return}
+ closeAbsenceModal();await loadPlanningAbsences();renderPlanningInsights();window.NettoSounds?.play?.('success');showToast('Demande envoyée')
+}
+async function cancelAbsence(id){
+ if(!confirm('Annuler cette demande ?'))return;const {error}=await db.from('planning_absences').update({status:'cancelled',updated_at:new Date().toISOString()}).eq('id',id);
+ if(error){alert('Impossible d’annuler la demande.');return}await loadPlanningAbsences();renderPlanningInsights();showToast('Demande annulée')
+}
+async function reviewAbsence(id,status){
+ if(!canEdit||!['approved','rejected'].includes(status))return;const a=planningAbsences.find(x=>x.id===id);if(!a)return;
+ const verb=status==='approved'?'valider':'refuser';if(!confirm((verb[0].toUpperCase()+verb.slice(1))+' la demande de '+a.display_name+' ?'))return;
+ const {error}=await db.from('planning_absences').update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',id);
+ if(error){alert('Impossible de mettre à jour la demande.');return}
+ const target='planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(a.start_date))))+'&day='+encodeURIComponent(a.start_date);
+ await notifyUsers([{user_id:a.user_id,kind:'admin_message',title:status==='approved'?'Demande validée':'Demande refusée',message:absenceTypeLabel(a.type)+' du '+shortDate(a.start_date)+' au '+shortDate(a.end_date)+' : '+absenceStatusLabel(status).toLowerCase()+'.',planning_date:a.start_date,week_start:isoDate(startOfWeek(parseISO(a.start_date))),target_url:target}]);
+ await loadPlanningAbsences();renderPlanningInsights();window.NettoSounds?.play?.(status==='approved'?'success':'warning');showToast(status==='approved'?'Demande validée':'Demande refusée')
+}
+
 function renderWeekHeader(){
  const a=currentWeekStart,b=addDays(a,6);document.getElementById('weekLabel').textContent='Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
  document.querySelector('header .sub')&&(document.querySelector('header .sub').textContent='Nethor • Semaine du '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+b.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}));
@@ -287,7 +430,7 @@ function renderWeekHeader(){
 function weeklyEmployeeTotals(){if(!model)return[];const employees=model.employees||[],a=currentWeekStart;return employees.map((emp,ri)=>{let total=0;for(let di=0;di<7;di++){const d=model.days?.[isoDate(addDays(a,di))];total+=totalForRow(d?.cells?.[ri]||[])}const p=planningProfileFor(emp.name);return{name:p?.display_name||emp.name,total}}).filter(x=>x.total>0)}
 function openWeekTotals(){const modal=document.getElementById('weekTotalsModal'),list=document.getElementById('weekTotalsList'),sub=document.getElementById('weekTotalsSubtitle');if(!modal||!list)return;const rows=weeklyEmployeeTotals(),a=currentWeekStart,b=addDays(a,6);if(sub)sub.textContent='Du '+frDate(a)+' au '+frDate(b);list.innerHTML=rows.length?rows.map(x=>'<div class="weekTotalRow"><span>'+esc(x.name)+'</span><b>'+String(Math.round(x.total*100)/100).replace('.',',')+' h</b></div>').join(''):'<div class="weekTotalsEmpty">Aucun horaire enregistré sur cette semaine.</div>';modal.classList.remove('hidden');document.body.style.overflow='hidden'}
 function closeWeekTotals(){document.getElementById('weekTotalsModal')?.classList.add('hidden');document.body.style.overflow=''}
-function selectDay(i){currentDay=i;renderWeekHeader();renderReader();playUISound()}
+function selectDay(i){currentDay=i;renderAll();playUISound()}
 
 function renderReader(){
  const dt=addDays(currentWeekStart,currentDay),day=modelDay();
@@ -304,7 +447,7 @@ function renderReader(){
  visibleEmployees.forEach(({emp,ri,row})=>{h+='<tr><th class="nameCell" title="Ligne Excel '+(emp.excelRow||ri+4)+'">'+identityHtml(emp.name)+'</th>';ss.forEach((t,si)=>{const v=row[si]||null,cls=(si%4===0?'hourStart ':'')+(si%2===0?'halfStart ':'')+(editMode?'editable ':'');h+='<td class="slot '+cls+'" data-color="'+(v||'')+'" data-row="'+ri+'" data-slot="'+si+'" title="'+esc(emp.name)+' • '+fmtTime(t)+'–'+fmtTime(t+.25)+'" style="'+(v?'background:'+COLOR[v]+';':'')+'"></td>'});h+='<td class="totalCell" data-total-row="'+ri+'">'+String(totalForRow(row)).replace('.',',')+' h</td></tr>'});
  h+='</tbody></table>';document.getElementById('sheetMount').innerHTML=h;renderMobileSchedule(day,visibleEmployees.map(x=>x.emp),visibleEmployees.map(x=>x.row));document.body.classList.toggle('planningEditing',editMode);if(editMode)bindEditing();
 }
-function renderAll(){renderWeekHeader();renderReader()}
+function renderAll(){renderWeekHeader();renderReader();renderPlanningInsights()}
 
 async function loadWeek(start=currentWeekStart){
  currentWeekStart=startOfWeek(start);const key=isoDate(currentWeekStart);setSaveState('Chargement…');
