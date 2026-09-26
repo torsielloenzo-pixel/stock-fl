@@ -56,3 +56,11 @@ Un passage manuel dans un vrai navigateur reste nécessaire pour confirmer les d
 ## Dette volontairement conservée
 - La colonne SQL `profiles.status_text` reste temporairement présente tant que la fonction serveur d'administration n'a pas été migrée ; le frontend n'en dépend plus.
 - Les feuilles `design-v2.css`, `design-v3.css` et `design-v4.css` restent séparées pour cette passe afin d'éviter une régression visuelle sans test navigateur rendu complet.
+
+
+## Durcissement final
+- Rendu des catégories F&L durci contre l’injection HTML/JS stockée : valeurs de couleur contraintes, icônes échappées et arguments des handlers encodés.
+- Service worker passé en cache v53, précache tolérant aux erreurs et revalidation réseau explicite.
+- Normalisation a11y ajoutée pour donner un nom accessible aux champs ayant seulement un libellé visuel ou un placeholder.
+- Contrainte SQL anti-redirection ajoutée aux URL de notifications : les schémas externes et URL protocol-relative sont refusés.
+- Le workflow GitHub Pages du déploiement principal a terminé avec succès.
