@@ -1,6 +1,6 @@
 {
   "version": 66,
-  "label": "v66",
+  "label": "v0.66",
   "important": true,
   "title": "Vérification des mises à jour améliorée",
   "message": "Le bouton MAJ est maintenant explicite et vérifie le journal des versions avant de comparer et installer la dernière mise à jour.",
