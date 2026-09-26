@@ -10,10 +10,17 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "assets/app-icon-v59.svg",
+      "src": "assets/app-icon-v63.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "assets/app-icon-v63.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "./home.html"
 }
