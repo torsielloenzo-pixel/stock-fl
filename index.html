@@ -866,6 +866,63 @@ function startForgotCooldown(seconds=30){
 function resumeForgotCooldown(){if(forgotCooldownUntil()>Date.now()){if(forgotCooldownTimer)clearInterval(forgotCooldownTimer);renderForgotCooldown();forgotCooldownTimer=setInterval(renderForgotCooldown,250)}else renderForgotCooldown()}
 function openForgotPassword(){const d=$('forgotDialog'),ident=$('forgotIdentifier'),state=$('forgotState');ident.value=$('email').value.trim();state.textContent='';state.className='forgotState';d.showModal();resumeForgotCooldown();window.NettoSounds?.play?.('menuOpen');setTimeout(()=>ident.focus(),80)}
 async function sendForgotRequest(){const ident=$('forgotIdentifier').value.trim(),btn=$('forgotSubmit'),state=$('forgotState');if(forgotCooldownUntil()>Date.now()){resumeForgotCooldown();return}if(ident.length<3){state.className='forgotState err';state.textContent='Saisis ton identifiant.';window.NettoSounds?.play?.('error');return}btn.disabled=true;state.className='forgotState';state.textContent='Envoi de la demande…';try{const {data,error}=await db.functions.invoke('password-reset-request',{body:{identifier:ident}});if(error)throw error;state.className='forgotState ok';state.textContent=data?.message||'Si cet identifiant correspond à un compte, la demande a été transmise à l’administrateur.';startForgotCooldown(30);window.NettoSounds?.play?.('success')}catch(e){state.className='forgotState err';state.textContent='La demande n’a pas pu être envoyée. Réessaie dans quelques instants.';btn.disabled=false;window.NettoSounds?.play?.('error')}}
+
+async function installedAppVersion(){
+ let found=0;
+ try{
+  if('caches' in window){const keys=await caches.keys();for(const key of keys){const m=String(key).match(/^netto-tools-v(\d+)$/);if(m)found=Math.max(found,Number(m[1])||0)}}
+  found=Math.max(found,Number(localStorage.getItem('nettoAppVersion')||0)||0);
+  if('serviceWorker' in navigator&&navigator.serviceWorker.controller){
+   const v=await new Promise(resolve=>{const ch=new MessageChannel(),timer=setTimeout(()=>resolve(0),700);ch.port1.onmessage=e=>{clearTimeout(timer);resolve(Number(e.data?.version)||0)};try{navigator.serviceWorker.controller.postMessage({type:'GET_VERSION'},[ch.port2])}catch(_){clearTimeout(timer);resolve(0)}});
+   found=Math.max(found,v)
+  }
+ }catch(_){}
+ return found
+}
+function waitForWaitingWorker(reg,timeout=3500){
+ return new Promise(resolve=>{
+  if(reg?.waiting)return resolve(reg.waiting);
+  let done=false,timer=setTimeout(()=>{if(!done){done=true;resolve(reg?.waiting||null)}},timeout);
+  const finish=()=>{if(done)return;if(reg?.waiting){done=true;clearTimeout(timer);resolve(reg.waiting)}};
+  const bind=worker=>{if(!worker)return;worker.addEventListener('statechange',finish)};
+  bind(reg?.installing);
+  const onUpdate=()=>{bind(reg?.installing);finish()};
+  reg?.addEventListener('updatefound',onUpdate,{once:true});
+  finish()
+ })
+}
+function loginUpdatePrompt(info){
+ return new Promise(resolve=>{
+  document.getElementById('loginUpdatePrompt')?.remove();
+  const overlay=document.createElement('div');overlay.id='loginUpdatePrompt';overlay.style.cssText='position:fixed;inset:0;z-index:2147483600;background:rgba(12,13,15,.72);backdrop-filter:blur(12px);display:grid;place-items:center;padding:18px';
+  const card=document.createElement('div');card.style.cssText='width:min(92vw,460px);background:var(--card,#fff);color:var(--text,#171717);border:1px solid var(--line,#e4e4e7);border-radius:24px;padding:22px;box-shadow:0 28px 90px rgba(0,0,0,.34)';
+  card.innerHTML='<div style="display:flex;gap:13px;align-items:flex-start"><img src="'+esc(info.icon||'assets/app-icon-v54.svg')+'" alt="" style="width:54px;height:54px;border-radius:15px;background:#222;object-fit:cover;flex:none"><div style="min-width:0"><div style="font-size:10px;font-weight:900;letter-spacing:.8px;color:#f1532e;text-transform:uppercase">Mise à jour disponible</div><strong style="display:block;margin-top:4px;font-size:20px;line-height:1.15">'+esc(info.title||'Nouvelle version de Nethor')+'</strong><span style="display:block;margin-top:7px;font-size:12px;line-height:1.5;color:var(--muted,#747474)">'+esc(info.message||'Une version plus récente de l’application est disponible.')+'</span><b style="display:inline-block;margin-top:10px;padding:5px 9px;border-radius:999px;background:#ff5a2a14;color:#e64a27;font-size:10px">'+esc(info.label||('v'+info.version))+'</b></div></div><div style="display:grid;grid-template-columns:1fr 1.35fr;gap:9px;margin-top:20px"><button id="loginUpdateLater" type="button" style="min-height:44px;border-radius:13px;background:#eceef1;color:#333;font-weight:850">Plus tard</button><button id="loginUpdateNow" type="button" style="min-height:44px;border-radius:13px;background:linear-gradient(135deg,#ff4129,#ff8426);color:#fff;font-weight:900;box-shadow:0 8px 22px rgba(255,80,34,.25)">Mettre à jour</button></div>';
+  overlay.appendChild(card);document.body.appendChild(overlay);window.NettoSounds?.play?.('notification');
+  document.getElementById('loginUpdateLater').onclick=()=>{overlay.remove();resolve('later')};
+  document.getElementById('loginUpdateNow').onclick=()=>resolve('update')
+ })
+}
+async function checkLatestVersionAtLogin(target){
+ if(!('serviceWorker' in navigator))return true;
+ let info;
+ try{const r=await fetch('app-version.json?login='+Date.now(),{cache:'no-store'});if(!r.ok)return true;info=await r.json()}catch(_){return true}
+ const latest=Number(info?.version)||0;if(!latest)return true;
+ const installed=await installedAppVersion();
+ if(installed>=latest){try{localStorage.setItem('nettoAppVersion',String(installed))}catch(_){};return true}
+ let reg;
+ try{reg=await navigator.serviceWorker.register('./sw.js');await reg.update().catch(()=>{});await waitForWaitingWorker(reg)}catch(_){}
+ const choice=await loginUpdatePrompt(info);
+ if(choice!=='update')return true;
+ const btn=document.getElementById('loginUpdateNow');if(btn){btn.disabled=true;btn.textContent='Mise à jour…'}
+ const worker=reg?.waiting||await waitForWaitingWorker(reg,2500);
+ if(!worker){document.getElementById('loginUpdatePrompt')?.remove();return true}
+ try{localStorage.setItem('nettoAppVersion',String(latest))}catch(_){}
+ let moved=false;const go=()=>{if(moved)return;moved=true;location.href=target};
+ navigator.serviceWorker.addEventListener('controllerchange',go,{once:true});
+ worker.postMessage({type:'SKIP_WAITING'});setTimeout(go,4200);
+ return false
+}
+
 async function login(e){
  e.preventDefault();window.NettoSounds?.unlock?.();$('loginError').textContent='';
  const ident=$('email').value.trim().toLowerCase(),authEmail=ident.includes('@')?ident:ident.replace(/[^a-z0-9._-]/g,'')+'@stock-fl.local';
@@ -879,7 +936,8 @@ async function login(e){
  try{const {error:loginLogError}=await db.from('login_history').insert({user_id:uid,user_agent:String(navigator.userAgent||'').slice(0,500),source:'app'});if(loginLogError)console.warn('Historique connexion:',loginLogError)}catch(loginLogError){console.warn('Historique connexion:',loginLogError)}
  profile=p;const loaderTxt=$('profileLoaderText');if(loaderTxt)loaderTxt.textContent='Application de ton thème…';await syncProfileTheme(profile,uid);playLoginSound();$('login').classList.add('hidden');$('site').classList.add('hidden');
  await hideProfileLoader(380);await showWelcome();
- const returnTo=safeReturnPath();location.href=returnTo&&p.role==='admin'?returnTo:'home.html'
+ const returnTo=safeReturnPath(),target=returnTo&&p.role==='admin'?returnTo:'home.html';
+ const continueNow=await checkLatestVersionAtLogin(target);if(continueNow)location.href=target
 }
 async function logout(){playLogoutSound();await new Promise(r=>setTimeout(r,420));await db.auth.signOut({scope:'local'});showLogin()}
 async function logoutFromBrand(){closeBrandMenu();playLogoutSound();await new Promise(r=>setTimeout(r,420));await db.auth.signOut({scope:'local'});location.href='index.html'}
