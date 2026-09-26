@@ -65,7 +65,29 @@ function profileColorPickerHtml(inputId,current){const active=normalizeProfileCo
 function setProfileColorChoice(inputId,color,button){const input=$(inputId);if(!input)return;input.value=normalizeProfileColor(color);button.closest('.profileColorPicker')?.querySelectorAll('.profileColorChoice').forEach(btn=>{const active=btn===button;btn.classList.toggle('selected',active);btn.setAttribute('aria-pressed',String(active))})}
 const since=d=>{if(!d)return'Jamais';const ms=Date.now()-new Date(d).getTime(),m=Math.floor(ms/60000);if(m<1)return"À l’instant";if(m<60)return'il y a '+m+' min';const h=Math.floor(m/60);if(h<24)return'il y a '+h+' h';const j=Math.floor(h/24);return'il y a '+j+' j'};
 function avatar(u,size=''){return '<span class="avatar '+size+'" style="background:'+esc(u.profile_color||'#ff5a2a')+'">'+esc(initials(u.display_name))+'</span>'}
-async function invoke(body){const {data,error}=await db.functions.invoke('admin-manage-user',{body});if(error)throw new Error(data?.error||error.message||'Action impossible');if(data?.error)throw new Error(data.error);return data}
+async function invoke(body){
+ const {data,error}=await db.functions.invoke('admin-manage-user',{body});
+ if(error){
+  let message=data?.error||data?.message||'';
+  try{
+   const response=error.context;
+   if(!message&&response){
+    const copy=response.clone?response.clone():response;
+    const type=copy.headers?.get?.('content-type')||'';
+    if(type.includes('application/json')){
+     const payload=await copy.json();
+     message=payload?.error||payload?.message||''
+    }else{
+     const txt=await copy.text();
+     if(txt)message=txt.slice(0,300)
+    }
+   }
+  }catch(_){}
+  throw new Error(message||error.message||'Action impossible')
+ }
+ if(data?.error)throw new Error(data.error);
+ return data
+}
 function pendingResetFor(userId){return resetRequests.find(r=>r.user_id===userId&&!r.resolved_at)||null}
 function resetEmailLabel(v){return v==='sent'?'email envoyé':v==='failed'?'email en échec':v==='not_configured'?'email non configuré':'email en attente'}
 async function loadResetRequests(){const {data,error}=await db.from('password_reset_requests').select('id,user_id,identifier,display_name,requested_at,email_status,email_error,resolved_at').is('resolved_at',null).order('requested_at',{ascending:false});if(error){console.warn('Demandes MDP:',error);resetRequests=[];return}resetRequests=data||[]}
