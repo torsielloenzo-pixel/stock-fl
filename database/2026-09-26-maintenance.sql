@@ -90,3 +90,12 @@ to service_role;
 grant select, insert, update, delete
 on table public.fl_analysis_files
 to service_role;
+
+
+-- Les notifications internes ne doivent pointer que vers des chemins du portail.
+alter table public.planning_notifications
+  add constraint planning_notifications_target_url_relative
+  check (
+    target_url is null
+    or target_url !~* '^\s*(?:[a-z][a-z0-9+.-]*:|//)'
+  );
