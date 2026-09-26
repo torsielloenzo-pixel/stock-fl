@@ -701,8 +701,20 @@ function planningWidgetVisible(config,key,userRole){
 }
 async function applyPlanningWidgetPermissions(userRole){
  let config={};try{const {data,error}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();if(error)throw error;config=data?.value&&typeof data.value==='object'?data.value:{}}catch(e){console.warn('Permissions widgets indisponibles',e)}
- planningSiteConfig=config;absenceAccess=absencePermission(config,userRole);let visible=0;
- for(const [key,id] of Object.entries(PLANNING_WIDGETS)){const el=document.getElementById(id);if(!el)continue;const allowed=planningWidgetVisible(config,key,userRole);el.classList.toggle('hidden',!allowed);if(allowed)visible++}
+ planningSiteConfig=config;
+ absenceAccess=absencePermission(config,userRole);
+ try{
+  const {data,error}=await db.rpc('planning_absence_my_permission');
+  if(!error&&['hidden','request','manage'].includes(data))absenceAccess=data;
+  else if(error)console.warn('Permission Indisponibilités / Congés:',error)
+ }catch(e){console.warn('Permission Indisponibilités / Congés:',e)}
+ let visible=0;
+ for(const [key,id] of Object.entries(PLANNING_WIDGETS)){
+  const el=document.getElementById(id);if(!el)continue;
+  const allowed=key==='absences'?absenceAccess!=='hidden':planningWidgetVisible(config,key,userRole);
+  el.classList.toggle('hidden',!allowed);
+  if(allowed)visible++
+ }
  document.getElementById('planningInsights')?.classList.toggle('hidden',visible===0)
 }
 async function init(){applyPlanningDeepLink();const qs=new URLSearchParams(location.search),savedView=qs.get('view')||localStorage.getItem('nettoPlanningView')||'week';await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';await window.NettoProfileUI?.refresh?.();const planningPermission=window.NettoProfileUI?.permissionLevel?.('planning',p)||'none';if(planningPermission==='none'){location.replace('home.html');return}canEdit=planningPermission==='manage';currentUser={id:session.user.id,name:p?.display_name||'Utilisateur'};await applyPlanningWidgetPermissions(role);restorePersonalStatsState();document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);const canManageAbsences=absenceAccess==='manage';document.getElementById('planningLogs').classList.toggle('hidden',!(canEdit||canManageAbsences));document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');document.getElementById('absenceRequestBtn')?.classList.toggle('hidden',absenceAccess==='hidden');document.getElementById('absenceAdminTools')?.classList.toggle('hidden',role!=='admin');await loadTeamProfiles();startPlanningProfileRealtime();await Promise.all([loadWeek(currentWeekStart),loadPlanningLogs()]);setPlanningView(savedView,{sound:false})}
