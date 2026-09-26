@@ -20,7 +20,6 @@ let NAV_MODULES=[...BASE_MODULES];
 const SYSTEM_ROLES=Object.freeze(['admin','responsable','employe','lecture']);
 function roleKeys(config=api?.siteConfig){const defs=config?.role_definitions&&typeof config.role_definitions==='object'?Object.keys(config.role_definitions):[];return [...new Set([...SYSTEM_ROLES,...defs])]}
 function roleDefinition(key,config=api?.siteConfig){return config?.role_definitions?.[key]||null}
-function roleBase(key,config=api?.siteConfig){return roleDefinition(key,config)?.base_role||key}
 function cleanColor(v,fallback=''){const s=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(s)?s:fallback}
 function customModules(config){
  const list=Array.isArray(config?.customMenus)?config.customMenus:[];
