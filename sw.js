@@ -1,6 +1,6 @@
-const CACHE='netto-tools-v52';
+const CACHE='netto-tools-v53';
 const CORE=['./rewards.html','./rewards.css?v=1','./rewards.js?v=3','./reward-profile.js?v=2','./','./index.html','./home.html','./articles.html','./bakery.html','./planning.html','./chat.html','./profile.html','./settings.html','./accounts.html','./admin-portal.html','./custom-menu.html','./fl-assistant.html','./manifest.webmanifest','./design-v2.css','./design-v3.css?v=3','./design-v4.css?v=1','./profile-ui.js?v=30','./assets/app-icon.svg','./assets/logo-stock.svg','./assets/logo-planning.svg','./assets/logo-equipe.svg','./assets/logo-article.svg','./assets/logo-boulangerie.svg?v=3','./assets/logo-home.svg','./assets/logo-profile.svg?v=3','./assets/logo-rewards.svg?v=3','./assets/logo-accounts.svg','./assets/logo-admin-portal.svg','./assets/logo-settings.svg','./assets/fl-background.webp'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(CORE.map(url=>cache.add(url)));await self.skipWaiting()})())});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([
  caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),
  self.registration.getNotifications().then(list=>{list.forEach(n=>n.close())}).catch(()=>{}),
@@ -8,7 +8,7 @@ self.addEventListener('activate',e=>{e.waitUntil(Promise.all([
 ]))});
 async function networkFirst(request,fallback){
  try{
-  const response=await fetch(request);
+  const response=await fetch(request,{cache:'no-cache'});
   if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(c=>c.put(request,copy)).catch(()=>{})}
   return response
  }catch(_){
