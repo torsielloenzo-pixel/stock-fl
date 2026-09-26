@@ -78,5 +78,5 @@ do $$ declare blocked boolean;begin
  if not blocked then raise exception 'ÉCHEC : RPC anonyme';end if;
 end $$;
 rollback;
-select 'PASS : parcours admin, doubles opérations, solde, expiration, lecture employé, responsable, anonyme. Aucun enregistrement de test conservé.' as result;
+select 'PASS : parcours admin illimité, idempotence, solde, expiration, lecture employé, responsable, anonyme. Aucun enregistrement de test conservé.' as result;
 
