@@ -1172,11 +1172,11 @@ finally{if(btn){btn.disabled=false;btn.textContent='Ajouter'}}
 function openManage(){if(profile.role!=='admin')return;renderManage();$('manageDialog').showModal()}
 function toggleCreateUser(){$('createUserBox').classList.toggle('hidden');$('createUserStatus').textContent=''}
 async function createUser(){if(profile.role!=='admin')return;const display_name=$('newDisplayName').value.trim(),username=$('newUsername').value.trim().toLowerCase().replace(/[^a-z0-9._-]/g,''),password=$('newPassword').value,role=$('newRole').value;if(!display_name||!username||password.length<8)return $('createUserStatus').textContent='Renseigne le nom, l’identifiant et un mot de passe de 8 caractères minimum.';$('createUserStatus').textContent='Création…';const {data,error}=await db.functions.invoke('admin-manage-user',{body:{action:'create',display_name,username,password,role}});if(error||data?.error){$('createUserStatus').textContent='Création impossible : '+(data?.error||error?.message||'Erreur');window.NettoSounds?.play?.('error');return}$('createUserStatus').textContent='Compte créé ✓';window.NettoSounds?.play?.('success');$('newDisplayName').value='';$('newUsername').value='';$('newPassword').value='';setTimeout(()=>location.href='accounts.html',450)}
-async const LEGACY_PROFILE_COLORS=['#FF3B30','#FF8A00','#1F2937','#6B7280'];
+const LEGACY_PROFILE_COLORS=['#FF3B30','#FF8A00','#1F2937','#6B7280'];
 function legacyProfileColor(value){const v=String(value||'').toUpperCase();return LEGACY_PROFILE_COLORS.includes(v)?v:LEGACY_PROFILE_COLORS[0]}
 function legacyProfilePalette(current){const active=legacyProfileColor(current);return '<input class="adminProfileColor" type="hidden" value="'+active+'"><div class="adminProfilePalette">'+LEGACY_PROFILE_COLORS.map(color=>'<button type="button" class="adminProfileColorChoice '+(color===active?'selected':'')+'" style="--profile-color:'+color+'" aria-label="Choisir '+color+'" onclick="setLegacyProfileColor(this,\''+color+'\')"></button>').join('')+'</div>'}
 function setLegacyProfileColor(button,color){const wrap=button.closest('.userColorWrap');if(!wrap)return;wrap.querySelector('.adminProfileColor').value=legacyProfileColor(color);wrap.querySelectorAll('.adminProfileColorChoice').forEach(btn=>btn.classList.toggle('selected',btn===button))}
-function openUsers(){
+async function openUsers(){
  if(profile.role!=='admin')return alert('Réservé aux administrateurs.');
  const {data,error}=await db.from('profiles').select('id,email,display_name,role,created_at,status_text,profile_color').order('display_name');
  if(error)return alert('Impossible de charger les comptes : '+error.message);
