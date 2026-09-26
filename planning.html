@@ -113,7 +113,7 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
 
 /* Planning intelligence : couverture, anomalies, indisponibilités */
 .planningInsights{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.82fr) minmax(250px,.9fr) minmax(280px,1fr);gap:10px;margin:0 0 12px}
-.planningInsightCard{min-width:0;background:#fff;border:1px solid #e1e4e8;border-radius:16px;padding:13px;box-shadow:0 6px 18px #18223509}
+.planningInsightCard{min-width:0;background:#fff;border:1px solid #e1e4e8;border-radius:16px;padding:13px;box-shadow:0 6px 18px #18223509}.compactInsightCard{padding:0;overflow:hidden}.compactInsightCard>.insightHead{margin:0;padding:11px 12px;cursor:pointer;align-items:center;background:#fafbfc;user-select:none}.compactInsightCard>.insightHead:hover{background:#f5f6f8}.compactInsightHeadRight{display:flex;align-items:center;gap:7px}.compactInsightChevron{width:26px;height:26px;border-radius:8px;background:#eceef1;display:grid;place-items:center;font-size:14px;font-weight:900;color:#777;transition:transform .18s ease}.compactInsightCard.open .compactInsightChevron{transform:rotate(180deg)}.compactInsightBody{padding:11px 12px 12px;border-top:1px solid #e8eaed}.compactInsightBody.collapsed{display:none}:root[data-theme="dark"] .compactInsightCard>.insightHead{background:#222429}:root[data-theme="dark"] .compactInsightCard>.insightHead:hover{background:#272a2f}:root[data-theme="dark"] .compactInsightChevron{background:#303238;color:#c9cdd2}:root[data-theme="dark"] .compactInsightBody{border-color:#34363b}
 .insightHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}.insightHead strong{display:block;font-size:12px}.insightHead small{display:block;margin-top:3px;color:#858991;font-size:8.5px;line-height:1.35}.insightMetric{font-size:9px;font-weight:850;background:#f2f3f5;border-radius:999px;padding:6px 8px;white-space:nowrap}
 .coverageSummary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}.coveragePill{font-size:9px;font-weight:800;background:#f4f5f7;border:1px solid #e4e6e9;border-radius:9px;padding:6px 8px}.coveragePill b{font-size:11px}
 .coverageScroller{overflow-x:auto;padding:2px 0 3px}.coverageBars{height:96px;min-width:760px;display:flex;align-items:flex-end;gap:3px;padding:17px 2px 20px;border-bottom:1px solid #e9ebee;position:relative}.coverageBar{position:relative;flex:1;min-width:8px;height:var(--h);min-height:3px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--orange),var(--red));opacity:.9}.coverageBar.isLow{opacity:.45}.coverageBar span{position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);font-size:7px;font-weight:850;color:#686d74}.coverageBar small{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);font-size:6.5px;color:#92969d;white-space:nowrap}.coverageEmpty{font-size:9.5px;color:#92969d;padding:18px 2px}
@@ -146,10 +146,12 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
     <div class="readerHead"><div><div id="dateTitle" class="dateTitle"></div><div id="readerMeta" class="readerMeta"></div></div><span id="sourceBadge" class="sourceBadge hidden"></span></div>
 
     <section id="planningInsights" class="planningInsights">
-      <article id="coverageWidget" class="planningInsightCard coverageCard">
-        <div class="insightHead"><div><strong>Couverture magasin</strong><small>Présence planifiée par tranche de 15 minutes pour la journée sélectionnée.</small></div><span id="coverageMetric" class="insightMetric">—</span></div>
-        <div id="coverageSummary" class="coverageSummary"></div>
-        <div id="coverageScroller" class="coverageScroller"><div id="coverageBars" class="coverageBars"></div></div>
+      <article id="coverageWidget" class="planningInsightCard coverageCard compactInsightCard">
+        <div class="insightHead" role="button" tabindex="0" aria-expanded="false" onclick="togglePlanningInsight('coverage')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePlanningInsight('coverage')}"><div><strong>Couverture magasin</strong><small>Présence planifiée par tranche de 15 minutes pour la journée sélectionnée.</small></div><div class="compactInsightHeadRight"><span id="coverageMetric" class="insightMetric">—</span><span class="compactInsightChevron" aria-hidden="true">⌄</span></div></div>
+        <div id="coverageInsightBody" class="compactInsightBody collapsed">
+          <div id="coverageSummary" class="coverageSummary"></div>
+          <div id="coverageScroller" class="coverageScroller"><div id="coverageBars" class="coverageBars"></div></div>
+        </div>
       </article>
       <article id="personalStatsCard" class="planningInsightCard personalStatsCard compactStats">
         <div class="insightHead" role="button" tabindex="0" aria-expanded="false" onclick="togglePersonalStats()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePersonalStats()}"><div><strong>Mes statistiques</strong><small id="personalStatsSubtitle">Résumé personnel de la semaine affichée.</small></div><div class="personalStatsHeadRight"><span class="insightMetric">Moi</span><span class="personalStatsChevron" aria-hidden="true">⌄</span></div></div>
@@ -158,9 +160,11 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
           <div id="personalStatsFoot" class="personalStatsFoot"></div>
         </div>
       </article>
-      <article id="anomalyWidget" class="planningInsightCard">
-        <div class="insightHead"><div><strong>Détection d’anomalies</strong><small>Contrôles automatiques d’organisation. Ils ne remplacent pas un contrôle RH ou réglementaire.</small></div><span id="anomalyMetric" class="insightMetric">0</span></div>
-        <div id="anomalyList" class="anomalyList"></div>
+      <article id="anomalyWidget" class="planningInsightCard compactInsightCard">
+        <div class="insightHead" role="button" tabindex="0" aria-expanded="false" onclick="togglePlanningInsight('anomalies')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePlanningInsight('anomalies')}"><div><strong>Détection d’anomalies</strong><small>Contrôles automatiques d’organisation. Ils ne remplacent pas un contrôle RH ou réglementaire.</small></div><div class="compactInsightHeadRight"><span id="anomalyMetric" class="insightMetric">0</span><span class="compactInsightChevron" aria-hidden="true">⌄</span></div></div>
+        <div id="anomalyInsightBody" class="compactInsightBody collapsed">
+          <div id="anomalyList" class="anomalyList"></div>
+        </div>
       </article>
       <article id="absencesWidget" class="planningInsightCard">
         <div class="insightHead"><div><strong>Indisponibilités / Congés</strong><small id="absenceSubtitle">Demandes et suivi liés à cette semaine.</small></div><div class="absenceHeaderActions"><button id="absenceRequestBtn" class="btn absenceSubmit hidden" type="button" onclick="openAbsenceRequest()">＋ Faire une demande</button><div id="absenceAdminTools" class="absenceAdminTools hidden"><button class="btn light" type="button" onclick="clearAbsenceLogs()">Effacer les logs</button><button class="btn danger" type="button" onclick="clearAbsenceRequests()">Effacer les demandes</button></div></div></div>
@@ -463,6 +467,27 @@ async function clearAbsenceLogs(){
 }
 
 
+
+const PLANNING_INSIGHT_COLLAPSE_MAP={
+ coverage:{card:'coverageWidget',body:'coverageInsightBody'},
+ anomalies:{card:'anomalyWidget',body:'anomalyInsightBody'},
+ absences:{card:'absencesWidget',body:'absencesInsightBody'}
+};
+function togglePlanningInsight(key){
+ const cfg=PLANNING_INSIGHT_COLLAPSE_MAP[key];if(!cfg)return;
+ const card=document.getElementById(cfg.card),body=document.getElementById(cfg.body),head=card?.querySelector(':scope > .insightHead');if(!card||!body)return;
+ const opening=body.classList.contains('collapsed');body.classList.toggle('collapsed',!opening);card.classList.toggle('open',opening);head?.setAttribute('aria-expanded',opening?'true':'false');
+ try{localStorage.setItem('nettoPlanningInsightOpen:'+key,opening?'1':'0')}catch(_){}
+ window.NettoSounds?.play?.(opening?'menuOpen':'menuClose')
+}
+function restorePlanningInsightStates(){
+ Object.entries(PLANNING_INSIGHT_COLLAPSE_MAP).forEach(([key,cfg])=>{
+  let open=false;try{open=localStorage.getItem('nettoPlanningInsightOpen:'+key)==='1'}catch(_){}
+  const card=document.getElementById(cfg.card),body=document.getElementById(cfg.body),head=card?.querySelector(':scope > .insightHead');if(!card||!body)return;
+  body.classList.toggle('collapsed',!open);card.classList.toggle('open',open);head?.setAttribute('aria-expanded',open?'true':'false')
+ })
+}
+
 function togglePersonalStats(){
  const card=document.getElementById('personalStatsCard'),body=document.getElementById('personalStatsBody'),head=card?.querySelector('.insightHead');if(!card||!body)return;
  const opening=body.classList.contains('collapsed');body.classList.toggle('collapsed',!opening);card.classList.toggle('open',opening);head?.setAttribute('aria-expanded',opening?'true':'false');
@@ -717,7 +742,7 @@ async function applyPlanningWidgetPermissions(userRole){
  }
  document.getElementById('planningInsights')?.classList.toggle('hidden',visible===0)
 }
-async function init(){applyPlanningDeepLink();const qs=new URLSearchParams(location.search),savedView=qs.get('view')||localStorage.getItem('nettoPlanningView')||'week';await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';await window.NettoProfileUI?.refresh?.();const planningPermission=window.NettoProfileUI?.permissionLevel?.('planning',p)||'none';if(planningPermission==='none'){location.replace('home.html');return}canEdit=planningPermission==='manage';currentUser={id:session.user.id,name:p?.display_name||'Utilisateur'};await applyPlanningWidgetPermissions(role);restorePersonalStatsState();document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);const canManageAbsences=absenceAccess==='manage';document.getElementById('planningLogs').classList.toggle('hidden',!(canEdit||canManageAbsences));document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');document.getElementById('absenceRequestBtn')?.classList.toggle('hidden',absenceAccess==='hidden');document.getElementById('absenceAdminTools')?.classList.toggle('hidden',role!=='admin');await loadTeamProfiles();startPlanningProfileRealtime();await Promise.all([loadWeek(currentWeekStart),loadPlanningLogs()]);setPlanningView(savedView,{sound:false})}
+async function init(){applyPlanningDeepLink();const qs=new URLSearchParams(location.search),savedView=qs.get('view')||localStorage.getItem('nettoPlanningView')||'week';await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';await window.NettoProfileUI?.refresh?.();const planningPermission=window.NettoProfileUI?.permissionLevel?.('planning',p)||'none';if(planningPermission==='none'){location.replace('home.html');return}canEdit=planningPermission==='manage';currentUser={id:session.user.id,name:p?.display_name||'Utilisateur'};await applyPlanningWidgetPermissions(role);restorePersonalStatsState();restorePlanningInsightStates();document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);const canManageAbsences=absenceAccess==='manage';document.getElementById('planningLogs').classList.toggle('hidden',!(canEdit||canManageAbsences));document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');document.getElementById('absenceRequestBtn')?.classList.toggle('hidden',absenceAccess==='hidden');document.getElementById('absenceAdminTools')?.classList.toggle('hidden',role!=='admin');await loadTeamProfiles();startPlanningProfileRealtime();await Promise.all([loadWeek(currentWeekStart),loadPlanningLogs()]);setPlanningView(savedView,{sound:false})}
 init().catch(e=>{console.error(e);document.getElementById('readerMeta').textContent='Erreur de chargement du planning.'});
 
 function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
