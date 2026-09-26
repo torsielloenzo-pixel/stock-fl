@@ -96,13 +96,26 @@ function moduleAllowed(module,profileOrRole,config=api?.siteConfig){
  const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;
  if(!role)return false;
  if(module.id!=='settings'&&config?.pages?.[module.id]?.enabled===false)return false;
+ const explicit=config?.role_permissions?.[module.id]?.[role];
+ if(['none','view','manage'].includes(explicit))return explicit!=='none';
  return configuredRoles(module,config).includes(role)
 }
+function permissionLevel(moduleOrId,profileOrRole,config=api?.siteConfig){
+ const module=typeof moduleOrId==='string'?NAV_MODULES.find(m=>m.id===moduleOrId):moduleOrId;
+ const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;
+ if(!module||!role)return'none';
+ if(module.id==='settings')return'view';
+ const explicit=config?.role_permissions?.[module.id]?.[role];
+ if(['none','view','manage'].includes(explicit))return explicit;
+ if(!moduleAllowed(module,role,config))return'none';
+ return role==='admin'?'manage':'view'
+}
+function canManage(moduleOrId,profileOrRole,config=api?.siteConfig){return permissionLevel(moduleOrId,profileOrRole,config)==='manage'}
 function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
 function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
-const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
+const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,permissionLevel,canManage,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
 window.NettoProfileUI=api;
 
 const SOUND_DEFS={
