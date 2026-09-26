@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const URL='https://gioxrpaiwogqqtakjpnv.supabase.co';
+const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co';
 const KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const ROLE={admin:'Administrateur',responsable:'Responsable',lecture:'Lecture seule',employe:'Employé'};
 const BASE_MODULES=Object.freeze([
@@ -292,7 +292,7 @@ function bindMobilePreviewGlobal(){
  },true)
 }
 function mobilePreviewUrl(){
- var u=new URL(window.location.href);
+ var u=new window.URL(window.location.href);
  u.searchParams.set('mobile_preview','1');
  u.searchParams.set('_mobile_ts',String(Date.now()));
  return u.toString()
@@ -448,7 +448,7 @@ function goBack(){
  sounds.play('navigate');
  const fallback=backFallback();
  let sameOriginRef=false;
- try{sameOriginRef=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch(_){}
+ try{sameOriginRef=!!document.referrer&&new window.URL(document.referrer).origin===location.origin}catch(_){}
  setTimeout(()=>{if(sameOriginRef&&history.length>1)history.back();else location.href=fallback},45)
 }
 function addBackButton(){
@@ -463,7 +463,7 @@ function addBackButton(){
 async function rememberSiteBase(){
  if(!api.client||!api.session||api.profile?.role!=='admin')return;
  try{
-  const u=new URL(location.href);
+  const u=new window.URL(location.href);
   if(!['http:','https:'].includes(u.protocol))return;
   const base=u.origin+u.pathname.replace(/[^/]*$/,'');
   const {data:existing}=await api.client.from('app_settings').select('value').eq('key','site_base_url').maybeSingle();
@@ -483,7 +483,7 @@ function hydrateGlobalCache(){
 function saveGlobalCache(){try{const k=globalCacheKey();if(k&&api.profile)localStorage.setItem(k,JSON.stringify({saved_at:Date.now(),profile:api.profile,siteConfig:api.siteConfig,avatarUrl:api.avatarUrl}))}catch(_){}}
 async function refresh(){if(!api.client||!api.session)return null;const [pr,sr,xr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle(),api.client.rpc('my_subrole_permissions')]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};api.subrolePermissions={};if(!xr.error)for(const row of xr.data||[])if(row?.module&&['view','manage'].includes(row.permission))api.subrolePermissions[row.module]=row.permission;applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
 
-const APP_RELEASE=57;
+const APP_RELEASE=58;
 const APP_ICON='assets/app-icon-v54.svg';
 let updateRegistration=null;
 function ensureUpdateStyles(){
@@ -578,7 +578,7 @@ function startAccessibleNameObserver(){
  observer.observe(document.body,{childList:true,subtree:true});
  window.__nettoA11yObserver=observer;
 }
-async function init(){addStyle();bindMobilePreviewGlobal();ensureAccessibleNames();startAccessibleNameObserver();setupAppUpdates();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;const rememberedTheme=cachedProfileTheme(session.user.id);if(rememberedTheme)localTheme(rememberedTheme);const cached=hydrateGlobalCache(),fresh=refresh();if(!cached)await fresh;else fresh.catch(()=>{});rememberSiteBase();addBackButton();logPageView();bindHomeMark();loadNotifications();startNotificationsRealtime();startPresence();let lastFocusReload=0;const reload=()=>{const now=Date.now();if(now-lastFocusReload<15000)return;lastFocusReload=now;loadNotifications()};window.addEventListener('focus',reload);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reload()})}
+async function init(){addStyle();bindMobilePreviewGlobal();ensureAccessibleNames();startAccessibleNameObserver();setupAppUpdates();if(!window.supabase?.createClient)return;api.client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await api.client.auth.getSession();if(!session)return;api.session=session;const rememberedTheme=cachedProfileTheme(session.user.id);if(rememberedTheme)localTheme(rememberedTheme);const cached=hydrateGlobalCache(),fresh=refresh();if(!cached)await fresh;else fresh.catch(()=>{});rememberSiteBase();addBackButton();logPageView();bindHomeMark();loadNotifications();startNotificationsRealtime();startPresence();let lastFocusReload=0;const reload=()=>{const now=Date.now();if(now-lastFocusReload<15000)return;lastFocusReload=now;loadNotifications()};window.addEventListener('focus',reload);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reload()})}
 const rewardScript=document.createElement('script');rewardScript.src='reward-profile.js?v=2';rewardScript.defer=true;document.head.appendChild(rewardScript);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
