@@ -415,8 +415,9 @@ async function reviewAbsence(id,status){
  const reviewedAt=new Date().toISOString(),{error}=await db.from('planning_absences').update({status,reviewed_by:currentUser.id,reviewed_at:reviewedAt,updated_at:reviewedAt}).eq('id',id);
  if(error){alert('Impossible de mettre à jour la demande : '+error.message);return}
  await addPlanningLog('absence_review',logDetails({kind:'absence_review',absence_id:a.id,target_user_id:a.user_id,target_name:a.display_name,type:a.type,start_date:a.start_date,end_date:a.end_date,status}));
- const target='planning.html?week='+encodeURIComponent(isoDate(startOfWeek(parseISO(a.start_date))))+'&day='+encodeURIComponent(a.start_date);
- await notifyUsers([{user_id:a.user_id,kind:'absence_decision',title:status==='approved'?'Demande validée':'Demande refusée',message:absenceTypeLabel(a.type)+' du '+shortDate(a.start_date)+' au '+shortDate(a.end_date)+' : '+absenceStatusLabel(status).toLowerCase()+'.',planning_date:a.start_date,week_start:isoDate(startOfWeek(parseISO(a.start_date))),target_url:target}]);
+ const target='profile.html';
+ const isLeave=a.type==='leave',accepted=status==='approved';
+ await notifyUsers([{user_id:a.user_id,kind:'absence_decision',title:(isLeave?'Congés ':'Indisponibilité ')+(accepted?'acceptés':'refusés'),message:(isLeave?'Tes congés':'Ton indisponibilité')+' du '+shortDate(a.start_date)+' au '+shortDate(a.end_date)+' '+(accepted?'ont été acceptés.':'ont été refusés.'),planning_date:a.start_date,week_start:isoDate(startOfWeek(parseISO(a.start_date))),target_url:target}]);
  await loadPlanningAbsences();renderPlanningInsights();window.NettoSounds?.play?.(status==='approved'?'success':'warning');showToast(status==='approved'?'Demande validée':'Demande refusée')
 }
 
