@@ -1,28 +1,32 @@
-const CACHE='netto-tools-v50';
-const CORE=['./rewards.html','./rewards.css?v=1','./rewards.js?v=3','./reward-profile.js?v=2','./','./index.html','./home.html','./articles.html','./bakery.html','./planning.html','./chat.html','./profile.html','./settings.html','./stock-test.html','./accounts.html','./admin-portal.html','./custom-menu.html','./fl-assistant.html','./manifest.webmanifest','./design-v2.css','./design-v3.css?v=3','./design-v4.css?v=1','./profile-ui.js?v=29','./assets/app-icon.svg','./assets/logo-stock.svg','./assets/logo-planning.svg','./assets/logo-equipe.svg','./assets/logo-article.svg','./assets/logo-boulangerie.svg?v=3','./assets/logo-home.svg','./assets/logo-profile.svg?v=3','./assets/logo-rewards.svg?v=3','./assets/logo-test.svg','./assets/logo-accounts.svg','./assets/logo-admin-portal.svg','./assets/logo-settings.svg','./assets/fl-background.webp'];
+const CACHE='netto-tools-v51';
+const CORE=['./rewards.html','./rewards.css?v=1','./rewards.js?v=3','./reward-profile.js?v=2','./','./index.html','./home.html','./articles.html','./bakery.html','./planning.html','./chat.html','./profile.html','./settings.html','./stock-test.html','./accounts.html','./admin-portal.html','./custom-menu.html','./fl-assistant.html','./manifest.webmanifest','./design-v2.css','./design-v3.css?v=3','./design-v4.css?v=1','./profile-ui.js?v=30','./assets/app-icon.svg','./assets/logo-stock.svg','./assets/logo-planning.svg','./assets/logo-equipe.svg','./assets/logo-article.svg','./assets/logo-boulangerie.svg?v=3','./assets/logo-home.svg','./assets/logo-profile.svg?v=3','./assets/logo-rewards.svg?v=3','./assets/logo-test.svg','./assets/logo-accounts.svg','./assets/logo-admin-portal.svg','./assets/logo-settings.svg','./assets/fl-background.webp'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([
  caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),
  self.registration.getNotifications().then(list=>{list.forEach(n=>n.close())}).catch(()=>{}),
  self.clients.claim()
 ]))});
+async function networkFirst(request,fallback){
+ try{
+  const response=await fetch(request);
+  if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(c=>c.put(request,copy)).catch(()=>{})}
+  return response
+ }catch(_){
+  return (await caches.match(request))||(fallback?await caches.match(fallback):undefined)||Response.error()
+ }
+}
 self.addEventListener('fetch',e=>{
  const u=new URL(e.request.url);
  if(e.request.method!=='GET'||u.origin!==location.origin)return;
  if(e.request.mode==='navigate'){
-   e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./home.html'))));
-   return;
+  e.respondWith(networkFirst(e.request,'./home.html'));
+  return;
  }
- const isStaticCode=/\.(?:js|css)$/i.test(u.pathname);
- if(isStaticCode){
-   e.respondWith(caches.match(e.request).then(cached=>{
-     const refresh=fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>cached);
-     if(cached){e.waitUntil(refresh);return cached}
-     return refresh
-   }));
-   return;
+ if(/\.(?:js|css|svg|png|webp|jpe?g|gif|webmanifest)$/i.test(u.pathname)){
+  e.respondWith(networkFirst(e.request));
+  return;
  }
- e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r})));
+ e.respondWith(caches.match(e.request).then(cached=>cached||networkFirst(e.request)));
 });
 
 
