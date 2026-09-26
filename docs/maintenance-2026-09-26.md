@@ -66,3 +66,20 @@ Un passage manuel dans un vrai navigateur reste nécessaire pour confirmer les d
 - Le workflow GitHub Pages du déploiement principal a terminé avec succès.
 
 - Assistant F&L migré de l’ancien miroir `xlsx@0.18.5` vers le CDN officiel SheetJS 0.20.3.
+
+
+## Passe finale de maintenance
+- Configuration live Supabase nettoyée : suppression définitive de `nav.test`, `pages.test` et `pageTitles.test`.
+- Description du profil alignée avec la suppression du champ « statut / message court » côté interface.
+- Chat : correction d'une `ReferenceError` potentielle lors de la réinitialisation complète.
+- Chat : validation réelle des extensions et types MIME avant upload, en plus de la limite de 25 Mo.
+- Sécurité : `admin_delete_login_history`, `admin_send_notification_test` et `admin_set_notification_control` passent en `SECURITY INVOKER`.
+- Edge Function historique `admin-create-user` neutralisée en `410 Gone` ; la création de compte passe exclusivement par `admin-manage-user`.
+- Cohérence produit vérifiée : aucune référence orpheline et clés étrangères famille/catégorie/conditionnement en `ON DELETE SET NULL`.
+- Stockage : tous les assets locaux du dépôt sont référencés. Un ancien PNG `portal-assets` est confirmé orphelin côté Storage mais n'est pas supprimé par SQL pour éviter de désynchroniser Storage.
+
+## Points restant volontairement hors modification automatique
+- La protection Supabase Auth contre les mots de passe compromis est désactivée et doit être activée via la configuration Auth du projet ; le connecteur disponible n'expose pas cette action.
+- `admin_notification_users()` reste `SECURITY DEFINER` car elle doit compter les appareils Push sans rendre `push_subscriptions` lisible depuis le client. Elle conserve son contrôle administrateur interne.
+- Les trois couches CSS `design-v2/v3/v4` restent séparées : les pages ne chargent pas toutes la même combinaison, donc une fusion sans test rendu navigateur complet serait risquée.
+- La colonne SQL `profiles.status_text` reste temporairement présente tant que la fonction serveur `admin-manage-user` n'a pas été migrée ; le frontend n'en dépend plus.
