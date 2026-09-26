@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const kinds={avatar:'Avatars',frame:'Cadres',accessory:'Accessoires',title:'Titres',theme:'Thèmes'};
+const kinds={frame:'Cadres',accessory:'Accessoires',title:'Titres',theme:'Thèmes'};
 const labels={open:'Disponible',reserved:'Réservée',submitted:'À valider',approved:'Validée',cancelled:'Annulée'};
 const templates=[['Rangement de la réserve','Réorganiser la zone indiquée. Vérifier que les passages restent dégagés et que chaque produit est à sa place.',20],['Mise en ordre du rayon','Effectuer le facing de la zone indiquée et signaler les emplacements vides.',20],['Passage de relais','Rédiger les informations utiles pour le prochain service et signaler les tâches restantes.',15]];
 let db,user,admin=false,tab='shop',category='',filter='active',catalog=[],missions=[],inventory=[],equipment=[],ledger=[],people=[],balance=0,busy=false,formAction=null;
@@ -12,7 +12,7 @@ function check(r){if(r.error)throw r.error;return r.data||[]}
 async function load(){
  const requests=[db.from('reward_catalog').select('*').order('price'),db.from('reward_equipment').select('*')];
  if(admin)requests.push(db.from('reward_missions').select('*').order('created_at',{ascending:false}),db.from('reward_inventory').select('*').eq('user_id',user.id),db.from('reward_wallets').select('balance').eq('user_id',user.id),db.from('reward_ledger').select('*').order('created_at',{ascending:false}),db.from('profiles').select('id,display_name'));
- const r=(await Promise.all(requests)).map(check);[catalog,equipment]=r;
+ const r=(await Promise.all(requests)).map(check);[catalog,equipment]=r;catalog=(catalog||[]).filter(x=>x.kind!=='avatar');equipment=(equipment||[]).filter(x=>x.kind!=='avatar');
  if(admin){[missions,inventory]=[r[2],r[3]];balance=r[4][0]?.balance||0;ledger=r[5];people=r[6];$('balance').textContent=balance}
  render();window.dispatchEvent(new Event('netto:rewards'));
 }
