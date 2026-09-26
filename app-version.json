@@ -1,9 +1,9 @@
 {
-  "version": 67,
-  "label": "v0.67",
+  "version": 68,
+  "label": "v0.68",
   "important": true,
-  "title": "Gestion des congés par rôles",
-  "message": "Les demandes d’indisponibilité et de congés disposent désormais d’un niveau Demande ou Gestion par rôle, avec réception et traitement des demandes.",
-  "published_at": "2026-09-26T19:09:00+02:00",
+  "title": "Gestion des congés clarifiée",
+  "message": "Le planning n’accepte plus aucune demande de congé. Le widget est réservé à la consultation et au traitement par les rôles de gestion, avec historique conservé et suppression réservée à l’administrateur.",
+  "published_at": "2026-09-26T19:20:00+02:00",
   "icon": "assets/app-icon-v63.svg"
 }
