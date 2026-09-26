@@ -196,6 +196,7 @@ async function refreshPersonalPlanningBanner(){
  const box=document.getElementById('personalPlanningBanner');if(!box||!currentUser||!db)return;
  const today=new Date(),ws=startOfWeek(today),key=isoDate(ws),todayKey=isoDate(today),{data,error}=await db.from('planning_weeks').select('data').eq('week_start',key).maybeSingle();
  const p=teamProfiles.find(x=>x.id===currentUser.id),name=p?.display_name||currentUser.name||'Utilisateur',av=document.getElementById('personalBannerAvatar');
+ window.NettoProfileUI?.setAvatarFrame?.(av,p?.avatar_frame);
  if(p?.avatar_url){av.classList.add('hasPhoto');av.style.background='url("'+p.avatar_url.replace(/"/g,'%22')+'") center/cover no-repeat';av.textContent=''}else{av.classList.remove('hasPhoto');av.style.background=p?.profile_color||'#ff5a2a';av.textContent=initials(name)}
  document.getElementById('personalBannerTitle').textContent='Bonjour '+name+' 👋';
  if(error||!data?.data){document.getElementById('personalBannerMessage').textContent='Ton planning d’aujourd’hui n’est pas encore renseigné. Bonne journée !';box.classList.remove('hidden');return}
