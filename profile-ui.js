@@ -446,6 +446,7 @@ async function activateWaitingUpdate(info){
 async function showUpdateAvailable(reg){
  updateRegistration=reg||updateRegistration;
  const info=await releaseInfo(),version=Number(info.version)||APP_RELEASE;
+ if(info.important===false){activateWaitingUpdate(info);return}
  if(sessionStorage.getItem('nettoUpdateLater')===String(version))return;
  if(document.getElementById('nettoUpdateToast'))return;
  ensureUpdateStyles();
