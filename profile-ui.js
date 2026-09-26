@@ -174,7 +174,7 @@ function addStyle(){
  @media(max-width:650px){.nettoBackBtn{width:42px;padding:0;justify-content:center;border-radius:13px}.nettoBackBtn .nettoBackLabel{display:none}.nettoBackBtn .nettoBackArrow{font-size:20px}}
 
  .nettoLoginWrap,.nettoMobilePreviewWrap,.nettoUpdateWrap,.nettoBellWrap,.nettoUserWrap{position:relative}
- .nettoUpdateCheckBtn svg{width:18px;height:18px;fill:currentColor}.nettoUpdateCheckBtn.checking svg{animation:nettoUpdateSpin .8s linear infinite}@keyframes nettoUpdateSpin{to{transform:rotate(360deg)}}
+ .nettoUpdateCheckBtn{width:auto!important;min-width:78px!important;padding:0 11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;background:linear-gradient(135deg,#fff3ee,#fff9f4)!important;border-color:#ffc6b5!important;color:#d94726!important;box-shadow:0 6px 18px #ff5a2a16!important}.nettoUpdateCheckBtn:hover{background:linear-gradient(135deg,#ffe9e1,#fff3e8)!important;border-color:#ff9d82!important}.nettoUpdateCheckBtn svg{width:18px;height:18px;fill:currentColor}.nettoUpdateCheckBtn .nettoUpdateLabel{font-size:9px;font-weight:950;letter-spacing:.45px}.nettoUpdateCheckBtn.checking svg{animation:nettoUpdateSpin .8s linear infinite}@keyframes nettoUpdateSpin{to{transform:rotate(360deg)}}:root[data-theme="dark"] .nettoUpdateCheckBtn{background:linear-gradient(135deg,#38231f,#33271f)!important;border-color:#704234!important;color:#ff9877!important}@media(max-width:650px){.nettoUpdateCheckBtn{min-width:42px!important;width:42px!important;padding:0!important}.nettoUpdateCheckBtn .nettoUpdateLabel{display:none}}
  .nettoMobilePreviewOverlay{position:fixed;inset:0;background:#101214cc;backdrop-filter:blur(10px);z-index:10000;display:grid;place-items:center;padding:28px}.nettoMobilePreviewOverlay.hidden{display:none!important}.nettoMobilePreviewDevice{width:min(410px,calc(100vw - 28px));height:min(860px,calc(100vh - 56px));background:#0d0f11;border:7px solid #292d31;border-radius:38px;box-shadow:0 30px 100px #000b;position:relative;padding:11px;display:flex;flex-direction:column}.nettoMobilePreviewTop{height:32px;display:flex;align-items:center;justify-content:center;position:relative;flex:none}.nettoMobilePreviewState{position:absolute;left:2px;top:5px;color:#dfe3e7;font-size:8px;font-weight:850;letter-spacing:.2px}.nettoMobilePreviewNotch{width:92px;height:19px;border-radius:999px;background:#060708}.nettoMobilePreviewClose{position:absolute;right:0;top:-3px;width:28px;height:28px;border:0;border-radius:9px;background:#34393e;color:#fff;cursor:pointer;font-size:18px;line-height:1}.nettoMobilePreviewFrame{width:100%;height:100%;border:0;border-radius:25px;background:#fff;overflow:hidden}.nettoMobilePreviewBtn{touch-action:manipulation}.nettoMobilePreviewBtn .nettoMobileIconActive{display:none}.nettoMobilePreviewBtn.active{background:#fff2ee;border-color:#ff7754;box-shadow:0 0 0 2px #ff5a2a20,0 7px 20px #ff51251d}.nettoMobilePreviewBtn.active .nettoMobileIconNormal{display:none}.nettoMobilePreviewBtn.active .nettoMobileIconActive{display:block}:root[data-theme="dark"] .nettoMobilePreviewBtn.active{background:#3d2923;border-color:#8c4d38}:root[data-theme="dark"] .nettoMobilePreviewFrame{background:#1b1d20}
  .nettoMobilePreviewNotice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:10050;display:flex;align-items:center;gap:8px;max-width:min(92vw,360px);padding:10px 14px;border:1px solid #e3e5e8;border-radius:999px;background:#ffffffef;color:#25282c;box-shadow:0 12px 36px #0002;backdrop-filter:blur(12px);font-size:11px;font-weight:850;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.nettoMobilePreviewNotice.show{opacity:1;transform:translate(-50%,0)}.nettoMobilePreviewNotice i{width:8px;height:8px;border-radius:50%;background:#ff5a2a;box-shadow:0 0 0 4px #ff5a2a18}:root[data-theme="dark"] .nettoMobilePreviewNotice{background:#23262aee;border-color:#3a3d42;color:#f5f1ed;box-shadow:0 14px 40px #0008}
  @media(max-width:650px){.nettoMobilePreviewWrap{display:none!important}}
@@ -273,18 +273,55 @@ async function detachPushBeforeLogout(){
  }catch(e){console.warn('Désabonnement Push:',e)}
 }
 
+
+function askUpdateSearch(){
+ ensureUpdateStyles();
+ return new Promise(resolve=>{
+  document.getElementById('nettoUpdateConfirmBackdrop')?.remove();
+  const bg=document.createElement('div');bg.id='nettoUpdateConfirmBackdrop';bg.className='nettoUpdateConfirmBackdrop';
+  bg.innerHTML='<div class="nettoUpdateConfirmCard" role="dialog" aria-modal="true" aria-labelledby="nettoUpdateConfirmTitle"><h3 id="nettoUpdateConfirmTitle">Chercher une mise à jour ?</h3><p>Nethor va consulter le journal des mises à jour puis vérifier la version installée sur cet appareil.</p><div class="nettoUpdateConfirmActions"><button type="button" class="nettoUpdateConfirmCancel">Annuler</button><button type="button" class="nettoUpdateConfirmGo">Rechercher</button></div></div>';
+  document.body.appendChild(bg);
+  const done=v=>{bg.remove();resolve(v)};
+  bg.querySelector('.nettoUpdateConfirmCancel').onclick=()=>done(false);
+  bg.querySelector('.nettoUpdateConfirmGo').onclick=()=>done(true);
+  bg.onclick=e=>{if(e.target===bg)done(false)};
+  const onKey=e=>{if(e.key==='Escape'){document.removeEventListener('keydown',onKey);done(false)}};
+  document.addEventListener('keydown',onKey,{once:true});
+  sounds.play('menuOpen')
+ })
+}
+function parseVersionFromLog(row){
+ const direct=Number(row?.details?.version||row?.details?.app_version||row?.details?.release_version||0);
+ if(Number.isFinite(direct)&&direct>0)return direct;
+ const text=[row?.title,row?.description,typeof row?.details==='string'?row.details:JSON.stringify(row?.details||{})].join(' ');
+ const m=text.match(/\bv(?:ersion\s*)?(\d{1,5})\b/i)||text.match(/\bversion\s*(\d{1,5})\b/i);
+ return m?Number(m[1])||0:0
+}
+async function latestVersionFromLogs(){
+ if(!api.client)return 0;
+ const {data,error}=await api.client.from('portal_change_logs').select('release_type,title,description,created_at,details').eq('release_type','maj').order('created_at',{ascending:false}).limit(50);
+ if(error)throw error;
+ let latest=0;
+ for(const row of data||[])latest=Math.max(latest,parseVersionFromLog(row));
+ return latest
+}
 async function manualCheckForUpdates(){
  const btn=document.getElementById('nettoUpdateCheckBtn');
  if(btn?.classList.contains('checking'))return;
+ const confirmed=await askUpdateSearch();
+ if(!confirmed)return;
  btn?.classList.add('checking');btn?.setAttribute('aria-busy','true');sounds.play('tap');
  try{
   if(!('serviceWorker' in navigator)){mobilePreviewNotice('Mises à jour non prises en charge');return}
-  const info=await releaseInfo(),latest=Number(info.version)||APP_RELEASE;
+  mobilePreviewNotice('Consultation du journal des MAJ…');
+  const [info,logVersion]=await Promise.all([releaseInfo(),latestVersionFromLogs()]);
+  const manifestVersion=Number(info.version)||APP_RELEASE;
+  const latest=Math.max(logVersion||0,manifestVersion);
   const reg=await navigator.serviceWorker.register('./sw.js');updateRegistration=reg;
   await reg.update().catch(()=>{});
   if(!reg.waiting){
    await new Promise(resolve=>{
-    let done=false,t=setTimeout(()=>{if(!done){done=true;resolve()}},1800);
+    let done=false,t=setTimeout(()=>{if(!done){done=true;resolve()}},2200);
     const finish=()=>{if(done)return;if(reg.waiting){done=true;clearTimeout(t);resolve()}};
     reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',finish);finish()},{once:true});
     finish()
@@ -293,16 +330,25 @@ async function manualCheckForUpdates(){
   const active=await workerVersion(navigator.serviceWorker.controller);
   const stored=Number(localStorage.getItem('nettoAppVersion')||0)||0;
   const current=Math.max(active||0,stored||0);
-  if(reg.waiting&&current<latest){
-   sessionStorage.removeItem('nettoUpdateLater');
-   await showUpdateAvailable(reg);
-   mobilePreviewNotice('Mise à jour '+(info.label||('v'+latest))+' disponible');
+  if(current>=latest){
+   mobilePreviewNotice('Nethor est à jour • v'+current);
+   sounds.play('success');
    return
   }
-  if(current>=latest){mobilePreviewNotice('Nethor est déjà à jour');sounds.play('success');return}
-  mobilePreviewNotice('Aucune mise à jour prête pour le moment')
- }catch(e){console.warn('Recherche de mise à jour:',e);mobilePreviewNotice('Vérification impossible');sounds.play('error')}
- finally{btn?.classList.remove('checking');btn?.removeAttribute('aria-busy')}
+  if(reg.waiting){
+   sessionStorage.removeItem('nettoUpdateLater');
+   await showUpdateAvailable(reg);
+   mobilePreviewNotice('MAJ disponible : v'+latest);
+   return
+  }
+  mobilePreviewNotice('v'+latest+' détectée dans les logs, téléchargement en attente');
+ }catch(e){
+  console.warn('Recherche de mise à jour:',e);
+  mobilePreviewNotice('Impossible de vérifier les mises à jour');
+  sounds.play('error')
+ }finally{
+  btn?.classList.remove('checking');btn?.removeAttribute('aria-busy')
+ }
 }
 
 function buildGlobalHeader(){
@@ -315,7 +361,7 @@ function buildGlobalHeader(){
  const adminLoginTool=p.role==='admin'?'<div class="nettoLoginWrap"><button id="nettoLoginBtn" class="nettoBellBtn nettoLoginBtn" aria-label="Historique des connexions" aria-expanded="false" title="Connexions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2Zm1 10.41 3.3 1.9-1 1.73L11 13.59V7h2Z"/></svg></button><div id="nettoLoginDrop" class="nettoDrop nettoLoginDrop hidden"><div class="nettoNotifHead"><div class="nettoLoginHeadTitle"><strong>Connexions</strong><small>Qui s’est connecté et à quelle heure</small></div><div class="nettoNotifHeadActions"><button id="nettoLoginDeleteAll">Tout supprimer</button></div></div><div id="nettoLoginList" class="nettoLoginList"><div class="nettoNotifEmpty">Chargement…</div></div></div></div>':'';
  const inMobilePreview=new URLSearchParams(location.search).get('mobile_preview')==='1';
  const adminMobileTool=p.role==='admin'&&!inMobilePreview?'<div class="nettoMobilePreviewWrap"><button type="button" id="nettoMobilePreviewBtn" class="nettoBellBtn nettoMobilePreviewBtn" aria-label="Vision mobile" aria-pressed="false" title="Vision mobile"><svg class="nettoMobileIconNormal" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 1.5h10A2.5 2.5 0 0 1 19.5 4v16A2.5 2.5 0 0 1 17 22.5H7A2.5 2.5 0 0 1 4.5 20V4A2.5 2.5 0 0 1 7 1.5Zm0 2A.5.5 0 0 0 6.5 4v16a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V4a.5.5 0 0 0-.5-.5H7Zm3.5 14h3a1 1 0 1 1 0 2h-3a1 1 0 1 1 0-2Z"/></svg><svg class="nettoMobileIconActive" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="nettoMobileIconGradient" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#ff2f1f"/><stop offset="1" stop-color="#ff8500"/></linearGradient></defs><path fill="url(#nettoMobileIconGradient)" d="M7 1.5h10A2.5 2.5 0 0 1 19.5 4v16A2.5 2.5 0 0 1 17 22.5H7A2.5 2.5 0 0 1 4.5 20V4A2.5 2.5 0 0 1 7 1.5Zm0 2A.5.5 0 0 0 6.5 4v16a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V4a.5.5 0 0 0-.5-.5H7Zm3.5 14h3a1 1 0 1 1 0 2h-3a1 1 0 1 1 0-2Z"/></svg></button></div>':'';
- wrap.innerHTML=adminLoginTool+adminMobileTool+'<div class="nettoUpdateWrap"><button id="nettoUpdateCheckBtn" class="nettoBellBtn nettoUpdateCheckBtn" aria-label="Rechercher les mises à jour" title="Mises à jour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 0 1 7.45 5.09l1.42-.82A1 1 0 0 1 22.36 9l-.08 4.08a1 1 0 0 1-1.42.9l-3.5-2.03a1 1 0 0 1 .03-1.75l1.25-.72A6 6 0 1 0 18 15a1 1 0 1 1 1.73 1A8 8 0 1 1 12 4Z"/></svg></button></div><div class="nettoBellWrap"><button id="nettoBellBtn" class="nettoBellBtn" aria-label="Notifications" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.55 2.55 0 0 0 2.45-1.85h-4.9A2.55 2.55 0 0 0 12 22Zm7-5.1-1.75-2.05V9.5A5.26 5.26 0 0 0 13 4.34V3a1 1 0 1 0-2 0v1.34A5.26 5.26 0 0 0 6.75 9.5v5.35L5 16.9V18h14v-1.1Z"/></svg><b id="nettoNotifBadge" class="nettoNotifBadge hidden">0</b></button><div id="nettoNotifDrop" class="nettoDrop nettoNotifDrop hidden"><div class="nettoNotifHead"><strong>Notifications</strong><div class="nettoNotifHeadActions"><button id="nettoMarkRead">Tout lire</button><button id="nettoDeleteAll">Tout supprimer</button></div></div><div id="nettoNotifList" class="nettoNotifList"><div class="nettoNotifEmpty">Chargement…</div></div></div></div><div class="nettoUserWrap"><button id="nettoUserBtn" class="nettoUserBtn" aria-expanded="false"><span id="nettoTopAvatar" class="nettoTopAvatar">U</span><span class="nettoUserText"><strong>'+esc(name)+'</strong><small>'+esc(role)+'</small></span><span class="nettoChevron">⌄</span></button><div id="nettoUserDrop" class="nettoDrop hidden"><div class="nettoUserHead"><span id="nettoMenuAvatar" class="nettoTopAvatar">U</span><span><strong>'+esc(name)+'</strong><small>'+esc(role)+'</small></span></div>'+makeButton('⚙','Personnalisation','Mon accueil et mes raccourcis','settings.html')+(shortcuts?'<div class="nettoMenuSection">Raccourcis</div>'+shortcuts:'')+'<button id="nettoThemeBtn" class="nettoNavBtn"><span class="nettoThemeIcon">☾</span><span><strong class="nettoThemeLabel">Mode sombre</strong><small>Changer l’apparence</small></span></button><button id="nettoLogoutBtn" class="nettoNavBtn nettoLogout"><span>↪</span><span><strong>Déconnexion</strong><small>Quitter la session</small></span></button></div></div>';
+ wrap.innerHTML=adminLoginTool+adminMobileTool+'<div class="nettoUpdateWrap"><button id="nettoUpdateCheckBtn" class="nettoBellBtn nettoUpdateCheckBtn" aria-label="Rechercher une mise à jour" title="Mise à jour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3a1 1 0 1 1 2 0v9.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V3Zm-6 14a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z"/></svg><span class="nettoUpdateLabel">MAJ</span></button></div><div class="nettoBellWrap"><button id="nettoBellBtn" class="nettoBellBtn" aria-label="Notifications" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.55 2.55 0 0 0 2.45-1.85h-4.9A2.55 2.55 0 0 0 12 22Zm7-5.1-1.75-2.05V9.5A5.26 5.26 0 0 0 13 4.34V3a1 1 0 1 0-2 0v1.34A5.26 5.26 0 0 0 6.75 9.5v5.35L5 16.9V18h14v-1.1Z"/></svg><b id="nettoNotifBadge" class="nettoNotifBadge hidden">0</b></button><div id="nettoNotifDrop" class="nettoDrop nettoNotifDrop hidden"><div class="nettoNotifHead"><strong>Notifications</strong><div class="nettoNotifHeadActions"><button id="nettoMarkRead">Tout lire</button><button id="nettoDeleteAll">Tout supprimer</button></div></div><div id="nettoNotifList" class="nettoNotifList"><div class="nettoNotifEmpty">Chargement…</div></div></div></div><div class="nettoUserWrap"><button id="nettoUserBtn" class="nettoUserBtn" aria-expanded="false"><span id="nettoTopAvatar" class="nettoTopAvatar">U</span><span class="nettoUserText"><strong>'+esc(name)+'</strong><small>'+esc(role)+'</small></span><span class="nettoChevron">⌄</span></button><div id="nettoUserDrop" class="nettoDrop hidden"><div class="nettoUserHead"><span id="nettoMenuAvatar" class="nettoTopAvatar">U</span><span><strong>'+esc(name)+'</strong><small>'+esc(role)+'</small></span></div>'+makeButton('⚙','Personnalisation','Mon accueil et mes raccourcis','settings.html')+(shortcuts?'<div class="nettoMenuSection">Raccourcis</div>'+shortcuts:'')+'<button id="nettoThemeBtn" class="nettoNavBtn"><span class="nettoThemeIcon">☾</span><span><strong class="nettoThemeLabel">Mode sombre</strong><small>Changer l’apparence</small></span></button><button id="nettoLogoutBtn" class="nettoNavBtn nettoLogout"><span>↪</span><span><strong>Déconnexion</strong><small>Quitter la session</small></span></button></div></div>';
  top.appendChild(wrap);
  paint(document.getElementById('nettoTopAvatar'),api.avatarUrl,name,p.profile_color,p.avatar_frame);paint(document.getElementById('nettoMenuAvatar'),api.avatarUrl,name,p.profile_color,p.avatar_frame);updateThemeText();
  wrap.querySelectorAll('.nettoNavBtn[data-url]').forEach(b=>b.onclick=()=>{sounds.play('navigate');const url=b.dataset.url;setTimeout(()=>location.href=url,55)});
@@ -552,7 +598,7 @@ let updateRegistration=null;
 function ensureUpdateStyles(){
  if(document.getElementById('nettoUpdateStyle'))return;
  const s=document.createElement('style');s.id='nettoUpdateStyle';
- s.textContent='.nettoUpdateToast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,18px);width:min(94vw,520px);z-index:2147482500;background:rgba(25,27,30,.96);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:15px;box-shadow:0 24px 70px rgba(0,0,0,.36);backdrop-filter:blur(18px);opacity:0;transition:opacity .2s ease,transform .2s ease}.nettoUpdateToast.show{opacity:1;transform:translate(-50%,0)}.nettoUpdateTop{display:flex;gap:12px;align-items:flex-start}.nettoUpdateIcon{width:48px;height:48px;border-radius:14px;object-fit:cover;background:#303236;flex:none}.nettoUpdateCopy{min-width:0;flex:1}.nettoUpdateCopy strong{display:block;font-size:14px;line-height:1.25}.nettoUpdateCopy span{display:block;margin-top:4px;color:#d3d6db;font-size:11px;line-height:1.45}.nettoUpdateVersion{display:inline-flex!important;width:auto!important;margin-top:8px!important;padding:4px 8px;border-radius:999px;background:#ffffff12;color:#ff9a72!important;font-size:9px!important;font-weight:900;letter-spacing:.4px}.nettoUpdateActions{display:flex;gap:8px;margin-top:13px}.nettoUpdateActions button{border:0;border-radius:12px;min-height:39px;padding:0 13px;font:800 11px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.nettoUpdateLater{background:#ffffff12;color:#f3f4f5}.nettoUpdateNow{margin-left:auto;background:linear-gradient(135deg,#ff4b2b,#ff8126);color:#fff;box-shadow:0 8px 22px rgba(255,91,37,.28)}.nettoUpdateNow:disabled{opacity:.65;cursor:wait}@media(max-width:520px){.nettoUpdateToast{width:calc(100vw - 20px);border-radius:18px}.nettoUpdateActions{display:grid;grid-template-columns:1fr 1.25fr}.nettoUpdateNow{margin-left:0}}';
+ s.textContent='.nettoUpdateConfirmBackdrop{position:fixed;inset:0;z-index:2147482600;background:#0e1115a8;backdrop-filter:blur(8px);display:grid;place-items:center;padding:18px}.nettoUpdateConfirmCard{width:min(92vw,410px);background:#fff;color:#202328;border:1px solid #e0e3e7;border-radius:20px;padding:18px;box-shadow:0 28px 80px #0005}.nettoUpdateConfirmCard h3{margin:0;font-size:18px}.nettoUpdateConfirmCard p{margin:7px 0 0;color:#777c84;font-size:11px;line-height:1.5}.nettoUpdateConfirmActions{display:grid;grid-template-columns:1fr 1.25fr;gap:8px;margin-top:17px}.nettoUpdateConfirmActions button{min-height:42px;border:0;border-radius:12px;font:850 11px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.nettoUpdateConfirmCancel{background:#eef0f2;color:#35383d}.nettoUpdateConfirmGo{background:linear-gradient(135deg,#ff4028,#ff8427);color:#fff;box-shadow:0 8px 22px #ff5a2a2b}:root[data-theme="dark"] .nettoUpdateConfirmCard{background:#202328;color:#f5f6f7;border-color:#383c43}:root[data-theme="dark"] .nettoUpdateConfirmCard p{color:#aeb2b9}:root[data-theme="dark"] .nettoUpdateConfirmCancel{background:#2c3036;color:#e9ebed}.nettoUpdateToast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,18px);width:min(94vw,520px);z-index:2147482500;background:rgba(25,27,30,.96);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:15px;box-shadow:0 24px 70px rgba(0,0,0,.36);backdrop-filter:blur(18px);opacity:0;transition:opacity .2s ease,transform .2s ease}.nettoUpdateToast.show{opacity:1;transform:translate(-50%,0)}.nettoUpdateTop{display:flex;gap:12px;align-items:flex-start}.nettoUpdateIcon{width:48px;height:48px;border-radius:14px;object-fit:cover;background:#303236;flex:none}.nettoUpdateCopy{min-width:0;flex:1}.nettoUpdateCopy strong{display:block;font-size:14px;line-height:1.25}.nettoUpdateCopy span{display:block;margin-top:4px;color:#d3d6db;font-size:11px;line-height:1.45}.nettoUpdateVersion{display:inline-flex!important;width:auto!important;margin-top:8px!important;padding:4px 8px;border-radius:999px;background:#ffffff12;color:#ff9a72!important;font-size:9px!important;font-weight:900;letter-spacing:.4px}.nettoUpdateActions{display:flex;gap:8px;margin-top:13px}.nettoUpdateActions button{border:0;border-radius:12px;min-height:39px;padding:0 13px;font:800 11px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.nettoUpdateLater{background:#ffffff12;color:#f3f4f5}.nettoUpdateNow{margin-left:auto;background:linear-gradient(135deg,#ff4b2b,#ff8126);color:#fff;box-shadow:0 8px 22px rgba(255,91,37,.28)}.nettoUpdateNow:disabled{opacity:.65;cursor:wait}@media(max-width:520px){.nettoUpdateToast{width:calc(100vw - 20px);border-radius:18px}.nettoUpdateActions{display:grid;grid-template-columns:1fr 1.25fr}.nettoUpdateNow{margin-left:0}}';
  document.head.appendChild(s)
 }
 function syncAppIconLinks(){
