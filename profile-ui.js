@@ -147,7 +147,7 @@ function addStyle(){
  .nettoLoginWrap,.nettoMobilePreviewWrap,.nettoBellWrap,.nettoUserWrap{position:relative}
  .nettoMobilePreviewOverlay{position:fixed;inset:0;background:#101214cc;backdrop-filter:blur(10px);z-index:10000;display:grid;place-items:center;padding:28px}.nettoMobilePreviewOverlay.hidden{display:none!important}.nettoMobilePreviewDevice{width:min(410px,calc(100vw - 28px));height:min(860px,calc(100vh - 56px));background:#0d0f11;border:7px solid #292d31;border-radius:38px;box-shadow:0 30px 100px #000b;position:relative;padding:11px;display:flex;flex-direction:column}.nettoMobilePreviewTop{height:32px;display:flex;align-items:center;justify-content:center;position:relative;flex:none}.nettoMobilePreviewState{position:absolute;left:2px;top:5px;color:#dfe3e7;font-size:8px;font-weight:850;letter-spacing:.2px}.nettoMobilePreviewNotch{width:92px;height:19px;border-radius:999px;background:#060708}.nettoMobilePreviewClose{position:absolute;right:0;top:-3px;width:28px;height:28px;border:0;border-radius:9px;background:#34393e;color:#fff;cursor:pointer;font-size:18px;line-height:1}.nettoMobilePreviewFrame{width:100%;height:100%;border:0;border-radius:25px;background:#fff;overflow:hidden}.nettoMobilePreviewBtn.active{background:#fff0ec;border-color:#ff8a6c;box-shadow:0 0 0 2px #ff5a2a1c}.nettoMobilePreviewBtn.active svg{fill:#e84827}:root[data-theme="dark"] .nettoMobilePreviewBtn.active{background:#3d2923;border-color:#784636}:root[data-theme="dark"] .nettoMobilePreviewFrame{background:#1b1d20}
  .nettoMobilePreviewNotice{position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);z-index:10050;display:flex;align-items:center;gap:8px;max-width:min(92vw,360px);padding:10px 14px;border:1px solid #e3e5e8;border-radius:999px;background:#ffffffef;color:#25282c;box-shadow:0 12px 36px #0002;backdrop-filter:blur(12px);font-size:11px;font-weight:850;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.nettoMobilePreviewNotice.show{opacity:1;transform:translate(-50%,0)}.nettoMobilePreviewNotice i{width:8px;height:8px;border-radius:50%;background:#ff5a2a;box-shadow:0 0 0 4px #ff5a2a18}:root[data-theme="dark"] .nettoMobilePreviewNotice{background:#23262aee;border-color:#3a3d42;color:#f5f1ed;box-shadow:0 14px 40px #0008}
- @media(max-width:650px){.nettoMobilePreviewWrap{display:none!important}.nettoMobilePreviewOverlay{display:none!important}}
+ @media(max-width:650px){.nettoMobilePreviewWrap{display:none!important}}
  .nettoBellBtn{width:42px;height:42px;border:1px solid #e0e2e6;border-radius:13px;background:#fff;display:grid;place-items:center;cursor:pointer;position:relative;box-shadow:0 5px 15px #0000000b}
  .nettoBellBtn svg{width:21px;height:21px;fill:#3d3f44}.nettoNotifBadge{position:absolute;right:-4px;top:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ff2438;color:#fff;border:2px solid #fff;display:grid;place-items:center;font-size:9px;font-weight:950;line-height:1}
  .nettoNotifBadge.hidden{display:none!important}
@@ -268,6 +268,7 @@ function toggleMobilePreview(){
  overlay.id='nettoMobilePreviewOverlay';
  overlay.className='nettoMobilePreviewOverlay';
  overlay.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(16,18,20,.84);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px';
+ overlay.style.setProperty('display','flex','important');
  const device=document.createElement('div');
  device.className='nettoMobilePreviewDevice';
  device.style.cssText='width:min(410px,calc(100vw - 28px));height:min(860px,calc(100vh - 48px));background:#0d0f11;border:7px solid #292d31;border-radius:38px;box-shadow:0 30px 100px rgba(0,0,0,.7);padding:10px;display:flex;flex-direction:column';
@@ -322,30 +323,21 @@ async function loadLoginHistory(){
 async function deleteLoginHistoryRow(id){
  if(api.profile?.role!=='admin'||!Number.isFinite(Number(id)))return;
  const target=Number(id);
- let deleted=false;
- const direct=await api.client.from('login_history').delete().eq('id',target).select('id');
- if(!direct.error&&Array.isArray(direct.data)&&direct.data.length){deleted=true}
- if(!deleted){
-  const rpc=await api.client.rpc('admin_delete_login_history',{p_id:target});
-  if(!rpc.error&&Number(rpc.data||0)>0)deleted=true;
-  else if(direct.error||rpc.error){console.warn('Suppression connexion:',direct.error||rpc.error)}
+ const rpc=await api.client.rpc('admin_delete_login_history',{p_id:target});
+ if(rpc.error||Number(rpc.data||0)<1){
+  console.warn('Suppression connexion:',rpc.error||'Aucune ligne supprimée');
+  sounds.play('error');mobilePreviewNotice('Suppression impossible');await loadLoginHistory();return
  }
- if(!deleted){sounds.play('error');mobilePreviewNotice('Suppression impossible');await loadLoginHistory();return}
  sounds.play('delete');api.loginHistory=api.loginHistory.filter(x=>Number(x.id)!==target);renderLoginHistory();mobilePreviewNotice('Connexion supprimée');
 }
 async function deleteAllLoginHistory(){
  if(api.profile?.role!=='admin'||!api.loginHistory.length)return;
  if(!confirm('Supprimer tout l’historique des connexions ?'))return;
- const ids=api.loginHistory.map(x=>Number(x.id)).filter(Number.isFinite);
- let deletedCount=0;
- const direct=await api.client.from('login_history').delete().in('id',ids).select('id');
- if(!direct.error&&Array.isArray(direct.data))deletedCount=direct.data.length;
- if(deletedCount<ids.length){
-  const rpc=await api.client.rpc('admin_delete_login_history',{p_id:null});
-  if(!rpc.error)deletedCount=Math.max(deletedCount,Number(rpc.data||0));
-  else console.warn('Suppression historique connexions:',direct.error||rpc.error);
+ const rpc=await api.client.rpc('admin_delete_login_history',{p_id:null});
+ if(rpc.error||Number(rpc.data||0)<1){
+  console.warn('Suppression historique connexions:',rpc.error||'Aucune ligne supprimée');
+  sounds.play('error');mobilePreviewNotice('Suppression impossible');await loadLoginHistory();return
  }
- if(deletedCount<1){sounds.play('error');mobilePreviewNotice('Suppression impossible');await loadLoginHistory();return}
  sounds.play('delete');api.loginHistory=[];renderLoginHistory();mobilePreviewNotice('Historique des connexions supprimé');
 }
 
