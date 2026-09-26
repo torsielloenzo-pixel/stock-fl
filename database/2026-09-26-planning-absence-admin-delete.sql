@@ -3,6 +3,8 @@
 
 drop policy if exists "planning absences admin delete only" on public.planning_absences;
 
+grant delete on table public.planning_absences to authenticated;
+
 create policy "planning absences admin delete only"
 on public.planning_absences
 for delete to authenticated
