@@ -99,3 +99,10 @@ alter table public.planning_notifications
     target_url is null
     or target_url !~* '^\s*(?:[a-z][a-z0-9+.-]*:|//)'
   );
+
+
+-- Réduction de la surface SECURITY DEFINER.
+-- Ces RPC s'appuient désormais sur les privilèges de table + RLS existants.
+alter function public.admin_delete_login_history(bigint) security invoker;
+alter function public.admin_send_notification_test(uuid[], text, text, text) security invoker;
+alter function public.admin_set_notification_control(uuid, boolean) security invoker;
