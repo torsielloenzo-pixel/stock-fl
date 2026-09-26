@@ -331,7 +331,7 @@ async function manualCheckForUpdates(){
   const stored=Number(localStorage.getItem('nettoAppVersion')||0)||0;
   const current=Math.max(active||0,stored||0);
   if(current>=latest){
-   mobilePreviewNotice('Nethor est à jour • v'+current);
+   mobilePreviewNotice('Nethor est à jour - v0.'+current);
    sounds.play('success');
    return
   }
@@ -341,7 +341,7 @@ async function manualCheckForUpdates(){
    mobilePreviewNotice('MAJ disponible : v'+latest);
    return
   }
-  mobilePreviewNotice('v'+latest+' détectée dans les logs, téléchargement en attente');
+  mobilePreviewNotice('v0.'+latest+' détectée dans les logs, téléchargement en attente');
  }catch(e){
   console.warn('Recherche de mise à jour:',e);
   mobilePreviewNotice('Impossible de vérifier les mises à jour');
@@ -620,7 +620,7 @@ function workerVersion(worker){
  })
 }
 async function releaseInfo(){
- try{const r=await fetch('app-version.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));return await r.json()}catch(_){return{version:APP_RELEASE,label:'v'+APP_RELEASE,important:true,title:'Mise à jour Nethor disponible',message:'Une nouvelle version de l’application est disponible.',icon:APP_ICON}}
+ try{const r=await fetch('app-version.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));return await r.json()}catch(_){return{version:APP_RELEASE,label:'v0.'+APP_RELEASE,important:true,title:'Mise à jour Nethor disponible',message:'Une nouvelle version de l’application est disponible.',icon:APP_ICON}}
 }
 async function notifyUpdateSystem(reg,info){
  if(!reg||typeof Notification==='undefined'||Notification.permission!=='granted')return;
@@ -648,7 +648,7 @@ async function showUpdateAvailable(reg){
  if(document.getElementById('nettoUpdateToast'))return;
  ensureUpdateStyles();
  const el=document.createElement('aside');el.id='nettoUpdateToast';el.className='nettoUpdateToast';el.setAttribute('role','status');el.setAttribute('aria-live','polite');
- el.innerHTML='<div class="nettoUpdateTop"><img class="nettoUpdateIcon" src="'+esc(info.icon||APP_ICON)+'" alt=""><div class="nettoUpdateCopy"><strong>'+esc(info.title||'Mise à jour Nethor disponible')+'</strong><span>'+esc(info.message||'Une nouvelle version de l’application est prête.')+'</span><span class="nettoUpdateVersion">'+esc(info.label||('v'+version))+' • dernière version</span></div></div><div class="nettoUpdateActions"><button type="button" class="nettoUpdateLater" id="nettoUpdateLater">Plus tard</button><button type="button" class="nettoUpdateNow" id="nettoUpdateNow">Mettre à jour</button></div>';
+ el.innerHTML='<div class="nettoUpdateTop"><img class="nettoUpdateIcon" src="'+esc(info.icon||APP_ICON)+'" alt=""><div class="nettoUpdateCopy"><strong>'+esc(info.title||'Mise à jour Nethor disponible')+'</strong><span>'+esc(info.message||'Une nouvelle version de l’application est prête.')+'</span><span class="nettoUpdateVersion">'+esc(info.label||('v0.'+version))+' • dernière version</span></div></div><div class="nettoUpdateActions"><button type="button" class="nettoUpdateLater" id="nettoUpdateLater">Plus tard</button><button type="button" class="nettoUpdateNow" id="nettoUpdateNow">Mettre à jour</button></div>';
  document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));sounds.play('notification');
  document.getElementById('nettoUpdateLater').onclick=()=>{sessionStorage.setItem('nettoUpdateLater',String(version));hideUpdateToast()};
  document.getElementById('nettoUpdateNow').onclick=()=>activateWaitingUpdate(info);
