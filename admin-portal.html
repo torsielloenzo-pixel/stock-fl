@@ -115,7 +115,7 @@ main{width:min(95vw,1240px);margin:auto;padding:28px 0 90px}.hero{display:flex;j
 const SUPABASE_URL='https://gioxrpaiwogqqtakjpnv.supabase.co',SUPABASE_KEY='sb_publishable_nJPMS-Z_20ng1aMJmufbmg_gWFFndrC';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let ROLES=['admin','responsable','employe','lecture'];const ROLE_LABEL={admin:'Administrateur',responsable:'Responsable',employe:'Employé',lecture:'Lecture seule'};
-function roleName(r){return config?.role_definitions?.[r]?.label||roleName(r)||r||'Compte'}
+function roleName(r){return config?.role_definitions?.[r]?.label||ROLE_LABEL[r]||r||'Compte'}
 let session=null,profile=null,config={},dirty=false,notificationUsers=[],portalLogs=[],logSourceFilter='all',logTypeFilter='all';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
