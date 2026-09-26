@@ -90,7 +90,7 @@ dialog{border:0;border-radius:18px;width:min(92vw,480px);padding:0;box-shadow:0 
     <span><strong>Widgets du planning</strong><small>Visibilité des widgets selon le rôle</small></span><b class="permissionAccordionChevron">⌄</b>
   </button>
   <div id="permissionAccordion-widgets" class="permissionAccordionBody hidden">
-    <div class="rolesIntro"><div><span>Choisis la visibilité des widgets. Pour <b>Indisponibilités / Congés</b> : <b>Demande</b> permet de déposer et suivre ses demandes ; <b>Gestion</b> reçoit les nouvelles demandes de l’équipe et permet de les traiter.</span></div><div class="roleTopActions"><button class="btn primary" id="savePlanningWidgetsBtn" onclick="savePlanningWidgetPermissions()">Enregistrer les widgets</button></div></div>
+    <div class="rolesIntro"><div><span>Choisis la visibilité des widgets. <b>Indisponibilités / Congés</b> est uniquement un espace de gestion : les rôles en <b>Gestion</b> voient les demandes reçues et peuvent les valider ou les refuser. Aucune demande n’est créée depuis le planning.</span></div><div class="roleTopActions"><button class="btn primary" id="savePlanningWidgetsBtn" onclick="savePlanningWidgetPermissions()">Enregistrer les widgets</button></div></div>
     <div id="planningWidgetMatrix" class="roleMatrix"><div class="empty">Chargement des widgets…</div></div>
     <div id="planningWidgetState" class="state"></div>
   </div>
@@ -220,20 +220,18 @@ function roleModules(){return (window.NettoProfileUI?.modules||[]).filter(m=>m.i
 function pageConfigFor(m){siteConfig.pages=siteConfig.pages&&typeof siteConfig.pages==='object'?siteConfig.pages:{};const p=siteConfig.pages[m.id]&&typeof siteConfig.pages[m.id]==='object'?siteConfig.pages[m.id]:{};if(!Array.isArray(p.roles))p.roles=window.NettoProfileUI?.configuredRoles?.(m,siteConfig)||roleKeys();siteConfig.pages[m.id]=p;return p}
 function rolePermissionLevel(m,role){const explicit=siteConfig?.role_permissions?.[m.id]?.[role];if(['none','view','operate','manage'].includes(explicit))return explicit;const allowed=(pageConfigFor(m).roles||[]).includes(role);if(!allowed)return'none';return role==='admin'?'manage':'view'}
 function renderRoleMatrix(){renderRoleManager();const host=$('roleMatrix');if(!host)return;const mods=roleModules(),keys=roleKeys();if(!mods.length){host.innerHTML='<div class="empty">Aucun module disponible.</div>';renderPlanningWidgetMatrix();return}host.innerHTML='<table><thead><tr><th>Module</th>'+keys.map(r=>'<th>'+esc(roleLabel(r))+'</th>').join('')+'</tr></thead><tbody>'+mods.map(m=>'<tr><td><div class="roleModule"><strong>'+esc(m.homeLabel||m.label||m.id)+'</strong><small>'+esc(m.subtitle||m.description||m.id)+'</small></div></td>'+keys.map(r=>{const locked=LOCKED_ROLE_MODULES.has(m.id),level=locked?(r==='admin'?'manage':'none'):rolePermissionLevel(m,r);return'<td><select class="permSelect" data-perm-module="'+esc(m.id)+'" data-perm-role="'+esc(r)+'" data-level="'+level+'" '+(locked?'disabled':'')+' onchange="this.dataset.level=this.value;markRoleDirty()"><option value="none" '+(level==='none'?'selected':'')+'>Aucun accès</option><option value="view" '+(level==='view'?'selected':'')+'>Consultation</option>'+(m.id==='stock'?'<option value="operate" '+(level==='operate'?'selected':'')+'>Opérationnel</option>':'')+'<option value="manage" '+(level==='manage'?'selected':'')+'>Gestion</option></select></td>'}).join('')+'</tr>').join('')+'</tbody></table>';renderPlanningWidgetMatrix()}
-function planningWidgetDefinitions(){return[{id:'coverage',label:'Couverture magasin',description:'Présence planifiée par tranche de 15 minutes.'},{id:'personal_stats',label:'Mes statistiques',description:'Statistiques personnelles de la semaine.'},{id:'anomalies',label:'Détection d’anomalies',description:'Contrôles automatiques du planning.'},{id:'absences',label:'Indisponibilités / Congés',description:'Demande, réception et traitement des congés / indisponibilités.'}]}
+function planningWidgetDefinitions(){return[{id:'coverage',label:'Couverture magasin',description:'Présence planifiée par tranche de 15 minutes.'},{id:'personal_stats',label:'Mes statistiques',description:'Statistiques personnelles de la semaine.'},{id:'anomalies',label:'Détection d’anomalies',description:'Contrôles automatiques du planning.'},{id:'absences',label:'Indisponibilités / Congés',description:'Consultation et traitement des congés / indisponibilités reçus. Aucune demande n’est créée depuis le planning.'}]}
 function planningWidgetPermissionForRole(widget,roleKey){
  const explicit=siteConfig?.planning_widgets?.[widget]?.[roleKey];
  if(widget==='absences'){
   if(roleKey==='admin')return'manage';
-  if(['hidden','request','manage'].includes(explicit))return explicit;
-  if(explicit===false)return'hidden';
-  return'request'
+  return explicit==='manage'?'manage':'hidden'
  }
  return explicit===false?'hidden':'visible'
 }
 function renderPlanningWidgetMatrix(){
  const host=$('planningWidgetMatrix');if(!host)return;const keys=roleKeys(),widgets=planningWidgetDefinitions();
- host.innerHTML='<table><thead><tr><th>Widget</th>'+keys.map(r=>'<th>'+esc(roleLabel(r))+'</th>').join('')+'</tr></thead><tbody>'+widgets.map(w=>'<tr><td><div class="roleModule"><strong>'+esc(w.label)+'</strong><small>'+esc(w.description)+'</small>'+(w.id==='absences'?'<small><b>Gestion</b> = reçoit les demandes et peut les accepter/refuser.</small>':'')+'</div></td>'+keys.map(r=>{const level=planningWidgetPermissionForRole(w.id,r),locked=w.id==='absences'&&r==='admin';if(w.id==='absences')return'<td><select class="permSelect" data-widget="'+esc(w.id)+'" data-widget-role="'+esc(r)+'" onchange="markPlanningWidgetsDirty()" '+(locked?'disabled':'')+'><option value="hidden" '+(level==='hidden'?'selected':'')+'>Masqué</option><option value="request" '+(level==='request'?'selected':'')+'>Demande</option><option value="manage" '+(level==='manage'?'selected':'')+'>Gestion</option></select></td>';return'<td><select class="permSelect" data-widget="'+esc(w.id)+'" data-widget-role="'+esc(r)+'" onchange="markPlanningWidgetsDirty()"><option value="visible" '+(level==='visible'?'selected':'')+'>Visible</option><option value="hidden" '+(level==='hidden'?'selected':'')+'>Masqué</option></select></td>'}).join('')+'</tr>').join('')+'</tbody></table>'
+ host.innerHTML='<table><thead><tr><th>Widget</th>'+keys.map(r=>'<th>'+esc(roleLabel(r))+'</th>').join('')+'</tr></thead><tbody>'+widgets.map(w=>'<tr><td><div class="roleModule"><strong>'+esc(w.label)+'</strong><small>'+esc(w.description)+'</small>'+(w.id==='absences'?'<small><b>Gestion</b> = reçoit les demandes et peut les accepter/refuser.</small>':'')+'</div></td>'+keys.map(r=>{const level=planningWidgetPermissionForRole(w.id,r),locked=w.id==='absences'&&r==='admin';if(w.id==='absences')return'<td><select class="permSelect" data-widget="'+esc(w.id)+'" data-widget-role="'+esc(r)+'" onchange="markPlanningWidgetsDirty()" '+(locked?'disabled':'')+'><option value="hidden" '+(level==='hidden'?'selected':'')+'>Masqué</option><option value="manage" '+(level==='manage'?'selected':'')+'>Gestion</option></select></td>';return'<td><select class="permSelect" data-widget="'+esc(w.id)+'" data-widget-role="'+esc(r)+'" onchange="markPlanningWidgetsDirty()"><option value="visible" '+(level==='visible'?'selected':'')+'>Visible</option><option value="hidden" '+(level==='hidden'?'selected':'')+'>Masqué</option></select></td>'}).join('')+'</tr>').join('')+'</tbody></table>'
 }
 function markPlanningWidgetsDirty(){const s=$('planningWidgetState');if(s){s.className='state';s.textContent='Modifications non enregistrées'}}
 async function savePlanningWidgetPermissions(){
@@ -244,7 +242,7 @@ async function savePlanningWidgetPermissions(){
    siteConfig.planning_widgets[w.id]=siteConfig.planning_widgets[w.id]&&typeof siteConfig.planning_widgets[w.id]==='object'?siteConfig.planning_widgets[w.id]:{};
    for(const r of roleKeys()){
     const node=document.querySelector('[data-widget="'+CSS.escape(w.id)+'"][data-widget-role="'+CSS.escape(r)+'"]');
-    if(w.id==='absences')siteConfig.planning_widgets[w.id][r]=r==='admin'?'manage':(node?.value||'request');
+    if(w.id==='absences')siteConfig.planning_widgets[w.id][r]=r==='admin'?'manage':(node?.value||'hidden');
     else siteConfig.planning_widgets[w.id][r]=(node?.value||'visible')!=='hidden'
    }
   }
