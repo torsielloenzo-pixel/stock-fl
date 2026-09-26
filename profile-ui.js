@@ -99,6 +99,8 @@ function moduleAllowed(module,profileOrRole,config=api?.siteConfig){
  const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;
  if(!role)return false;
  if(module.id!=='settings'&&config?.pages?.[module.id]?.enabled===false)return false;
+ const extra=api?.subrolePermissions?.[module.id];
+ if(extra==='view'||extra==='manage')return true;
  const explicit=config?.role_permissions?.[module.id]?.[role];
  if(['none','view','manage'].includes(explicit))return explicit!=='none';
  return configuredRoles(module,config).includes(role)
@@ -108,17 +110,19 @@ function permissionLevel(moduleOrId,profileOrRole,config=api?.siteConfig){
  const role=typeof profileOrRole==='string'?profileOrRole:profileOrRole?.role;
  if(!module||!role)return'none';
  if(module.id==='settings')return'view';
- const explicit=config?.role_permissions?.[module.id]?.[role];
- if(['none','view','manage'].includes(explicit))return explicit;
- if(!moduleAllowed(module,role,config))return'none';
- return role==='admin'?'manage':'view'
+ const baseExplicit=config?.role_permissions?.[module.id]?.[role];
+ let base=['none','view','manage'].includes(baseExplicit)?baseExplicit:(configuredRoles(module,config).includes(role)?(role==='admin'?'manage':'view'):'none');
+ const extra=api?.subrolePermissions?.[module.id];
+ if(extra==='manage')return'manage';
+ if(extra==='view'&&base==='none')return'view';
+ return base
 }
 function canManage(moduleOrId,profileOrRole,config=api?.siteConfig){return permissionLevel(moduleOrId,profileOrRole,config)==='manage'}
 function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
 function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
-const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:[...SYSTEM_ROLES],maxRoles:moduleMaxRoles,configuredRoles,roleLabel,canAccess:moduleAllowed,permissionLevel,canManage,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
+const api={profile:null,siteConfig:{},subrolePermissions:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:[...SYSTEM_ROLES],maxRoles:moduleMaxRoles,configuredRoles,roleLabel,canAccess:moduleAllowed,permissionLevel,canManage,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
 window.NettoProfileUI=api;
 
 const SOUND_DEFS={
@@ -477,7 +481,7 @@ function hydrateGlobalCache(){
  }catch(_){return false}
 }
 function saveGlobalCache(){try{const k=globalCacheKey();if(k&&api.profile)localStorage.setItem(k,JSON.stringify({saved_at:Date.now(),profile:api.profile,siteConfig:api.siteConfig,avatarUrl:api.avatarUrl}))}catch(_){}}
-async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
+async function refresh(){if(!api.client||!api.session)return null;const [pr,sr,xr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle(),api.client.rpc('my_subrole_permissions')]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};api.subrolePermissions={};if(!xr.error)for(const row of xr.data||[])if(row?.module&&['view','manage'].includes(row.permission))api.subrolePermissions[row.module]=row.permission;applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
 
 const APP_RELEASE=57;
 const APP_ICON='assets/app-icon-v54.svg';
