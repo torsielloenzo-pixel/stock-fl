@@ -17,7 +17,10 @@ const BASE_MODULES=Object.freeze([
  {id:'settings',label:'Personnalisation',homeLabel:'Personnalisation',subtitle:'Mon accueil et mes raccourcis',url:'settings.html',icon:'⚙',asset:'assets/logo-settings.svg',roles:null,home:true,userMenu:false,defaultHome:false,kicker:'PRÉFÉRENCES',description:'Choisir les outils visibles sur ton accueil et dans ta barre utilisateur selon tes droits.',action:'Personnaliser mon portail',cardClass:'settingsCard'}
 ]);
 let NAV_MODULES=[...BASE_MODULES];
-const ALL_ROLES=Object.freeze(['admin','responsable','employe','lecture']);
+const SYSTEM_ROLES=Object.freeze(['admin','responsable','employe','lecture']);
+function roleKeys(config=api?.siteConfig){const defs=config?.role_definitions&&typeof config.role_definitions==='object'?Object.keys(config.role_definitions):[];return [...new Set([...SYSTEM_ROLES,...defs])]}
+function roleDefinition(key,config=api?.siteConfig){return config?.role_definitions?.[key]||null}
+function roleBase(key,config=api?.siteConfig){return roleDefinition(key,config)?.base_role||key}
 function cleanColor(v,fallback=''){const s=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(s)?s:fallback}
 function customModules(config){
  const list=Array.isArray(config?.customMenus)?config.customMenus:[];
@@ -34,7 +37,7 @@ function customModules(config){
    icon:String(x.icon||'◆').slice(0,8),
    asset:String(x.image_url||''),
    roles:null,
-   configuredRoles:Array.isArray(x.roles)?x.roles.filter(r=>ALL_ROLES.includes(r)):ALL_ROLES,
+   configuredRoles:Array.isArray(x.roles)?x.roles.filter(r=>roleKeys(config).includes(r)):roleKeys(config),
    home:x.home!==false,
    userMenu:x.user_menu===true,
    defaultHome:x.default_home!==false,
@@ -70,11 +73,11 @@ function rebuildModules(config={}){
    action:String(p.action||m.action||'Ouvrir'),
    menuColor:cleanColor(p.color,''),
    menuAccent:cleanColor(p.accent,''),
-   configuredRoles:Array.isArray(p.roles)?p.roles.filter(r=>ALL_ROLES.includes(r)):null
+   configuredRoles:Array.isArray(p.roles)?p.roles.filter(r=>roleKeys(config).includes(r)):null
   }
  });
  NAV_MODULES=[...base,...customModules(config)];
- if(typeof api!=='undefined')api.modules=NAV_MODULES
+ if(typeof api!=='undefined'){api.modules=NAV_MODULES;api.allRoles=roleKeys(config)}
 }
 function applyPortalTheme(config={}){
  const t=config?.theme||{},root=document.documentElement;
@@ -84,11 +87,11 @@ function applyPortalTheme(config={}){
  root.style.setProperty('--red',primary);root.style.setProperty('--red2',primary);root.style.setProperty('--orange',secondary);
  root.style.setProperty('--netto-gradient','linear-gradient(135deg,'+primary+' 0%,'+primary+' 44%,'+secondary+' 100%)')
 }
-function moduleMaxRoles(module){return Array.isArray(module?.roles)?module.roles.filter(r=>ALL_ROLES.includes(r)):ALL_ROLES}
+function moduleMaxRoles(module,config=api?.siteConfig){return Array.isArray(module?.roles)?module.roles.filter(r=>roleKeys(config).includes(r)):roleKeys(config)}
 function configuredRoles(module,config=api?.siteConfig){
  if(!module)return[];
- if(module.id==='settings')return [...ALL_ROLES];
- const max=moduleMaxRoles(module),page=config?.pages?.[module.id],raw=Array.isArray(page?.roles)?page.roles:module.configuredRoles;
+ if(module.id==='settings')return roleKeys(config);
+ const max=moduleMaxRoles(module,config),page=config?.pages?.[module.id],raw=Array.isArray(page?.roles)?page.roles:module.configuredRoles;
  if(!Array.isArray(raw))return [...max];
  return [...new Set(raw.filter(r=>max.includes(r)))];
 }
@@ -115,7 +118,7 @@ function preferenceMap(profile){const p=profile?.ui_preferences;return p&&typeof
 function moduleVisible(area,module,profile,config=api?.siteConfig){if(!moduleAllowed(module,profile,config))return false;if(area==='home'&&!module.home)return false;if(area==='user_menu'&&!module.userMenu)return false;const v=preferenceMap(profile)?.[area]?.[module.id];if(typeof v==='boolean')return v;return area==='home'?module.defaultHome!==false:module.defaultUser!==false}
 function visibleModules(area,profile,config=api?.siteConfig){return NAV_MODULES.filter(m=>moduleVisible(area,m,profile,config))}
 function moduleIcon(module){return module?.asset?'<img src="'+esc(module.asset)+'" alt="">':esc(module?.icon||'•')}
-const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:ALL_ROLES,maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,permissionLevel,canManage,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
+const api={profile:null,siteConfig:{},avatarUrl:null,onlineIds:new Set(),channel:null,client:null,session:null,notifications:[],notifChannel:null,loginHistory:[],modules:NAV_MODULES,allRoles:[...SYSTEM_ROLES],maxRoles:moduleMaxRoles,configuredRoles,canAccess:moduleAllowed,permissionLevel,canManage,isVisible:moduleVisible,visibleModules,rebuildModules,refresh,loadNotifications,preferredTheme,applyProfileTheme,setThemePreference:saveThemePreference,toggleMobilePreview:()=>toggleMobilePreview()};
 window.NettoProfileUI=api;
 
 const SOUND_DEFS={
@@ -145,7 +148,7 @@ document.addEventListener('pointerdown',()=>sounds.unlock(),{once:true,capture:t
 
 function initials(n){return String(n||'U').trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()).join('')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function roleLabel(r){return ROLE[r]||r||'Compte'}
+function roleLabel(r){return roleDefinition(r)?.label||ROLE[r]||r||'Compte'}
 function addStyle(){
  if(document.getElementById('nettoGlobalUIStyle'))return;
  const s=document.createElement('style');s.id='nettoGlobalUIStyle';s.textContent=`
