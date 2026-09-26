@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const kinds={frame:'Cadres',accessory:'Accessoires',title:'Titres',theme:'Thèmes'};
+const kinds={avatar:'Avatars de poste',frame:'Cadres',accessory:'Accessoires',title:'Titres',theme:'Thèmes'};
 const labels={open:'Disponible',reserved:'Réservée',submitted:'À valider',approved:'Validée',cancelled:'Annulée'};
 const templates=[['Rangement de la réserve','Réorganiser la zone indiquée. Vérifier que les passages restent dégagés et que chaque produit est à sa place.',20],['Mise en ordre du rayon','Effectuer le facing de la zone indiquée et signaler les emplacements vides.',20],['Passage de relais','Rédiger les informations utiles pour le prochain service et signaler les tâches restantes.',15]];
 let db,user,admin=false,tab='shop',category='',filter='active',catalog=[],missions=[],inventory=[],equipment=[],ledger=[],people=[],balance=0,busy=false,formAction=null;
@@ -12,7 +12,7 @@ function check(r){if(r.error)throw r.error;return r.data||[]}
 async function load(){
  const requests=[db.from('reward_catalog').select('*').order('price'),db.from('reward_equipment').select('*')];
  if(admin)requests.push(db.from('reward_missions').select('*').order('created_at',{ascending:false}),db.from('reward_inventory').select('*').eq('user_id',user.id),db.from('reward_wallets').select('balance').eq('user_id',user.id),db.from('reward_ledger').select('*').order('created_at',{ascending:false}),db.from('profiles').select('id,display_name'));
- const r=(await Promise.all(requests)).map(check);[catalog,equipment]=r;catalog=(catalog||[]).filter(x=>x.kind!=='avatar');equipment=(equipment||[]).filter(x=>x.kind!=='avatar');
+ const r=(await Promise.all(requests)).map(check);[catalog,equipment]=r;
  if(admin){[missions,inventory]=[r[2],r[3]];balance=r[4][0]?.balance||0;ledger=r[5];people=r[6];$('balance').textContent=balance}
  render();window.dispatchEvent(new Event('netto:rewards'));
 }
@@ -32,7 +32,7 @@ function renderMissions(){
  }).join('')||'<div class="empty">'+(review?'Aucune mission en attente de validation.':'Aucune mission ici. Crée un premier défi pour commencer.')+'</div>'}</div>`;
  if($('missionFilter')){$('missionFilter').value=filter;$('missionFilter').onchange=e=>{filter=e.target.value;renderMissions()}}
 }
-function preview(c){const color=/^#[0-9a-f]{6}$/i.test(c.visual)?c.visual:'#ea580c';if(c.kind==='avatar')return `<div class="preview avatarPreview"><span class="avatarArt"><i></i><b>${esc(c.visual)}</b><em></em></span></div>`;if(c.kind==='accessory')return `<div class="preview accessoryPreview"><span class="accessoryArt"><i class="accessoryBase">N</i><b>${esc(c.visual)}</b></span></div>`;return `<div class="preview">${c.kind==='frame'?`<span class="frame" style="--item-color:${color}">N</span>`:c.kind==='theme'?`<span class="theme" style="--item-color:${color}">Netto</span>`:c.kind==='title'?`<span class="titleReward">${esc(c.visual)}</span>`:`<span class="glyph">${esc(c.visual)}</span>`}</div>`}
+function preview(c){const color=/^#[0-9a-f]{6}$/i.test(c.visual)?c.visual:'#ea580c';if(c.kind==='avatar')return /^data:image\//.test(c.visual||'')?`<div class="preview avatarPreview"><img src="${esc(c.visual)}" alt="${esc(c.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:18px"></div>`:`<div class="preview avatarPreview"><span class="avatarArt"><i></i><b>${esc(c.visual)}</b><em></em></span></div>`;if(c.kind==='accessory')return `<div class="preview accessoryPreview"><span class="accessoryArt"><i class="accessoryBase">N</i><b>${esc(c.visual)}</b></span></div>`;return `<div class="preview">${c.kind==='frame'?`<span class="frame" style="--item-color:${color}">N</span>`:c.kind==='theme'?`<span class="theme" style="--item-color:${color}">Netto</span>`:c.kind==='title'?`<span class="titleReward">${esc(c.visual)}</span>`:`<span class="glyph">${esc(c.visual)}</span>`}</div>`}
 function renderShop(){
  const manage=tab==='manage',owned=tab==='collection';let rows=catalog.filter(c=>(manage||c.active||owned&&inventory.some(i=>i.item_id===c.id))&&(!category||c.kind===category)&&(!owned||inventory.some(i=>i.item_id===c.id)));
  $('content').innerHTML=`<div class="row toolbar"><h2>${manage?'Gérer les récompenses':owned?'Ma collection':'Choisis ton prochain objectif'}</h2><div class="filters"><select id="category" aria-label="Catégorie"><option value="">Toutes les catégories</option>${Object.entries(kinds).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>${manage?action('newItem','','Ajouter un objet',true):''}</div></div><div class="grid">${rows.map(c=>{
