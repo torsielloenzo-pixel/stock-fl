@@ -146,7 +146,7 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
     <div class="readerHead"><div><div id="dateTitle" class="dateTitle"></div><div id="readerMeta" class="readerMeta"></div></div><span id="sourceBadge" class="sourceBadge hidden"></span></div>
 
     <section id="planningInsights" class="planningInsights">
-      <article class="planningInsightCard coverageCard">
+      <article id="coverageWidget" class="planningInsightCard coverageCard">
         <div class="insightHead"><div><strong>Couverture magasin</strong><small>Présence planifiée par tranche de 15 minutes pour la journée sélectionnée.</small></div><span id="coverageMetric" class="insightMetric">—</span></div>
         <div id="coverageSummary" class="coverageSummary"></div>
         <div id="coverageScroller" class="coverageScroller"><div id="coverageBars" class="coverageBars"></div></div>
@@ -156,11 +156,11 @@ main{width:min(97vw,1700px);margin:auto;padding:22px 24px 60px}
         <div id="personalStatsGrid" class="personalStatsGrid"></div>
         <div id="personalStatsFoot" class="personalStatsFoot"></div>
       </article>
-      <article class="planningInsightCard">
+      <article id="anomalyWidget" class="planningInsightCard">
         <div class="insightHead"><div><strong>Détection d’anomalies</strong><small>Contrôles automatiques d’organisation. Ils ne remplacent pas un contrôle RH ou réglementaire.</small></div><span id="anomalyMetric" class="insightMetric">0</span></div>
         <div id="anomalyList" class="anomalyList"></div>
       </article>
-      <article class="planningInsightCard">
+      <article id="absencesWidget" class="planningInsightCard">
         <div class="insightHead"><div><strong>Indisponibilités / Congés</strong><small id="absenceSubtitle">Demandes liées à cette semaine.</small></div><div class="absenceActions"><button class="btn light absenceAddBtn" type="button" onclick="openAbsenceModal()">+ Demander</button></div></div>
         <div id="absenceList" class="absenceList"></div>
       </article>
@@ -611,7 +611,10 @@ async function openYearDate(k){const d=parseISO(k);currentWeekStart=startOfWeek(
 
 function applyPlanningDeepLink(){const q=new URLSearchParams(location.search),week=q.get('week'),day=q.get('day');if(week&&/^\d{4}-\d{2}-\d{2}$/.test(week))currentWeekStart=startOfWeek(parseISO(week));if(day&&/^\d{4}-\d{2}-\d{2}$/.test(day)){const d=parseISO(day),ws=startOfWeek(d);currentWeekStart=ws;currentDay=Math.max(0,Math.min(6,(d.getDay()+6)%7))}}
 async function waitForSupabase(ms=8000){const s=Date.now();while(Date.now()-s<ms){if(window.supabase?.createClient)return;await new Promise(r=>setTimeout(r,100))}throw new Error('Supabase indisponible')}
-async function init(){applyPlanningDeepLink();const qs=new URLSearchParams(location.search),savedView=qs.get('view')||localStorage.getItem('nettoPlanningView')||'week';await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';await window.NettoProfileUI?.refresh?.();const planningPermission=window.NettoProfileUI?.permissionLevel?.('planning',p)||'none';if(planningPermission==='none'){location.replace('home.html');return}canEdit=planningPermission==='manage';currentUser={id:session.user.id,name:p?.display_name||'Utilisateur'};document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);document.getElementById('planningLogs').classList.remove('hidden');document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');await loadTeamProfiles();startPlanningProfileRealtime();await Promise.all([loadWeek(currentWeekStart),loadPlanningLogs()]);setPlanningView(savedView,{sound:false})}
+const PLANNING_WIDGETS={coverage:'coverageWidget',personal_stats:'personalStatsCard',anomalies:'anomalyWidget',absences:'absencesWidget'};
+function planningWidgetVisible(config,key,userRole){const rules=config?.planning_widgets?.[key];return !rules||typeof rules!=='object'||rules[userRole]!==false}
+async function applyPlanningWidgetPermissions(userRole){let config={};try{const {data,error}=await db.from('app_settings').select('value').eq('key','site_config').maybeSingle();if(error)throw error;config=data?.value&&typeof data.value==='object'?data.value:{}}catch(e){console.warn('Permissions widgets indisponibles',e)}let visible=0;for(const [key,id] of Object.entries(PLANNING_WIDGETS)){const el=document.getElementById(id);if(!el)continue;const allowed=planningWidgetVisible(config,key,userRole);el.classList.toggle('hidden',!allowed);if(allowed)visible++}document.getElementById('planningInsights')?.classList.toggle('hidden',visible===0)}
+async function init(){applyPlanningDeepLink();const qs=new URLSearchParams(location.search),savedView=qs.get('view')||localStorage.getItem('nettoPlanningView')||'week';await waitForSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await db.auth.getSession();if(!session){location.href='index.html';return}const {data:p}=await db.from('profiles').select('role,display_name').eq('id',session.user.id).maybeSingle();role=p?.role||'lecture';await window.NettoProfileUI?.refresh?.();const planningPermission=window.NettoProfileUI?.permissionLevel?.('planning',p)||'none';if(planningPermission==='none'){location.replace('home.html');return}canEdit=planningPermission==='manage';currentUser={id:session.user.id,name:p?.display_name||'Utilisateur'};await applyPlanningWidgetPermissions(role);document.getElementById('editPlanningBtn').classList.toggle('hidden',!canEdit);document.getElementById('importPanel').classList.toggle('hidden',!canEdit);document.getElementById('planningLogs').classList.remove('hidden');document.getElementById('clearPlanningLogs').classList.toggle('hidden',role!=='admin');await loadTeamProfiles();startPlanningProfileRealtime();await Promise.all([loadWeek(currentWeekStart),loadPlanningLogs()]);setPlanningView(savedView,{sound:false})}
 init().catch(e=>{console.error(e);document.getElementById('readerMeta').textContent='Erreur de chargement du planning.'});
 
 function currentTheme(){return document.documentElement.dataset.theme==='dark'?'dark':'light'}
