@@ -64,3 +64,5 @@ Un passage manuel dans un vrai navigateur reste nécessaire pour confirmer les d
 - Normalisation a11y ajoutée pour donner un nom accessible aux champs ayant seulement un libellé visuel ou un placeholder.
 - Contrainte SQL anti-redirection ajoutée aux URL de notifications : les schémas externes et URL protocol-relative sont refusés.
 - Le workflow GitHub Pages du déploiement principal a terminé avec succès.
+
+- Assistant F&L migré de l’ancien miroir `xlsx@0.18.5` vers le CDN officiel SheetJS 0.20.3.
