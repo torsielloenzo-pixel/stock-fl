@@ -277,50 +277,96 @@ function bindMobilePreviewGlobal(){
   const btn=e.target&&e.target.closest?e.target.closest('#nettoMobilePreviewBtn'):null;
   if(!btn)return;
   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-  try{toggleMobilePreview()}catch(err){console.error('Vision mobile:',err);mobilePreviewNotice('Erreur lors de l’ouverture de la vision mobile')}
+  try{toggleMobilePreview()}catch(err){console.error('Vision mobile:',err);mobilePreviewNotice('Vision mobile : '+String(err&&err.message?err.message:err))}
  },true);
  document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
   const btn=e.target&&e.target.closest?e.target.closest('#nettoMobilePreviewBtn'):null;
   if(!btn)return;
   e.preventDefault();e.stopPropagation();
-  try{toggleMobilePreview()}catch(err){console.error('Vision mobile:',err);mobilePreviewNotice('Erreur lors de l’ouverture de la vision mobile')}
+  try{toggleMobilePreview()}catch(err){console.error('Vision mobile:',err);mobilePreviewNotice('Vision mobile : '+String(err&&err.message?err.message:err))}
  },true)
 }
-function mobilePreviewUrl(){const u=new URL(location.href);u.searchParams.set('mobile_preview','1');u.searchParams.set('_mobile_ts',Date.now());return u.href}
-function setMobilePreviewButton(active){const on=!!active,btn=document.getElementById('nettoMobilePreviewBtn');document.documentElement.toggleAttribute('data-mobile-preview-active',on);if(!btn)return;btn.classList.toggle('active',on);btn.setAttribute('aria-pressed',String(on));btn.setAttribute('aria-label',on?'Quitter la vision mobile':'Vision mobile');btn.title=on?'Quitter la vision mobile':'Vision mobile'}
+function mobilePreviewUrl(){
+ var u=new URL(window.location.href);
+ u.searchParams.set('mobile_preview','1');
+ u.searchParams.set('_mobile_ts',String(Date.now()));
+ return u.toString()
+}
+function setMobilePreviewButton(active){
+ var on=!!active,btn=document.getElementById('nettoMobilePreviewBtn'),root=document.documentElement;
+ if(on)root.setAttribute('data-mobile-preview-active','1');else root.removeAttribute('data-mobile-preview-active');
+ if(!btn)return;
+ btn.classList.toggle('active',on);
+ btn.setAttribute('aria-pressed',on?'true':'false');
+ btn.setAttribute('aria-label',on?'Quitter la vision mobile':'Vision mobile');
+ btn.title=on?'Quitter la vision mobile':'Vision mobile'
+}
 let mobilePreviewNoticeTimer=null;
-function mobilePreviewNotice(message){document.getElementById('nettoMobilePreviewNotice')?.remove();clearTimeout(mobilePreviewNoticeTimer);const notice=document.createElement('div');notice.id='nettoMobilePreviewNotice';notice.className='nettoMobilePreviewNotice';notice.innerHTML='<i></i><span>'+esc(message)+'</span>';document.body.appendChild(notice);requestAnimationFrame(()=>notice.classList.add('show'));mobilePreviewNoticeTimer=setTimeout(()=>{notice.classList.remove('show');setTimeout(()=>notice.remove(),220)},1800)}
-function closeMobilePreview(showNotice=true){const hadPreview=!!document.getElementById('nettoMobilePreviewOverlay');document.getElementById('nettoMobilePreviewOverlay')?.remove();setMobilePreviewButton(false);document.body.style.removeProperty('overflow');if(hadPreview&&showNotice)mobilePreviewNotice('Vision mobile désactivée')}
+function mobilePreviewNotice(message){
+ var old=document.getElementById('nettoMobilePreviewNotice');if(old&&old.parentNode)old.parentNode.removeChild(old);
+ clearTimeout(mobilePreviewNoticeTimer);
+ var notice=document.createElement('div');
+ notice.id='nettoMobilePreviewNotice';notice.className='nettoMobilePreviewNotice';
+ var dot=document.createElement('i'),label=document.createElement('span');
+ label.textContent=String(message||'');
+ notice.appendChild(dot);notice.appendChild(label);
+ document.body.appendChild(notice);
+ window.requestAnimationFrame(function(){notice.classList.add('show')});
+ mobilePreviewNoticeTimer=setTimeout(function(){notice.classList.remove('show');setTimeout(function(){if(notice.parentNode)notice.parentNode.removeChild(notice)},220)},2200)
+}
+function closeMobilePreview(showNotice=true){
+ var overlay=document.getElementById('nettoMobilePreviewOverlay'),hadPreview=!!overlay;
+ if(overlay&&overlay.parentNode)overlay.parentNode.removeChild(overlay);
+ setMobilePreviewButton(false);
+ if(document.body)document.body.style.removeProperty('overflow');
+ if(hadPreview&&showNotice)mobilePreviewNotice('Vision mobile désactivée')
+}
 function toggleMobilePreview(){
- const existing=document.getElementById('nettoMobilePreviewOverlay');
- if(existing){closeMobilePreview(true);sounds.play('menuClose');return}
- const btn=document.getElementById('nettoMobilePreviewBtn');if(btn&&btn.disabled)return;
+ var existing=document.getElementById('nettoMobilePreviewOverlay');
+ if(existing){closeMobilePreview(true);try{sounds.play('menuClose')}catch(_){};return}
  closeDrops();
- const overlay=document.createElement('div');
- overlay.id='nettoMobilePreviewOverlay';
- overlay.className='nettoMobilePreviewOverlay';
- overlay.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(16,18,20,.84);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px';
- overlay.style.setProperty('display','flex','important');
- const device=document.createElement('div');
+ var overlay=document.createElement('div');
+ overlay.id='nettoMobilePreviewOverlay';overlay.className='nettoMobilePreviewOverlay';
+ overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Aperçu mobile');
+ overlay.style.position='fixed';overlay.style.left='0';overlay.style.top='0';overlay.style.right='0';overlay.style.bottom='0';
+ overlay.style.zIndex='2147483000';overlay.style.background='rgba(16,18,20,.84)';overlay.style.display='flex';
+ overlay.style.alignItems='center';overlay.style.justifyContent='center';overlay.style.padding='24px';
+
+ var device=document.createElement('div');
  device.className='nettoMobilePreviewDevice';
- device.style.cssText='width:min(410px,calc(100vw - 28px));height:min(860px,calc(100vh - 48px));background:#0d0f11;border:7px solid #292d31;border-radius:38px;box-shadow:0 30px 100px rgba(0,0,0,.7);padding:10px;display:flex;flex-direction:column';
- const top=document.createElement('div');
- top.style.cssText='height:32px;display:flex;align-items:center;justify-content:center;position:relative;flex:none;color:#e7eaed';
- top.innerHTML='<span style="position:absolute;left:3px;font-size:8px;font-weight:850">Aperçu mobile</span><span style="width:92px;height:19px;border-radius:999px;background:#060708"></span><button type="button" aria-label="Fermer" style="position:absolute;right:0;top:0;width:28px;height:28px;border:0;border-radius:9px;background:#34393e;color:#fff;cursor:pointer;font-size:18px">×</button>';
- const frame=document.createElement('iframe');
- frame.className='nettoMobilePreviewFrame';
- frame.title='Vision mobile Nethor';
- frame.src=mobilePreviewUrl();
- frame.style.cssText='width:100%;height:100%;border:0;border-radius:25px;background:#fff;overflow:hidden;flex:1';
- top.querySelector('button').onclick=e=>{e.stopPropagation();closeMobilePreview(true)};
- device.append(top,frame);overlay.appendChild(device);
- overlay.onclick=e=>{if(e.target===overlay)closeMobilePreview(true)};
+ device.style.width='min(410px, calc(100vw - 28px))';device.style.height='min(860px, calc(100vh - 48px))';
+ device.style.background='#0d0f11';device.style.border='7px solid #292d31';device.style.borderRadius='38px';
+ device.style.boxShadow='0 30px 100px rgba(0,0,0,.7)';device.style.padding='10px';device.style.display='flex';device.style.flexDirection='column';
+
+ var bar=document.createElement('div');
+ bar.style.height='32px';bar.style.display='flex';bar.style.alignItems='center';bar.style.justifyContent='center';bar.style.position='relative';bar.style.flex='none';bar.style.color='#e7eaed';
+
+ var state=document.createElement('span');
+ state.textContent='Aperçu mobile';state.style.position='absolute';state.style.left='3px';state.style.fontSize='8px';state.style.fontWeight='850';
+
+ var notch=document.createElement('span');
+ notch.style.width='92px';notch.style.height='19px';notch.style.borderRadius='999px';notch.style.background='#060708';
+
+ var close=document.createElement('button');
+ close.type='button';close.setAttribute('aria-label','Fermer');close.textContent='×';
+ close.style.position='absolute';close.style.right='0';close.style.top='0';close.style.width='28px';close.style.height='28px';
+ close.style.border='0';close.style.borderRadius='9px';close.style.background='#34393e';close.style.color='#fff';close.style.cursor='pointer';close.style.fontSize='18px';
+
+ var frame=document.createElement('iframe');
+ frame.className='nettoMobilePreviewFrame';frame.title='Vision mobile Nethor';frame.src=mobilePreviewUrl();
+ frame.style.width='100%';frame.style.height='100%';frame.style.border='0';frame.style.borderRadius='25px';frame.style.background='#fff';frame.style.flex='1';
+
+ close.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeMobilePreview(true)});
+ overlay.addEventListener('click',function(e){if(e.target===overlay)closeMobilePreview(true)});
+
+ bar.appendChild(state);bar.appendChild(notch);bar.appendChild(close);
+ device.appendChild(bar);device.appendChild(frame);overlay.appendChild(device);
  document.body.appendChild(overlay);
  document.body.style.overflow='hidden';
  setMobilePreviewButton(true);
  mobilePreviewNotice('Vision mobile activée');
- sounds.play('menuOpen');
+ try{sounds.play('menuOpen')}catch(_){}
 }
 function toggleDrop(which){
  const n=document.getElementById('nettoNotifDrop'),u=document.getElementById('nettoUserDrop'),l=document.getElementById('nettoLoginDrop'),nb=document.getElementById('nettoBellBtn'),ub=document.getElementById('nettoUserBtn'),lb=document.getElementById('nettoLoginBtn');
@@ -433,7 +479,7 @@ function hydrateGlobalCache(){
 function saveGlobalCache(){try{const k=globalCacheKey();if(k&&api.profile)localStorage.setItem(k,JSON.stringify({saved_at:Date.now(),profile:api.profile,siteConfig:api.siteConfig,avatarUrl:api.avatarUrl}))}catch(_){}}
 async function refresh(){if(!api.client||!api.session)return null;const [pr,sr]=await Promise.all([api.client.from('profiles').select('display_name,role,avatar_path,profile_color,ui_preferences').eq('id',api.session.user.id).maybeSingle(),api.client.from('app_settings').select('value').eq('key','site_config').maybeSingle()]);const p=pr.data;if(!p)return null;api.profile=p;api.siteConfig=sr.data?.value&&typeof sr.data.value==='object'?sr.data.value:{};applyProfileTheme(p,true);rebuildModules(api.siteConfig);applyPortalTheme(api.siteConfig);api.avatarUrl=null;if(p.avatar_path){const {data:a}=await api.client.storage.from('profile-avatars').createSignedUrl(p.avatar_path,3600);api.avatarUrl=a?.signedUrl||null}document.documentElement.style.setProperty('--profile-accent',p.profile_color||'#ff5a2a');updateKnownUI();saveGlobalCache();window.dispatchEvent(new CustomEvent('netto:profile',{detail:{profile:p,avatarUrl:api.avatarUrl,siteConfig:api.siteConfig}}));return p}
 
-const APP_RELEASE=56;
+const APP_RELEASE=57;
 const APP_ICON='assets/app-icon-v54.svg';
 let updateRegistration=null;
 function ensureUpdateStyles(){
