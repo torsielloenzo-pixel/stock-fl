@@ -632,18 +632,13 @@ input:focus,textarea:focus,select:focus,.search:focus,.searchBox input:focus{
 :root[data-theme="dark"] .modalClose:hover{background:#454c55!important;color:#fff!important}
 :root[data-theme="dark"] .infoModeLabel,
 :root[data-theme="dark"] .stockResetIntro,
-:root[data-theme="dark"] .infoViewSub,
-:root[data-theme="dark"] .shelfControl small,
-:root[data-theme="dark"] .resetCategoryHead small,
+:root[data-theme="dark"] .infoViewSub,:root[data-theme="dark"] .resetCategoryHead small,
 :root[data-theme="dark"] .resetCategoryChoiceText small{color:#b7bec7!important}
 :root[data-theme="dark"] .infoHero{background:linear-gradient(145deg,#353b43,#2f343b)!important;border:1px solid #464e58!important}
 :root[data-theme="dark"] .infoFact{background:#333840!important;border-color:#474f59!important}
 :root[data-theme="dark"] .infoFact span{color:#b5bcc5!important}
 :root[data-theme="dark"] .infoFact strong{color:#f1f3f5!important}
-:root[data-theme="dark"] 
-:root[data-theme="dark"] .shelfControl strong{color:#f2f4f6!important}
-:root[data-theme="dark"] .shelfChoice.active{border-color:#e9edf1!important}
-:root[data-theme="dark"] .modal input,
+:root[data-theme="dark"]:root[data-theme="dark"] .modal input,
 :root[data-theme="dark"] .modal select,
 :root[data-theme="dark"] .modal textarea{background:#343940!important;border-color:#4a525c!important;color:#f3f5f7!important}
 :root[data-theme="dark"] .modal input:focus,
@@ -1130,7 +1125,6 @@ function getOrderConfigs(){
 function getOrderConfig(id){const all=getOrderConfigs(),v=all[id]||{};return{lossLeader:!!v.lossLeader,season:!!v.season,sensitive:!!v.sensitive,blocked:!!v.blocked}}
 function saveOrderConfig(id,cfg){const all=getOrderConfigs();all[id]={lossLeader:!!cfg.lossLeader,season:!!cfg.season,sensitive:!!cfg.sensitive,blocked:!!cfg.blocked};localStorage.setItem('nettoOrderConfigs',JSON.stringify(all));resetSuggestionView()}
 getOrderConfigs();
-try{localStorage.removeItem('nettoShelfStatus')}catch(_){}
 function suggestOrder(p){
  const q=Number(p.quantity)||0,fam=orderFamily(p.name),sameFamily=products.filter(x=>x.id!==p.id&&orderFamily(x.name)===fam),familyStock=sameFamily.reduce((s,x)=>s+(Number(x.quantity)||0),0),catStock=products.filter(x=>x.id!==p.id&&x.category===p.category).reduce((s,x)=>s+(Number(x.quantity)||0),0),autoSeason=seasonScore(p.name),large=isLargePackaging(p),cfg=getOrderConfig(p.id),day=new Date().getDay(),weekend=day===0||day===6;
  const season=cfg.season?1:autoSeason;if(cfg.blocked)return{qty:0,status:'Bloqué',why:['article bloqué des suggestions de commande'],season,familyStock,catStock,large,weekend,priority:-999,cfg};let qty=0,status='Ne pas commander',why=[],priority=0;
