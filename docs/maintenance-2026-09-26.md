@@ -43,3 +43,16 @@ Remettre le portail Nethor dans un état stable, maintenable et prévisible sans
 
 ## Vérification encore nécessaire après déploiement
 Un passage manuel dans un vrai navigateur reste nécessaire pour confirmer les détails purement visuels et tactiles (rendu iPhone, focus, scroll, viewport, iframe de l'aperçu mobile). La validation source et backend ne remplace pas un test E2E rendu.
+
+
+## Nettoyage complémentaire
+- Vue test supprimée définitivement : page, logo, navigation et précache PWA.
+- Champ « statut / message court » retiré de toutes les interfaces et requêtes frontend.
+- 14 pages HTML et 4 scripts JavaScript validés sans erreur de syntaxe.
+- Aucun ID HTML dupliqué ni référence locale cassée détectée.
+- Privilèges manquants corrigés sur `user_module_permissions` et `fl_analysis_files`; les politiques RLS existantes peuvent désormais s'appliquer réellement.
+- Gain mesuré par rapport à `main` avant déploiement : environ 54 Ko de ressources web supprimées.
+
+## Dette volontairement conservée
+- La colonne SQL `profiles.status_text` reste temporairement présente tant que la fonction serveur d'administration n'a pas été migrée ; le frontend n'en dépend plus.
+- Les feuilles `design-v2.css`, `design-v3.css` et `design-v4.css` restent séparées pour cette passe afin d'éviter une régression visuelle sans test navigateur rendu complet.
