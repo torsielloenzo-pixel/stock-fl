@@ -71,3 +71,22 @@ with check ((select private.has_role(array['admin'])));
 create policy "module permissions admin delete"
 on public.user_module_permissions for delete to authenticated
 using ((select private.has_role(array['admin'])));
+
+
+-- Correctifs de privilèges : les politiques RLS existaient mais les droits de table
+-- manquaient, ce qui provoquait "permission denied" avant même l'évaluation RLS.
+grant select, insert, update, delete
+on table public.user_module_permissions
+to authenticated;
+
+grant select, insert, delete
+on table public.fl_analysis_files
+to authenticated;
+
+grant select, insert, update, delete
+on table public.user_module_permissions
+to service_role;
+
+grant select, insert, update, delete
+on table public.fl_analysis_files
+to service_role;
